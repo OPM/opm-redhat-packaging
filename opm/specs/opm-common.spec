@@ -6,8 +6,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 1
-%define build_mpich 1
+%define build_openmpi3 0
+%define build_mpich 0
 
 Name:           opm-common
 Version:        2022.10
@@ -39,35 +39,50 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %description
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
-%package -n libopm-common%{opm_package_version}
+%package -n libopm-common
 Summary: OPM-common - library
 Group:          System/Libraries
 
-%description -n libopm-common%{opm_package_version}
+%description -n libopm-common
+This package contains library for opm-common
+
+%package -n libopm-common%{version}
+Summary: OPM-common - library
+Group:          System/Libraries
+
+%description -n libopm-common%{version}
 This package contains library for opm-common
 
 %package devel
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
-Requires:       libopm-common%{opm_package_version} = %{version}
+Requires:       libopm-common%{version} = %{version}
 
 %description devel
 This package contains the development and header files for opm-common
 
-%package -n python3-opm-common%{opm_package_version}
+%package -n python3-opm-common
 Summary: OPM-common - python library
 Group:          Python/Libraries
 Requires:       libopm-common = %{version}
 
-%description -n python3-opm-common%{opm_package_version}
+%description -n python3-opm-common
 This package contains the python library for opm-common
 
-%package bin%{opm_package_version}
+%package -n python3-opm-common%{version}
+Summary: OPM-common - python library
+Group:          Python/Libraries
+Requires:       libopm-common%{version} = %{version}
+
+%description -n python3-opm-common%{version}
+This package contains the python library for opm-common
+
+%package bin
 Summary:        Applications for opm-common
 Group:          System/Binaries
 Requires:       %{name} = %{version}
 
-%description bin%{opm_package_version}
+%description bin
 This package the applications for opm-common
 
 %package doc
@@ -79,80 +94,103 @@ BuildArch:	noarch
 This package contains the documentation files for opm-common
 
 %if %{build_openmpi}
-%package -n libopm-common-openmpi%{opm_package_version}
+%package -n libopm-common-openmpi
 Summary: OPM-common - library
 Group:          System/Libraries
 
-%description -n libopm-common-openmpi%{opm_package_version}
+%description -n libopm-common-openmpi
+This package contains library for opm-common
+
+%package -n libopm-common-openmpi%{version}
+Summary: OPM-common - library
+Group:          System/Libraries
+
+%description -n libopm-common-openmpi%{version}
 This package contains library for opm-common
 
 %package openmpi-devel
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
 Requires:       %{name} = %{version}
-Requires:       libopm-common-openmpi%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for opm-common
 
-%package openmpi-bin%{opm_package_version}
+%package openmpi-bin
 Summary:        Applications for opm-common
 Group:          System/Binaries
-Requires:       libopm-common-openmpi%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi = %{version}
 
-%description openmpi-bin%{opm_package_version}
+%description openmpi-bin
 This package the applications for opm-common
+
 %endif
 
 %if %{build_openmpi3}
-%package -n libopm-common-openmpi3%{opm_package_version}
+%package -n libopm-common-openmpi3
 Summary: OPM-common - library
-Group:          System/Libraries
+Group:   System/Libraries
 
-%description -n libopm-common-openmpi3%{opm_package_version}
+%description -n libopm-common-openmpi3
+This package contains library for opm-common
+
+%package -n libopm-common-openmpi3%{version}
+Summary: OPM-common - library
+Group:   System/Libraries
+
+%description -n libopm-common-openmpi3%{version}
 This package contains library for opm-common
 
 %package openmpi3-devel
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
 Requires:       %{name} = %{version}
-Requires:       libopm-common-openmpi3%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi3 = %{version}
 
 %description openmpi3-devel
 This package contains the development and header files for opm-common
 
-%package openmpi3-bin%{opm_package_version}
+%package openmpi3-bin
 Summary:        Applications for opm-common
 Group:          System/Binaries
-Requires:       libopm-common-openmpi3%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi3 = %{version}
 
-%description openmpi3-bin%{opm_package_version}
+%description openmpi3-bin
 This package the applications for opm-common
 %endif
 
 %if %{build_mpich}
-%package -n libopm-common-mpich%{opm_package_version}
+%package -n libopm-common-mpich
 Summary: OPM-common - library
 Group:          System/Libraries
 
-%description -n libopm-common-mpich%{opm_package_version}
+%description -n libopm-common-mpich
+This package contains library for opm-common
+
+%package -n libopm-common-mpich%{version}
+Summary: OPM-common - library
+Group:          System/Libraries
+
+%description -n libopm-common-mpich%{version}
 This package contains library for opm-common
 
 %package mpich-devel
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
-Requires:       libopm-common-mpich%{opm_package_version} = %{version}
+Requires:       libopm-common-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for opm-common
 
-%package mpich-bin%{opm_package_version}
+%package mpich-bin
 Summary:        Applications for opm-common
 Group:          System/Binaries
-Requires:       libopm-common-mpich%{opm_package_version} = %{version}
+Requires:       libopm-common-mpich = %{version}
 
-%description mpich-bin%{opm_package_version}
+%description mpich-bin
 This package the applications for opm-common
+
 %endif
 
 %global debug_package %{nil}
@@ -165,7 +203,7 @@ This package the applications for opm-common
 rm -f python/pybind11/tools/mkdoc.py
 mkdir serial
 pushd serial
-scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 -DBUILD_TESTING=0 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -173,7 +211,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
@@ -183,7 +221,7 @@ popd
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi3-x86_64
 popd
@@ -193,7 +231,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
@@ -226,24 +264,34 @@ rm -rf %{buildroot}
 
 %define _unpackaged_files_terminate_build 0
 
-%post -n libopm-common%{opm_package_version} -p /sbin/ldconfig
-%postun -n libopm-common%{opm_package_version} -p /sbin/ldconfig
-%post -n python3-opm-common%{opm_package_version} -p /sbin/ldconfig
-%postun -n python3-opm-common%{opm_package_version} -p /sbin/ldconfig
+%post -n libopm-common -p /sbin/ldconfig
+%postun -n libopm-common -p /sbin/ldconfig
+%post -n libopm-common%{version} -p /sbin/ldconfig
+%postun -n libopm-common%{version} -p /sbin/ldconfig
+%post -n python3-opm-common -p /sbin/ldconfig
+%postun -n python3-opm-common -p /sbin/ldconfig
+%post -n python3-opm-common%{version} -p /sbin/ldconfig
+%postun -n python3-opm-common%{version} -p /sbin/ldconfig
 
 %if %{build_openmpi}
-%post -n libopm-common-openmpi%{opm_package_version} -p /sbin/ldconfig
-%postun -n libopm-common-openmpi%{opm_package_version} -p /sbin/ldconfig
+%post -n libopm-common-openmpi -p /sbin/ldconfig
+%postun -n libopm-common-openmpi -p /sbin/ldconfig
+%post -n libopm-common-openmpi%{version} -p /sbin/ldconfig
+%postun -n libopm-common-openmpi%{version} -p /sbin/ldconfig
 %endif
 
 %if %{build_openmpi3}
-%post -n libopm-common-openmpi3%{opm_package_version} -p /sbin/ldconfig
-%postun -n libopm-common-openmpi3%{opm_package_version} -p /sbin/ldconfig
+%post -n libopm-common-openmpi3 -p /sbin/ldconfig
+%postun -n libopm-common-openmpi3 -p /sbin/ldconfig
+%post -n libopm-common-openmpi3%{version} -p /sbin/ldconfig
+%postun -n libopm-common-openmpi3%{version} -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
-%post -n libopm-common-mpich%{opm_package_version} -p /sbin/ldconfig
-%postun -n libopm-common-mpich%{opm_package_version} -p /sbin/ldconfig
+%post -n libopm-common-mpich -p /sbin/ldconfig
+%postun -n libopm-common-mpich -p /sbin/ldconfig
+%post -n libopm-common-mpich%{version} -p /sbin/ldconfig
+%postun -n libopm-common-mpich%{version} -p /sbin/ldconfig
 %endif
 
 %files
@@ -252,11 +300,15 @@ rm -rf %{buildroot}
 %files doc
 %{_docdir}/*
 
-%files bin%{opm_package_version}
+%files bin
 %{_bindir}/*
 %{_datadir}/man/*
 
-%files -n libopm-common%{opm_package_version}
+%files -n libopm-common
+%defattr(-,root,root,-)
+%{_libdir}/*.so.*
+
+%files -n libopm-common%{version}
 %defattr(-,root,root,-)
 %{_libdir}/*.so.*
 
@@ -269,15 +321,22 @@ rm -rf %{buildroot}
 %{_datadir}/opm/*
 %{_libdir}/*.so
 
-%files -n python3-opm-common%{opm_package_version}
+%files -n python3-opm-common
+%{_prefix}/lib/python3.6/site-packages/opm/*
+
+%files -n python3-opm-common%{version}
 %{_prefix}/lib/python3.6/site-packages/opm/*
 
 %if %{build_openmpi}
-%files openmpi-bin%{opm_package_version}
+%files openmpi-bin
 %{_libdir}/openmpi/bin/*
 %{_libdir}/openmpi/share/man/*
 
-%files -n libopm-common-openmpi%{opm_package_version}
+%files -n libopm-common-openmpi
+%defattr(-,root,root,-)
+%{_libdir}/openmpi/lib/*.so.*
+
+%files -n libopm-common-openmpi%{version}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
@@ -293,11 +352,15 @@ rm -rf %{buildroot}
 %endif
 
 %if %{build_openmpi3}
-%files openmpi3-bin%{opm_package_version}
+%files openmpi3-bin
 %{_libdir}/openmpi3/bin/*
 %{_libdir}/openmpi3/share/man/*
 
-%files -n libopm-common-openmpi3%{opm_package_version}
+%files -n libopm-common-openmpi3
+%defattr(-,root,root,-)
+%{_libdir}/openmpi3/lib/*.so.*
+
+%files -n libopm-common-openmpi3%{version}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
@@ -313,11 +376,15 @@ rm -rf %{buildroot}
 %endif
 
 %if %{build_mpich}
-%files mpich-bin%{opm_package_version}
+%files mpich-bin
 %{_libdir}/mpich/bin/*
 %{_libdir}/mpich/share/man/*
 
-%files -n libopm-common-mpich%{opm_package_version}
+%files -n libopm-common-mpich
+%defattr(-,root,root,-)
+%{_libdir}/mpich/lib/*.so.*
+
+%files -n libopm-common-mpich%{version}
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 

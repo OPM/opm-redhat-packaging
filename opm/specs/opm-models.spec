@@ -2,8 +2,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 1
-%define build_mpich 1
+%define build_openmpi3 0
+%define build_mpich 0
 
 Name: opm-models
 Summary: OPM - Fully implicit models for flow and transport in porous media
