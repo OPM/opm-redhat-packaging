@@ -6,8 +6,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 0
-%define build_mpich 0
+%define build_openmpi3 1
+%define build_mpich 1
 
 Name:           opm-material
 Version:        2022.10
@@ -68,12 +68,12 @@ BuildArch:	noarch
 %description doc
 This package contains the documentation files for opm-material
 
-%package bin%{opm_package_version}
+%package bin
 Summary:        Applications for opm-material
 Group:          System/Binaries
 Requires:       %{name} = %{version}
 
-%description bin%{opm_package_version}
+%description bin
 This package holds the applications for opm-material
 
 %if %{build_openmpi}
@@ -85,12 +85,12 @@ Group:          Development/Libraries/C and C++
 This package contains the development and header files for opm-material with
 openMPI.
 
-%package openmpi-bin%{opm_package_version}
+%package openmpi-bin
 Summary:        Applications for opm-material
 Group:          System/Binaries
-Requires:       libopm-common-openmpi%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi = %{version}
 
-%description openmpi-bin%{opm_package_version}
+%description openmpi-bin
 This package the applications for opm-material
 %endif
 
@@ -103,12 +103,12 @@ Group:          Development/Libraries/C and C++
 This package contains the development and header files for opm-material with
 openMPI3.
 
-%package openmpi3-bin%{opm_package_version}
+%package openmpi3-bin
 Summary:        Applications for opm-material
 Group:          System/Binaries
-Requires:       libopm-common-openmpi3%{opm_package_version} = %{version}
+Requires:       libopm-common-openmpi3 = %{version}
 
-%description openmpi3-bin%{opm_package_version}
+%description openmpi3-bin
 This package the applications for opm-material
 %endif
 
@@ -121,16 +121,14 @@ Group:          Development/Libraries/C and C++
 This package contains the development and header files for opm-material with
 mpich.
 
-%package mpich-bin%{opm_package_version}
+%package mpich-bin
 Summary:        Applications for opm-material
 Group:          System/Binaries
-Requires:       libopm-common-mpich%{opm_package_version} = %{version}
+Requires:       libopm-common-mpich = %{version}
 
-%description mpich-bin%{opm_package_version}
+%description mpich-bin
 This package the applications for opm-material
 %endif
-
-%global debug_package %{nil}
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
@@ -208,12 +206,12 @@ rm -rf %{buildroot}
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
 
-%files bin%{opm_package_version}
+%files bin
 %{_bindir}/*
 %{_datadir}/man/*
 
 %if %{build_openmpi}
-%files openmpi-bin%{opm_package_version}
+%files openmpi-bin
 %{_libdir}/openmpi/bin/*
 %{_libdir}/openmpi/share/man/*
 
@@ -227,7 +225,7 @@ rm -rf %{buildroot}
 %endif
 
 %if %{build_openmpi3}
-%files openmpi3-bin%{opm_package_version}
+%files openmpi3-bin
 %{_libdir}/openmpi3/bin/*
 %{_libdir}/openmpi3/share/man/*
 
@@ -241,7 +239,7 @@ rm -rf %{buildroot}
 %endif
 
 %if %{build_mpich}
-%files mpich-bin%{opm_package_version}
+%files mpich-bin
 %{_libdir}/mpich/bin/*
 %{_libdir}/mpich/share/man/*
 

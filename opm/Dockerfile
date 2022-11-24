@@ -1,10 +1,8 @@
 ARG version=""
 ARG version_tag=""
-ARG package_tag=""
 FROM centos:7 AS stage1
 ARG version
 ARG version_tag
-ARG package_tag
 WORKDIR /tmp/opm
 ADD . .
 RUN echo "Configuring build environment"
@@ -18,6 +16,6 @@ RUN echo "Making SRPMS"
 RUN /bin/bash /tmp/opm/scripts/make_srpms.sh /tmp/opm/rpmbuild ${version} ${version_tag}
 RUN echo "Building RPMS"
 USER root
-RUN /bin/bash /tmp/opm/scripts/make_rpms.sh ${version} ${package_tag}
+RUN /bin/bash /tmp/opm/scripts/make_rpms.sh
 FROM scratch as export_stage
 COPY --from=stage1 /tmp/opm/rpmbuild .

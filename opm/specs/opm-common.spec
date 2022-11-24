@@ -6,8 +6,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 0
-%define build_mpich 0
+%define build_openmpi3 1
+%define build_mpich 1
 
 Name:           opm-common
 Version:        2022.10
@@ -101,11 +101,11 @@ Group:          System/Libraries
 %description -n libopm-common-openmpi
 This package contains library for opm-common
 
-%package -n libopm-common-openmpi%{version}
+%package -n libopm-common%{version}-openmpi
 Summary: OPM-common - library
 Group:          System/Libraries
 
-%description -n libopm-common-openmpi%{version}
+%description -n libopm-common%{version}-openmpi
 This package contains library for opm-common
 
 %package openmpi-devel
@@ -135,11 +135,11 @@ Group:   System/Libraries
 %description -n libopm-common-openmpi3
 This package contains library for opm-common
 
-%package -n libopm-common-openmpi3%{version}
+%package -n libopm-common%{version}-openmpi3
 Summary: OPM-common - library
 Group:   System/Libraries
 
-%description -n libopm-common-openmpi3%{version}
+%description -n libopm-common%{version}-openmpi3
 This package contains library for opm-common
 
 %package openmpi3-devel
@@ -168,11 +168,11 @@ Group:          System/Libraries
 %description -n libopm-common-mpich
 This package contains library for opm-common
 
-%package -n libopm-common-mpich%{version}
+%package -n libopm-common%{version}-mpich
 Summary: OPM-common - library
 Group:          System/Libraries
 
-%description -n libopm-common-mpich%{version}
+%description -n libopm-common%{version}-mpich
 This package contains library for opm-common
 
 %package mpich-devel
@@ -193,8 +193,6 @@ This package the applications for opm-common
 
 %endif
 
-%global debug_package %{nil}
-
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
 
@@ -203,16 +201,18 @@ This package the applications for opm-common
 rm -f python/pybind11/tools/mkdoc.py
 mkdir serial
 pushd serial
-scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
+#scl enable %{toolset} 'make test'
 popd
 
 %if %{build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
+#scl enable %{toolset} 'make test'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -221,8 +221,9 @@ popd
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
+#scl enable %{toolset} 'make test'
 module unload mpi/openmpi3-x86_64
 popd
 %endif
@@ -231,8 +232,9 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DBUILD_TESTING=0 ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
+#scl enable %{toolset} 'make test'
 module unload mpi/mpich-x86_64
 popd
 %endif
@@ -276,22 +278,22 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %post -n libopm-common-openmpi -p /sbin/ldconfig
 %postun -n libopm-common-openmpi -p /sbin/ldconfig
-%post -n libopm-common-openmpi%{version} -p /sbin/ldconfig
-%postun -n libopm-common-openmpi%{version} -p /sbin/ldconfig
+%post -n libopm-common%{version}-openmpi -p /sbin/ldconfig
+%postun -n libopm-common%{version}-openmpi -p /sbin/ldconfig
 %endif
 
 %if %{build_openmpi3}
 %post -n libopm-common-openmpi3 -p /sbin/ldconfig
 %postun -n libopm-common-openmpi3 -p /sbin/ldconfig
-%post -n libopm-common-openmpi3%{version} -p /sbin/ldconfig
-%postun -n libopm-common-openmpi3%{version} -p /sbin/ldconfig
+%post -n libopm-common%{version}-openmpi3 -p /sbin/ldconfig
+%postun -n libopm-common%{version}-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
 %post -n libopm-common-mpich -p /sbin/ldconfig
 %postun -n libopm-common-mpich -p /sbin/ldconfig
-%post -n libopm-common-mpich%{version} -p /sbin/ldconfig
-%postun -n libopm-common-mpich%{version} -p /sbin/ldconfig
+%post -n libopm-common%{version}-mpich -p /sbin/ldconfig
+%postun -n libopm-common%{version}-mpich -p /sbin/ldconfig
 %endif
 
 %files
@@ -336,7 +338,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
-%files -n libopm-common-openmpi%{version}
+%files -n libopm-common%{version}-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
@@ -360,7 +362,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
-%files -n libopm-common-openmpi3%{version}
+%files -n libopm-common%{version}-openmpi3
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
@@ -384,7 +386,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
-%files -n libopm-common-mpich%{version}
+%files -n libopm-common%{version}-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 

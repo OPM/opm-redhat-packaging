@@ -16,4 +16,8 @@ popd
 
 yum-config-manager --add-repo current.repo
 
+# boost hack
+mkdir -p /usr/include/boost/test/tools
+ln -sf /usr/include/boost/test/floating_point_comparison.hpp /usr/include/boost/test/tools/floating_point_comparison.hpp
+
 exit 0

@@ -6,8 +6,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 0
-%define build_mpich 0
+%define build_openmpi3 1
+%define build_mpich 1
 
 Name:           opm-simulators
 Version:        2022.10
@@ -122,12 +122,12 @@ Group:          Scientific
 %description bin
 This package contains the applications for opm-simulators
 
-%package bin%{version}
+%package -n opm-simulators%{version}-bin
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       libopm-simulators%{version} = %{version}
 
-%description bin%{version}
+%description -n opm-simulators%{version}-bin
 This package contains the applications for opm-simulators
 
 %if %{build_openmpi}
@@ -138,11 +138,11 @@ Group:          System/Libraries
 %description -n libopm-simulators-openmpi
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
-%package -n libopm-simulators-openmpi%{version}
+%package -n libopm-simulators%{version}-openmpi
 Summary:        Open Porous Media - automatic differentiation library
 Group:          System/Libraries
 
-%description -n libopm-simulators-openmpi%{version}
+%description -n libopm-simulators%{version}-openmpi
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
 %package openmpi-devel
@@ -160,12 +160,12 @@ Group:          Scientific
 %description openmpi-bin
 This package contains the applications for opm-simulators
 
-%package openmpi-bin%{version}
+%package -n opm-simulators%{version}-openmpi-bin
 Summary:        Applications in opm-simulators
 Group:          Scientific
-Requires:       libopm-simulators-openmpi%{version}
+Requires:       libopm-simulators%{version}-openmpi
 
-%description openmpi-bin%{version}
+%description -n opm-simulators%{version}-openmpi-bin
 This package contains the applications for opm-simulators
 %endif
 
@@ -177,11 +177,11 @@ Group:          System/Libraries
 %description -n libopm-simulators-openmpi3
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
-%package -n libopm-simulators-openmpi3%{version}
+%package -n libopm-simulators%{version}-openmpi3
 Summary:        Open Porous Media - automatic differentiation library
 Group:          System/Libraries
 
-%description -n libopm-simulators-openmpi3%{version}
+%description -n libopm-simulators%{version}-openmpi3
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
 %package openmpi3-devel
@@ -199,12 +199,12 @@ Group:          Scientific
 %description openmpi3-bin
 This package contains the applications for opm-simulators
 
-%package openmpi3-bin%{version}
+%package -n opm-simulators%{version}-openmpi3-bin
 Summary:        Applications in opm-simulators
 Group:          Scientific
-Requires:       libopm-simulators-openmpi3%{version} = %{version}
+Requires:       libopm-simulators%{version}-openmpi3 = %{version}
 
-%description openmpi3-bin%{version}
+%description -n opm-simulators%{version}-openmpi3-bin
 This package contains the applications for opm-simulators
 %endif
 
@@ -216,11 +216,11 @@ Group:          System/Libraries
 %description -n libopm-simulators-mpich
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
-%package -n libopm-simulators-mpich%{version}
+%package -n libopm-simulators%{version}-mpich
 Summary:        Open Porous Media - automatic differentiation library
 Group:          System/Libraries
 
-%description -n libopm-simulators-mpich%{version}
+%description -n libopm-simulators%{version}-mpich
 The Open Porous Media (OPM) initiative provides a set of open-source tools centered around the simulation of flow and transport of fluids in porous media. The goal of the initiative is to establish a sustainable environment for the development of an efficient and well-maintained software suite.
 
 %package mpich-devel
@@ -238,12 +238,12 @@ Group:          Scientific
 %description mpich-bin
 This package contains the applications for opm-simulators
 
-%package mpich-bin%{version}
+%package -n opm-simulators%{version}-mpich-bin
 Summary:        Applications in opm-simulators
 Group:          Scientific
-Requires:       libopm-simulators-mpich%{version} = %{version}
+Requires:       libopm-simulators%{version}-mpich = %{version}
 
-%description mpich-bin%{version}
+%description -n opm-simulators%{version}-mpich-bin
 This package contains the applications for opm-simulators
 
 %endif
@@ -265,7 +265,7 @@ pushd openmpi
 module load mpi/openmpi-x86_64
 scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DUSE_QUADMATH=0 -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 -V'
+scl enable %{toolset} 'make test'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -295,27 +295,27 @@ popd
 %install
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
 scl enable %{toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
-cp ${RPM_BUILD_ROOT}/usr/bin/flow ${RPM_BUILD_ROOT}/usr/bin/flow%{version}
+cp ${RPM_BUILD_ROOT}/usr/bin/flow ${RPM_BUILD_ROOT}/usr/bin/flow-%{version}
 
 %if %{build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
-cp ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow%{version}
+cp ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version}
 %endif
 
 %if %{build_openmpi3}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi3'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/openmpi3-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi3-x86_64/
-cp ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/bin/flow%{version}
+cp ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/bin/flow-%{version}
 %endif
 
 %if %{build_mpich}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
-cp ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow%{version}
+cp ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow-%{version}
 %endif
 
 %clean
@@ -329,22 +329,22 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %post -n libopm-simulators-openmpi -p /sbin/ldconfig
 %postun -n libopm-simulators-openmpi -p /sbin/ldconfig
-%post -n libopm-simulators-openmpi%{version} -p /sbin/ldconfig
-%postun -n libopm-simulators-openmpi%{version} -p /sbin/ldconfig
+%post -n libopm-simulators%{version}-openmpi -p /sbin/ldconfig
+%postun -n libopm-simulators%{version}-openmpi -p /sbin/ldconfig
 %endif
 
 %if %{build_openmpi3}
 %post -n libopm-simulators-openmpi3 -p /sbin/ldconfig
 %postun -n libopm-simulators-openmpi3 -p /sbin/ldconfig
-%post -n libopm-simulators-openmpi3%{version} -p /sbin/ldconfig
-%postun -n libopm-simulators-openmpi3%{version} -p /sbin/ldconfig
+%post -n libopm-simulators%{version}-openmpi3 -p /sbin/ldconfig
+%postun -n libopm-simulators%{version}-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
 %post -n libopm-simulators-mpich -p /sbin/ldconfig
 %postun -n libopm-simulators-mpich -p /sbin/ldconfig
-%post -n libopm-simulators-mpich%{version} -p /sbin/ldconfig
-%postun -n libopm-simulators-mpich%{version} -p /sbin/ldconfig
+%post -n libopm-simulators%{version}-mpich -p /sbin/ldconfig
+%postun -n libopm-simulators%{version}-mpich -p /sbin/ldconfig
 %endif
 
 %files doc
@@ -371,17 +371,17 @@ rm -rf %{buildroot}
 %{_bindir}/*
 /etc/bash_completion.d/*
 %{_datadir}/man/*
-%exclude %{_bindir}/flow%{version}
+%exclude %{_bindir}/flow-%{version}
 
-%files bin%{version}
-%{_bindir}/flow%{version}
+%files -n opm-simulators%{version}-bin
+%{_bindir}/flow-%{version}
 
 %if %{build_openmpi}
 %files -n libopm-simulators-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
-%files -n libopm-simulators-openmpi%{version}
+%files -n libopm-simulators%{version}-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
@@ -397,10 +397,10 @@ rm -rf %{buildroot}
 %files openmpi-bin
 %{_libdir}/openmpi/bin/*
 %{_libdir}/openmpi/share/man/*
-%exclude %{_libdir}/openmpi/bin/flow%{version}
+%exclude %{_libdir}/openmpi/bin/flow-%{version}
 
-%files openmpi-bin%{version}
-%{_libdir}/openmpi/bin/flow%{version}
+%files -n opm-simulators%{version}-openmpi-bin
+%{_libdir}/openmpi/bin/flow-%{version}
 
 %endif
 
@@ -409,7 +409,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
-%files -n libopm-simulators-openmpi3%{version}
+%files -n libopm-simulators%{version}-openmpi3
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
@@ -425,10 +425,10 @@ rm -rf %{buildroot}
 %files openmpi3-bin
 %{_libdir}/openmpi3/bin/*
 %{_libdir}/openmpi3/share/man/*
-%exclude %{_libdir}/openmpi/bin/flow%{version}
+%exclude %{_libdir}/openmpi/bin/flow-%{version}
 
-%files openmpi3-bin%{version}
-%{_libdir}/openmpi3/bin/flow%{version}
+%files -n opm-simulators%{version}-openmpi3-bin
+%{_libdir}/openmpi3/bin/flow-%{version}
 
 %endif
 
@@ -437,7 +437,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
-%files -n libopm-simulators-mpich%{version}
+%files -n libopm-simulators%{version}-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
@@ -453,9 +453,9 @@ rm -rf %{buildroot}
 %files mpich-bin
 %{_libdir}/mpich/bin/*
 %{_libdir}/mpich/share/man/*
-%exclude %{_libdir}/mpich/bin/flow%{version}
+%exclude %{_libdir}/mpich/bin/flow-%{version}
 
-%files mpich-bin%{version}
-%{_libdir}/mpich/bin/flow%{version}
+%files -n opm-simulators%{version}-mpich-bin
+%{_libdir}/mpich/bin/flow-%{version}
 
 %endif

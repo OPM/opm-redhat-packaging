@@ -6,8 +6,8 @@
 %define rtype release
 %define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 0
-%define build_mpich 0
+%define build_openmpi3 1
+%define build_mpich 1
 
 Name:           opm-grid
 Version:        2022.10
@@ -106,7 +106,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid%{opm_package_version} = %{version}
+Requires:       libopm-grid = %{version}
 
 %description devel
 This package contains the development and header files for opm-grid
@@ -141,11 +141,11 @@ an eye towards geological modelling rather than numerical simulation
 and this design choice does limit the number of feasible numerical
 methods.
 
-%package -n libopm-grid-openmpi%{version}
+%package -n libopm-grid%{version}-openmpi
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 
-%description -n libopm-grid-openmpi%{version}
+%description -n libopm-grid%{version}-openmpi
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -162,7 +162,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid-openmpi%{opm_package_version} = %{version}
+Requires:       libopm-grid-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for opm-grid
@@ -190,11 +190,11 @@ an eye towards geological modelling rather than numerical simulation
 and this design choice does limit the number of feasible numerical
 methods.
 
-%package -n libopm-grid-openmpi3%{version}
+%package -n libopm-grid%{version}-openmpi3
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 
-%description -n libopm-grid-openmpi3%{version}
+%description -n libopm-grid%{version}-openmpi3
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -211,7 +211,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid-openmpi3%{opm_package_version} = %{version}
+Requires:       libopm-grid-openmpi3 = %{version}
 
 %description openmpi3-devel
 This package contains the development and header files for opm-grid
@@ -238,11 +238,11 @@ fractures and erosion.  The grid format was originally designed with
 an eye towards geological modelling rather than numerical simulation
 and this design choice does limit the number of feasible numerical
 methods.
-%package -n libopm-grid-mpich%{version}
+%package -n libopm-grid%{version}-mpich
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 
-%description -n libopm-grid-mpich%{version}
+%description -n libopm-grid%{version}-mpich
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -259,7 +259,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid-mpich%{opm_package_version} = %{version}
+Requires:       libopm-grid-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for opm-grid
@@ -272,8 +272,6 @@ Group:          Scientific
 This package contains the applications for opm-grid
 %endif
 
-%global debug_package %{nil}
-
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
 
@@ -281,7 +279,7 @@ This package contains the applications for opm-grid
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 popd
@@ -290,7 +288,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 module unload mpi/openmpi-x86_64
@@ -301,7 +299,7 @@ popd
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan -DMPIEXEC_PREFLAGS=--allow-run-as-root ..'
+scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 module unload mpi/openmpi3-x86_64
@@ -312,7 +310,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'cmake3  -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan ..'
+scl enable %{toolset} 'cmake3  -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 module unload mpi/mpich-x86_64
@@ -349,22 +347,22 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %post -n libopm-grid-openmpi -p /sbin/ldconfig
 %postun -n libopm-grid-openmpi -p /sbin/ldconfig
-%post -n libopm-grid-openmpi%{version} -p /sbin/ldconfig
-%postun -n libopm-grid-openmpi%{version} -p /sbin/ldconfig
+%post -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
+%postun -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
 %endif
 
 %if %{build_openmpi3}
 %post -n libopm-grid-openmpi3 -p /sbin/ldconfig
 %postun -n libopm-grid-openmpi3 -p /sbin/ldconfig
-%post -n libopm-grid-openmpi3%{version} -p /sbin/ldconfig
-%postun -n libopm-grid-openmpi3%{version} -p /sbin/ldconfig
+%post -n libopm-grid%{version}-openmpi3 -p /sbin/ldconfig
+%postun -n libopm-grid%{version}-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
 %post -n libopm-grid-mpich -p /sbin/ldconfig
 %postun -n libopm-grid-mpich -p /sbin/ldconfig
-%post -n libopm-grid-mpich%{version} -p /sbin/ldconfig
-%postun -n libopm-grid-mpich%{version} -p /sbin/ldconfig
+%post -n libopm-grid%{version}-mpich -p /sbin/ldconfig
+%postun -n libopm-grid%{version}-mpich -p /sbin/ldconfig
 %endif
 
 %files
@@ -399,7 +397,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
-%files -n libopm-grid-openmpi%{version}
+%files -n libopm-grid%{version}-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
@@ -422,7 +420,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
-%files -n libopm-grid-openmpi3%{version}
+%files -n libopm-grid%{version}-openmpi3
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so.*
 
@@ -445,7 +443,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
-%files -n libopm-grid-mpich%{version}
+%files -n libopm-grid%{version}-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
