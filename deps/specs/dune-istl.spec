@@ -52,7 +52,6 @@ Group:          Development/Libraries/C and C++
 Requires:       dune-common-devel = %{version}
 Requires:       gmp-devel
 Requires:       metis-devel suitesparse-devel
-BuildArch:      noarch
 
 %description devel
 This package contains the development and header files for dune-istl.
@@ -60,6 +59,7 @@ This package contains the development and header files for dune-istl.
 %package doc
 Summary:        Doxygen documentation for dune-istl
 Group:          Documentation
+BuildArch:      noarch
 
 %description doc
 This package contains the doxygen documentation for dune-istl.
@@ -70,7 +70,6 @@ Group:          Development/Libraries/C and C++
 Requires:       dune-common-openmpi-devel = %{version}
 Requires:       gmp-devel
 Requires:       metis-devel suitesparse-devel
-BuildArch:      noarch
 
 %description openmpi-devel
 This package contains the development and header files for dune-istl - openmpi version.
@@ -81,7 +80,6 @@ Group:          Development/Libraries/C and C++
 Requires:       dune-common-openmpi3-devel = %{version}
 Requires:       gmp-devel
 Requires:       metis-devel suitesparse-devel
-BuildArch:      noarch
 
 %description openmpi3-devel
 This package contains the development and header files for dune-istl - openmpi3 version.
@@ -92,10 +90,11 @@ Group:          Development/Libraries/C and C++
 Requires:       dune-common-mpich-devel = %{version}
 Requires:       gmp-devel
 Requires:       metis-devel suitesparse-devel
-BuildArch:      noarch
 
 %description mpich-devel
 This package contains the development and header files for dune-istl - mpich version.
+
+%global debug_package %{nil}
 
 %prep
 %setup -q
@@ -158,6 +157,9 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cmake/*
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/dunecontrol/%{name}
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files doc
 %{_datadir}/doc/*

@@ -70,6 +70,7 @@ This package contains the development and header files for %{name}.
 %package doc
 Summary:        Doxygen documentation for %{name}
 Group:          Documentation
+BuildArch:      noarch
 
 %description doc
 This package contains the doxygen documentation for %{name}.
@@ -207,6 +208,9 @@ rm -rf %{buildroot}
 %{_datadir}/dune
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dune*
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files doc
 %{_datadir}/doc/*

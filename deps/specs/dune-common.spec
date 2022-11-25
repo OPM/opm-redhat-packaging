@@ -28,8 +28,8 @@ BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig devtoolset-9-toolchain
 BuildRequires:  cmake3 boost-devel
 BuildRequires:  openmpi-devel mpich-devel openmpi3-devel
-BuildRequires:  doxygen inkscape graphviz
-BuildRequires:  tbb-devel python3-sphinx latexmk
+BuildRequires:  doxygen inkscape graphviz texlive-amscls
+BuildRequires:  tbb-devel python3-sphinx latexmk texlive-cm texlive-mfware
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       libdune-common = %{version}
 
@@ -52,6 +52,7 @@ Finite Volumes (FV), and also Finite Differences (FD).
 %package doc
 Summary:        doxygen documentation for dune-common
 Group:          Documentation
+BuildArch:      noarch
 
 %description doc
 Doxygen documentation for dune-common
@@ -210,6 +211,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/cmake
 %{_datadir}/dune
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files -n libdune-common-openmpi
 %defattr(-,root,root,-)

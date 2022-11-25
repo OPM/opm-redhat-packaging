@@ -60,20 +60,22 @@ Group:          Development/Libraries/C and C++
 This package contains the development headers needed for the Trilinos packages.
 It also contains the various Trilinos packages' examples.
 
+%global debug_package %{nil}
+
 %prep
 %setup -q -n Zoltan-%{version}
 
 %build
 mkdir serial
 pushd serial
-scl enable devtoolset-9 '../configure --prefix /usr --disable-mpi --with-cflags=-fPIC --libdir /usr/lib64'
+scl enable devtoolset-9 '../configure --prefix /usr --disable-mpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --libdir /usr/lib64'
 scl enable devtoolset-9 'make %{?_smp_mflags} everything'
 popd
 
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable devtoolset-9 '../configure --prefix /usr/lib64/openmpi --with-cflags=-fPIC --includedir /usr/include/openmpi-x86_64'
+scl enable devtoolset-9 '../configure --prefix /usr/lib64/openmpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi-x86_64'
 scl enable devtoolset-9 'make %{?_smp_mflags} everything'
 module unload mpi/openmpi-x86_64
 popd
@@ -81,7 +83,7 @@ popd
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable devtoolset-9 '../configure --prefix /usr/lib64/openmpi3 --with-cflags=-fPIC --includedir /usr/include/openmpi3-x86_64'
+scl enable devtoolset-9 '../configure --prefix /usr/lib64/openmpi3 --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi3-x86_64'
 scl enable devtoolset-9 'make %{?_smp_mflags} everything'
 module unload mpi/openmpi3-x86_64
 popd
@@ -89,7 +91,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable devtoolset-9 '../configure --prefix /usr/lib64/mpich --with-cflags=-fPIC --includedir /usr/include/mpich-x86_64'
+scl enable devtoolset-9 '../configure --prefix /usr/lib64/mpich --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/mpich-x86_64'
 scl enable devtoolset-9 'make %{?_smp_mflags} everything'
 module unload mpi/mpich-x86_64
 popd
@@ -117,6 +119,9 @@ cd ..
 %defattr(-, root, root, -)
 %{_includedir}/*
 %{_libdir}/*
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files openmpi-devel
 %defattr(-, root, root, -)

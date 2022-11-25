@@ -31,21 +31,18 @@ BuildRequires: opm-common-devel
 BuildRequires: openmpi-devel
 BuildRequires: dune-common-openmpi-devel
 BuildRequires: dune-istl-openmpi-devel
-BuildRequires: opm-common-openmpi-devel
 %endif
 
 %if %{build_openmpi3}
 BuildRequires: openmpi3-devel
 BuildRequires: dune-common-openmpi3-devel
 BuildRequires: dune-istl-openmpi3-devel
-BuildRequires: opm-common-openmpi3-devel
 %endif
 
 %if %{build_mpich}
 BuildRequires: mpich-devel
 BuildRequires: dune-common-mpich-devel
 BuildRequires: dune-istl-mpich-devel
-BuildRequires: opm-common-mpich-devel
 %endif
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -137,7 +134,7 @@ This package the applications for opm-material
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} 'cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  ..'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 popd
@@ -146,7 +143,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/openmpi-x86_64 ..'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/openmpi-x86_64 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 module unload mpi/openmpi-x86_64
@@ -157,7 +154,7 @@ popd
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/openmpi3-x86_64 ..'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/openmpi3-x86_64 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 module unload mpi/openmpi3-x86_64
@@ -168,7 +165,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/mpich-x86_64 ..'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DSTRIP_DEBUGGING_SYMBOLS=ON -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF  -DCMAKE_INSTALL_INCLUDE_DIR=%{_prefix}/include/mpich-x86_64 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'
 %endif
@@ -205,6 +202,9 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files bin
 %{_bindir}/*

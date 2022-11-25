@@ -49,6 +49,7 @@ This package contains the development and header files for DUNE.
 %package doc
 Summary:        doxygen documentation for dune-geometry
 Group:          Documentation
+BuildArch:      noarch
 
 %description doc
 Doxygen documentation for dune-geometry
@@ -180,6 +181,9 @@ rm -rf %{buildroot}
 %{_libdir}/cmake/*
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dunecontrol/%{name}
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files -n libdune-geometry-openmpi
 %defattr(-,root,root,-)

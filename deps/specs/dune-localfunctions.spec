@@ -50,7 +50,6 @@ Requires:       %{name} = %{version}
 Requires:       dune-common-devel = %{version}
 Requires:       dune-geometry-devel = %{version}
 Requires:       dune-grid-devel = %{version}
-BuildArch:      noarch
 
 %description devel
 This package contains the development and header files for %{name}.
@@ -58,6 +57,7 @@ This package contains the development and header files for %{name}.
 %package doc
 Summary:        Doxygen documentation for %{name}
 Group:          Documentation
+BuildArch:      noarch
 
 %description doc
 This package contains the doxygen documentation for %{name}.
@@ -69,7 +69,6 @@ Requires:       %{name} = %{version}
 Requires:       dune-common-openmpi-devel = %{version}
 Requires:       dune-geometry-openmpi-devel = %{version}
 Requires:       dune-grid-openmpi-devel = %{version}
-BuildArch:      noarch
 
 %description openmpi-devel
 This package contains the development and header files for %{name} - openmpi version.
@@ -81,7 +80,6 @@ Requires:       %{name} = %{version}
 Requires:       dune-common-openmpi3-devel = %{version}
 Requires:       dune-geometry-openmpi3-devel = %{version}
 Requires:       dune-grid-openmpi3-devel = %{version}
-BuildArch:      noarch
 
 %description openmpi3-devel
 This package contains the development and header files for %{name} - openmpi3 version.
@@ -93,10 +91,11 @@ Requires:       %{name} = %{version}
 Requires:       dune-common-mpich-devel = %{version}
 Requires:       dune-geometry-mpich-devel = %{version}
 Requires:       dune-grid-mpich-devel = %{version}
-BuildArch:      noarch
 
 %description mpich-devel
 This package contains the development and header files for %{name} - openmpi3 version.
+
+%global debug_package %{nil}
 
 %prep
 %setup -q
@@ -156,6 +155,9 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cmake
 %{_prefix}/lib/pkgconfig/*.pc
 %{_prefix}/lib/dunecontrol/%{name}
+%exclude /usr/include/openmpi-x86_64
+%exclude /usr/include/openmpi3-x86_64
+%exclude /usr/include/mpich-x86_64
 
 %files doc
 %{_datadir}/doc/*

@@ -140,7 +140,7 @@ mkdir -p Doc/{AMD,BTF,CAMD,CCOLAMD,CHOLMOD,COLAMD,KLU,LDL,UMFPACK,SPQR,RBio} Lib
 
 # SuiteSparse_config needs to come first
 pushd SuiteSparse_config
-  make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+  make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   ar x libsuitesparseconfig.a
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libsuitesparseconfig.so.%{SuiteSparse_config_major} -o \
@@ -154,7 +154,7 @@ popd
 
 pushd AMD
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libamd.so.%{amd_version_major} -o \
@@ -170,7 +170,7 @@ popd
 
 pushd BTF
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libbtf.so.%{btf_version_major} -o \
@@ -185,7 +185,7 @@ popd
 
 pushd CAMD
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libcamd.so.%{camd_version_major} -o \
@@ -201,7 +201,7 @@ popd
 
 pushd CCOLAMD
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libccolamd.so.%{ccolamd_version_major} -o \
@@ -217,7 +217,7 @@ popd
 
 pushd COLAMD
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libcolamd.so.%{colamd_version_major} -o \
@@ -232,9 +232,9 @@ pushd COLAMD
 popd
 
 %if "%{?enable_metis}" == "1"
-CHOLMOD_FLAGS="$RPM_OPT_FLAGS -I%{_includedir}/metis -fPIC"
+CHOLMOD_FLAGS="$RPM_OPT_FLAGS -I%{_includedir}/metis -fPIC -g"
 %else
-CHOLMOD_FLAGS="$RPM_OPT_FLAGS -DNPARTITION -fPIC"
+CHOLMOD_FLAGS="$RPM_OPT_FLAGS -DNPARTITION -fPIC -g"
 %endif
 pushd CHOLMOD
   pushd Lib
@@ -264,7 +264,7 @@ popd
 %if "%{?enable_csparse}" == "1"
 pushd CSparse
   pushd Source
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
     cp -p cs.h ../../Include
   popd
   pushd ../Lib
@@ -281,7 +281,7 @@ popd
 %else
 pushd CXSparse
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libcxsparse.so.%{cxsparse_version_major} -o \
@@ -298,7 +298,7 @@ popd
 
 pushd KLU
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libklu.so.%{klu_version_major} -o \
@@ -316,7 +316,7 @@ popd
 
 pushd LDL
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libldl.so.%{ldl_version_major} -o \
@@ -331,7 +331,7 @@ popd
 
 pushd UMFPACK
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,libumfpack.so.%{umfpack_version_major} -o \
@@ -350,7 +350,7 @@ popd
 
 pushd SPQR
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -DHAVE_TBB -DNPARTITION -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -DHAVE_TBB -DNPARTITION -fPIC -g"
   popd
   pushd ../Lib
     g++ -shared %{?__global_ldflags} -Wl,-soname,libspqr.so.%{spqr_version_major} -o \
@@ -370,7 +370,7 @@ popd
 
 pushd RBio
   pushd Lib
-    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC"
+    make %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -fPIC -g"
   popd
   pushd ../Lib
     gcc -shared %{?__global_ldflags} -Wl,-soname,librbio.so.%{rbio_version_major} -o \
