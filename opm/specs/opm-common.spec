@@ -16,7 +16,7 @@ Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires: %{toolset}-toolchain
-BuildRequires: boost-devel graphviz
+BuildRequires: boost-devel graphviz dune-common-devel tbb-devel
 BuildRequires: cmake3 python3-devel python36-numpy
 BuildRequires: python36-setuptools_scm python36-pytest-runner
 
