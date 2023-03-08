@@ -31,7 +31,6 @@ BuildRequires: dune-grid-devel
 BuildRequires: dune-localfunctions-devel
 BuildRequires: dune-istl-devel
 BuildRequires: opm-common-devel
-BuildRequires: opm-material-devel
 BuildRequires: opm-grid-devel
 BuildRequires: opm-models-devel
 
@@ -44,7 +43,6 @@ BuildRequires: dune-uggrid-openmpi-devel
 BuildRequires: dune-grid-openmpi-devel
 BuildRequires: dune-localfunctions-openmpi-devel
 BuildRequires: dune-istl-openmpi-devel
-BuildRequires: opm-material-openmpi-devel
 BuildRequires: opm-grid-openmpi-devel
 BuildRequires: opm-models-openmpi-devel
 %endif
@@ -58,7 +56,6 @@ BuildRequires: dune-uggrid-openmpi3-devel
 BuildRequires: dune-grid-openmpi3-devel
 BuildRequires: dune-localfunctions-openmpi3-devel
 BuildRequires: dune-istl-openmpi3-devel
-BuildRequires: opm-material-openmpi3-devel
 BuildRequires: opm-grid-openmpi3-devel
 BuildRequires: opm-models-openmpi3-devel
 %endif
@@ -72,7 +69,6 @@ BuildRequires: dune-uggrid-mpich-devel
 BuildRequires: dune-grid-mpich-devel
 BuildRequires: dune-localfunctions-mpich-devel
 BuildRequires: dune-istl-mpich-devel
-BuildRequires: opm-material-mpich-devel
 BuildRequires: opm-grid-mpich-devel
 BuildRequires: opm-models-mpich-devel
 %endif

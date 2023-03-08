@@ -29,12 +29,10 @@ BuildRequires: dune-uggrid-devel
 BuildRequires: dune-grid-devel
 BuildRequires: opm-common-devel
 BuildRequires: opm-grid-devel
-BuildRequires: opm-material-devel
 
 %if %{build_openmpi}
 BuildRequires: openmpi-devel
 BuildRequires: opm-grid-openmpi-devel
-BuildRequires: opm-material-openmpi-devel
 BuildRequires: zoltan-openmpi-devel
 BuildRequires: dune-common-openmpi-devel
 BuildRequires: dune-grid-openmpi-devel
@@ -46,7 +44,6 @@ BuildRequires: dune-uggrid-openmpi-devel
 %if %{build_openmpi3}
 BuildRequires: openmpi3-devel
 BuildRequires: opm-grid-openmpi3-devel
-BuildRequires: opm-material-openmpi3-devel
 BuildRequires: zoltan-openmpi3-devel
 BuildRequires: dune-common-openmpi3-devel
 BuildRequires: dune-grid-openmpi3-devel
@@ -58,7 +55,6 @@ BuildRequires: dune-uggrid-openmpi3-devel
 %if %{build_mpich}
 BuildRequires: mpich-devel
 BuildRequires: opm-grid-mpich-devel
-BuildRequires: opm-material-mpich-devel
 BuildRequires: zoltan-mpich-devel
 BuildRequires: dune-common-mpich-devel
 BuildRequires: dune-grid-mpich-devel

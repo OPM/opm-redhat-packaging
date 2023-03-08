@@ -2,7 +2,7 @@
 
 source /etc/profile.d/modules.sh
 
-for module in opm-common opm-material opm-grid opm-upscaling opm-models opm-simulators
+for module in opm-common opm-grid opm-upscaling opm-models opm-simulators
 do
   yum-builddep -y /tmp/opm/rpmbuild/SPECS/${module}.spec
   su builder -c "rpmbuild -bb /tmp/opm/rpmbuild/SPECS/${module}.spec"
