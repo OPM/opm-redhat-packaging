@@ -24,6 +24,7 @@ BuildRequires: zoltan-devel
 BuildRequires: cmake3
 BuildRequires: %{toolset}-toolchain
 BuildRequires: boost-devel python3-devel tbb-devel
+BuildRequires: hdf5-devel
 BuildRequires: dune-common-devel
 BuildRequires: dune-geometry-devel
 BuildRequires: dune-uggrid-devel
@@ -37,6 +38,7 @@ BuildRequires: opm-models-devel
 %if %{build_openmpi}
 BuildRequires: openmpi-devel
 BuildRequires: zoltan-openmpi-devel
+BuildRequires: hdf5-openmpi-devel
 BuildRequires: dune-common-openmpi-devel
 BuildRequires: dune-geometry-openmpi-devel
 BuildRequires: dune-uggrid-openmpi-devel
@@ -50,6 +52,7 @@ BuildRequires: opm-models-openmpi-devel
 %if %{build_openmpi3}
 BuildRequires: openmpi3-devel
 BuildRequires: zoltan-openmpi3-devel
+BuildRequires: hdf5-openmpi3-devel
 BuildRequires: dune-common-openmpi3-devel
 BuildRequires: dune-geometry-openmpi3-devel
 BuildRequires: dune-uggrid-openmpi3-devel
@@ -63,6 +66,7 @@ BuildRequires: opm-models-openmpi3-devel
 %if %{build_mpich}
 BuildRequires: mpich-devel
 BuildRequires: zoltan-mpich-devel
+BuildRequires: hdf5-mpich-devel
 BuildRequires: dune-common-mpich-devel
 BuildRequires: dune-geometry-mpich-devel
 BuildRequires: dune-uggrid-mpich-devel
