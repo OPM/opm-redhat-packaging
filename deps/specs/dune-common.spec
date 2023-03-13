@@ -17,12 +17,13 @@
 
 Name:           dune-common
 Version:        2.8.0
-Release:        0
+Release:        1
 Summary:        Distributed and Unified Numerics Environment
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            https://dune-project.org/
 Source0:        https://dune-project.org/download/2.8.0/dune-common-2.8.0.tar.gz
+Patch0:         0001-dune-common-indices.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig devtoolset-9-toolchain
@@ -136,6 +137,7 @@ This package contains the development and header files for DUNE. - mpich version
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 mkdir serial
