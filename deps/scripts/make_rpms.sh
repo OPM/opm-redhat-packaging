@@ -2,7 +2,7 @@
 
 source /etc/profile.d/modules.sh
 
-for module in suitesparse zoltan dune-common dune-geometry dune-uggrid dune-grid dune-istl dune-localfunctions
+for module in fmt suitesparse zoltan dune-common dune-geometry dune-uggrid dune-grid dune-istl dune-localfunctions
 do
   yum-builddep -y /tmp/opm/rpmbuild/SPECS/${module}.spec
   su builder -c "rpmbuild -bb /tmp/opm/rpmbuild/SPECS/${module}.spec"
