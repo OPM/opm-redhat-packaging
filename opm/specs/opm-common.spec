@@ -17,7 +17,7 @@ Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires: %{toolset}-toolchain
 BuildRequires: boost-devel graphviz dune-common-devel tbb-devel
-BuildRequires: cmake3 python3-devel python36-numpy
+BuildRequires: cmake3 python3-devel python36-numpy fmt-devel
 BuildRequires: python36-setuptools_scm python36-pytest-runner
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build

@@ -19,7 +19,7 @@ Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires:  lapack-devel openblas-devel
 BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
-BuildRequires:  tinyxml-devel zlib-devel
+BuildRequires:  tinyxml-devel zlib-devel fmt-devel
 BuildRequires: zoltan-devel
 BuildRequires: cmake3
 BuildRequires: %{toolset}-toolchain
