@@ -10,7 +10,7 @@
 %define build_mpich 1
 
 Name:           opm-grid
-Version:        2022.10
+Version:        2023.04
 Release:        0
 Summary:        Cornerpoint grid management module for OPM
 License:        GPL-3.0

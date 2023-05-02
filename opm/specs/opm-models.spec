@@ -7,7 +7,7 @@
 
 Name: opm-models
 Summary: OPM - Fully implicit models for flow and transport in porous media
-Version:        2022.10
+Version:        2023.04
 Release: 0
 License: GPL-3.0+
 Group:   Development/Libraries/C and C++
