@@ -208,7 +208,6 @@ rm -fr %buildroot
 %defattr(-,root,root)
 %_includedir/*
 /usr/lib/dunecontrol/*
-/usr/lib/pkgconfig/*
 %{_datadir}/*
 %exclude /usr/include/openmpi-x86_64
 %exclude /usr/include/openmpi3-x86_64
@@ -219,7 +218,6 @@ rm -fr %buildroot
 %defattr(-,root,root)
 %{_includedir}/openmpi-x86_64/*
 %{_libdir}/openmpi/lib/dunecontrol/*
-%{_libdir}/openmpi/lib/pkgconfig/*
 %{_libdir}/openmpi/share/*
 %endif
 
@@ -228,7 +226,6 @@ rm -fr %buildroot
 %defattr(-,root,root)
 %{_includedir}/openmpi3-x86_64/*
 %{_libdir}/openmpi3/lib/dunecontrol/*
-%{_libdir}/openmpi3/lib/pkgconfig/*
 %{_libdir}/openmpi3/share/*
 %endif
 
@@ -237,6 +234,5 @@ rm -fr %buildroot
 %defattr(-,root,root)
 %{_includedir}/mpich-x86_64/*
 %{_libdir}/mpich/lib/dunecontrol/*
-%{_libdir}/mpich/lib/pkgconfig/*
 %{_libdir}/mpich/share/*
 %endif

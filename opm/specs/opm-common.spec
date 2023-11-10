@@ -131,7 +131,6 @@ rm -rf %{buildroot}
 %files devel
 %defattr(-,root,root,-)
 /usr/lib/dunecontrol/*
-%{_libdir}/pkgconfig/*
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/*
