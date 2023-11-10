@@ -7,7 +7,7 @@
 %define toolset devtoolset-9
 
 Name:           opm-common
-Version:        2023.04
+Version:        2023.10
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0

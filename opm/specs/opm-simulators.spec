@@ -10,7 +10,7 @@
 %define build_mpich 1
 
 Name:           opm-simulators
-Version:        2023.04
+Version:        2023.10
 Release:        0
 Summary:        Open Porous Media - core library
 License:        GPL-3.0
