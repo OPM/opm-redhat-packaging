@@ -7,7 +7,7 @@
 %define toolset devtoolset-9
 
 Name:           opm-common
-Version:        2023.04
+Version:        2023.10
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
@@ -18,7 +18,7 @@ BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires: %{toolset}-toolchain
 BuildRequires: boost-devel graphviz dune-common-devel tbb-devel
 BuildRequires: cmake3 python3-devel python36-numpy fmt-devel
-BuildRequires: python36-setuptools_scm python36-pytest-runner
+BuildRequires: python36-setuptools_scm python36-pytest-runner python36-decorator
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -89,7 +89,7 @@ mkdir serial
 pushd serial
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-#scl enable %{toolset} 'make test'
+scl enable %{toolset} 'make test'
 popd
 
 %install
@@ -131,7 +131,6 @@ rm -rf %{buildroot}
 %files devel
 %defattr(-,root,root,-)
 /usr/lib/dunecontrol/*
-%{_libdir}/pkgconfig/*
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/*

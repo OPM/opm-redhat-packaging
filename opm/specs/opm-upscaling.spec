@@ -10,7 +10,7 @@
 %define build_mpich 1
 
 Name:           opm-upscaling
-Version:        2023.04
+Version:        2023.10
 Release:        0
 Summary:        Open Porous Media - upscaling library
 License:        GPL-3.0
@@ -294,7 +294,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/*.so
 /usr/lib/dunecontrol/*
-%{_libdir}/pkgconfig/*
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
@@ -315,7 +314,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dunecontrol/*
-%{_libdir}/openmpi/lib/pkgconfig/*
 %{_includedir}/openmpi-x86_64/*
 %{_libdir}/openmpi/share/cmake/*
 %{_libdir}/openmpi/share/opm/cmake/Modules/*
@@ -334,7 +332,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so
 %{_libdir}/openmpi3/lib/dunecontrol/*
-%{_libdir}/openmpi3/lib/pkgconfig/*
 %{_includedir}/openmpi3-x86_64/*
 %{_libdir}/openmpi3/share/cmake/*
 %{_libdir}/openmpi3/share/opm/cmake/Modules/*
@@ -353,7 +350,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dunecontrol/*
-%{_libdir}/mpich/lib/pkgconfig/*
 %{_includedir}/mpich-x86_64/*
 %{_libdir}/mpich/share/cmake/*
 %{_libdir}/mpich/share/opm/cmake/Modules/*
