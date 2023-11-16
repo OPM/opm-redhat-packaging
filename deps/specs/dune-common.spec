@@ -1,19 +1,12 @@
 #
 # spec file for package dune-common
 #
-# Copyright (c) 2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
-#
-# All modifications and additions to the file contributed by third parties
-# remain the property of their copyright owners, unless otherwise agreed
-# upon. The license for this file, and modifications and additions to the
-# file, is the same license as for the pristine package itself (unless the
-# license for the pristine package is not an Open Source License, in which
-# case the license is the MIT License). An "Open Source License" is a
-# license that conforms to the Open Source Definition (Version 1.9)
-# published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
-#
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%else
+%define toolset gcc-toolset-12
+%endif
 
 Name:           dune-common
 Version:        2.8.0
@@ -24,11 +17,15 @@ Group:          Development/Libraries/C and C++
 Url:            https://dune-project.org/
 Source0:        https://dune-project.org/download/2.8.0/dune-common-2.8.0.tar.gz
 Patch0:         0001-dune-common-indices.patch
+Patch1:         0002-dune-common-py3.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
-BuildRequires:  pkgconfig devtoolset-9-toolchain
+BuildRequires:  pkgconfig %{toolset}
 BuildRequires:  cmake3 boost-devel
-BuildRequires:  openmpi-devel mpich-devel openmpi3-devel
+BuildRequires:  openmpi-devel mpich-devel 
+%if 0%{?rhel} == 7
+BuildRequires: openmpi3-devel
+%endif
 BuildRequires:  doxygen inkscape graphviz texlive-amscls
 BuildRequires:  tbb-devel python3-sphinx latexmk texlive-cm texlive-mfware
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -91,6 +88,7 @@ Requires:       libdune-common-openmpi = %{version}
 %description openmpi-devel
 This package contains the development and header files for DUNE. - openmpi version
 
+%if 0%{?rhel} == 7
 %package -n libdune-common-openmpi3
 Summary:        Distributed and Unified Numerics Environment - openmpi3 version
 Group:          System/Libraries
@@ -112,6 +110,7 @@ Requires:       libdune-common-openmpi3 = %{version}
 
 %description openmpi3-devel
 This package contains the development and header files for DUNE. - openmpi3 version
+%endif
 
 %package -n libdune-common-mpich
 Summary:        Distributed and Unified Numerics Environment - mpich version
@@ -138,46 +137,52 @@ This package contains the development and header files for DUNE. - mpich version
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 mkdir serial
 pushd serial
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
 
+%if 0%{?rhel} == 7
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi3-x86_64
 popd
+%endif
 
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
 
 %install
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C serial'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C openmpi'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C openmpi3'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C mpich'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
-rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
+
+%if 0%{?rhel} == 7
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi3'
+rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
+%endif
 
 %clean
 rm -rf %{buildroot}
@@ -186,10 +191,13 @@ rm -rf %{buildroot}
 %postun -n libdune-common -p /sbin/ldconfig
 %post -n libdune-common-openmpi -p /sbin/ldconfig
 %postun -n libdune-common-openmpi -p /sbin/ldconfig
-%post -n libdune-common-openmpi3 -p /sbin/ldconfig
-%postun -n libdune-common-openmpi3 -p /sbin/ldconfig
 %post -n libdune-common-mpich -p /sbin/ldconfig
 %postun -n libdune-common-mpich -p /sbin/ldconfig
+
+%if 0%{?rhel} == 7
+%post -n libdune-common-openmpi3 -p /sbin/ldconfig
+%postun -n libdune-common-openmpi3 -p /sbin/ldconfig
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -230,6 +238,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/lib/cmake
 %{_libdir}/openmpi/share/*
 
+%if 0%{?rhel} == 7
 %files -n libdune-common-openmpi3
 %defattr(-,root,root,-)
 %{_libdir}/openmpi3/lib/*.so
@@ -242,6 +251,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi3/lib/pkgconfig/*.pc
 %{_libdir}/openmpi3/lib/cmake
 %{_libdir}/openmpi3/share/*
+%endif
 
 %files -n libdune-common-mpich
 %defattr(-,root,root,-)

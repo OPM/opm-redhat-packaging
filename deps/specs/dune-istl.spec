@@ -15,6 +15,11 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%else
+%define toolset gcc-toolset-12
+%endif
 
 Name:           dune-istl
 Version:        2.8.0
@@ -24,13 +29,15 @@ License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
 Source0:        https://dune-project.org/download/2.8.0/dune-istl-2.8.0.tar.gz
-BuildRequires:  dune-common-devel dune-common-openmpi-devel
-BuildRequires:  dune-common-openmpi3-devel dune-common-mpich-devel
+BuildRequires:  dune-common-devel dune-common-openmpi-devel dune-common-mpich-devel
 BuildRequires:  gmp-devel arpack-devel SuperLU-devel
 BuildRequires:  metis-devel suitesparse-devel
-BuildRequires:  pkgconfig devtoolset-9-toolchain
+BuildRequires:  pkgconfig %{toolset}
 BuildRequires: cmake3 boost-devel
-BuildRequires:  openmpi-devel mpich-devel openmpi3-devel
+BuildRequires:  openmpi-devel mpich-devel 
+%if 0%{?rhel} == 7
+BuildRequires: openmpi3-devel dune-common-openmpi3-devel
+%endif
 BuildRequires:  doxygen inkscape graphviz
 BuildRequires:  tbb-devel python3-sphinx latexmk
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -74,6 +81,7 @@ Requires:       metis-devel suitesparse-devel
 %description openmpi-devel
 This package contains the development and header files for dune-istl - openmpi version.
 
+%if 0%{?rhel} == 7
 %package openmpi3-devel
 Summary:        Development and header files for dune-istl - openmpi3 version
 Group:          Development/Libraries/C and C++
@@ -83,6 +91,7 @@ Requires:       metis-devel suitesparse-devel
 
 %description openmpi3-devel
 This package contains the development and header files for dune-istl - openmpi3 version.
+%endif
 
 %package mpich-devel
 Summary:        Development and header files for dune-istl - mpich version
@@ -102,43 +111,48 @@ This package contains the development and header files for dune-istl - mpich ver
 %build
 mkdir serial
 pushd serial
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
 
+%if 0%{?rhel} == 7
 mkdir openmpi3
 pushd openmpi3
 module load mpi/openmpi3-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi3-x86_64
 popd
+%endif
 
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable devtoolset-9 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
 
 %install
 rm -rf %{buildroot}
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C serial'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C openmpi'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C openmpi3'
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot} -C mpich'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
-rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
+
+%if 0%{?rhel} == 7
+scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi3'
+rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
+%endif
 
 %clean
 rm -rf %{buildroot}
@@ -174,6 +188,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/dunecontrol/%{name}
 
+%if 0%{?rhel} == 7
 %files openmpi3-devel
 %defattr(-,root,root,-)
 %{_includedir}/openmpi3-x86_64/*
@@ -183,6 +198,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi3/lib/cmake/*
 %{_libdir}/openmpi3/lib/pkgconfig/*.pc
 %{_libdir}/openmpi3/lib/dunecontrol/%{name}
+%endif
 
 %files mpich-devel
 %defattr(-,root,root,-)
