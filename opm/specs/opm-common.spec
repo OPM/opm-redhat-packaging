@@ -4,7 +4,12 @@
 
 %define tag final
 %define rtype release
+
+%if 0%{?rhel} == 7
 %define toolset devtoolset-9
+%else
+%define toolset gcc-toolset-12
+%endif
 
 Name:           opm-common
 Version:        2023.10
@@ -14,11 +19,18 @@ License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:		      0001-opm-common-close_at_tolerance.patch
+Patch1:         0002-opm-common-fixed-make-sure-vector-has-expected-size.patch
+Patch2:         0003-opm-common-fixed-pass-throug-perf-range-as-an-optional.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
-BuildRequires: %{toolset}-toolchain
-BuildRequires: boost-devel graphviz dune-common-devel tbb-devel
-BuildRequires: cmake3 python3-devel python36-numpy fmt-devel
-BuildRequires: python36-setuptools_scm python36-pytest-runner python36-decorator
+BuildRequires:  %{toolset}
+BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
+BuildRequires:  cmake3 python3-devel fmt-devel
+%if 0%{?rhel} == 7
+BuildRequires: python36-numpy python36-setuptools_scm python36-pytest-runner python36-decorator
+%else
+BuildRequires: python3-numpy python3-setuptools_scm python3-pytest-runner python3-decorator
+%endif
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -81,12 +93,16 @@ This package contains the documentation files for opm-common
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
 rm -f python/pybind11/tools/mkdoc.py
 mkdir serial
 pushd serial
+echo $RPM_OPT_FLAGS
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'make test'

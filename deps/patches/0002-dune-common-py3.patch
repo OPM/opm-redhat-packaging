@@ -1,0 +1,24 @@
+--- dune-common-2.8.0/cmake/scripts/extract_cmake_data.py.orig	2023-11-16 21:27:01.529537304 +0100
++++ dune-common-2.8.0/cmake/scripts/extract_cmake_data.py	2023-11-16 21:29:59.792435852 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ 
+ """ This script will parse a cmake module and extract some
+     rst documentation from it. This might not be as elegant as
+--- dune-common-2.8.0/cmake/scripts/run-in-dune-env.sh.in.orig	2023-11-16 21:27:51.961225699 +0100
++++ dune-common-2.8.0/cmake/scripts/run-in-dune-env.sh.in	2023-11-16 21:28:05.645141149 +0100
+@@ -1,4 +1,4 @@
+-#!@BASH@
++#!/bin/bash
+ 
+ source @DUNE_PYTHON_VIRTUALENV_PATH@/bin/activate
+ "$@"
+--- dune-common-2.8.0/bin/rmgenerated.py.orig	2023-11-16 21:30:21.628300934 +0100
++++ dune-common-2.8.0/bin/rmgenerated.py	2023-11-16 21:30:25.908274488 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ 
+ import glob, os, sys, re, fileinput
+ 

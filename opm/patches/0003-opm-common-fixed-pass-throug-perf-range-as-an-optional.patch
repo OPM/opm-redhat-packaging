@@ -1,0 +1,70 @@
+From a725a5a85cc3d4b8384113d44747d0bd1020050f Mon Sep 17 00:00:00 2001
+From: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
+Date: Fri, 17 Nov 2023 12:57:57 +0100
+Subject: [PATCH] fixed: pass throug perf-range as an optional
+
+we should not dereference it for STDW where it is expected
+to be empty
+---
+ opm/input/eclipse/Schedule/Well/Connection.hpp          | 2 +-
+ src/opm/input/eclipse/Schedule/MSW/Compsegs.cpp         | 3 ++-
+ src/opm/input/eclipse/Schedule/Well/Connection.cpp      | 2 +-
+ src/opm/input/eclipse/Schedule/Well/WellConnections.cpp | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/opm/input/eclipse/Schedule/Well/Connection.hpp b/opm/input/eclipse/Schedule/Well/Connection.hpp
+index de47c2c89..20ff7fc97 100644
+--- a/opm/input/eclipse/Schedule/Well/Connection.hpp
++++ b/opm/input/eclipse/Schedule/Well/Connection.hpp
+@@ -151,7 +151,7 @@ namespace RestartIO {
+         void updateSegment(int segment_number_arg,
+                            double center_depth_arg,
+                            std::size_t compseg_insert_index,
+-                           const std::pair<double,double>& perf_range);
++                           const std::optional<std::pair<double,double>>& perf_range);
+         std::size_t sort_value() const;
+         const bool& getDefaultSatTabId() const;
+         void setDefaultSatTabId(bool id);
+diff --git a/src/opm/input/eclipse/Schedule/MSW/Compsegs.cpp b/src/opm/input/eclipse/Schedule/MSW/Compsegs.cpp
+index 02592d11f..8539949aa 100644
+--- a/src/opm/input/eclipse/Schedule/MSW/Compsegs.cpp
++++ b/src/opm/input/eclipse/Schedule/MSW/Compsegs.cpp
+@@ -331,7 +331,8 @@ namespace {
+                     connection.updateSegment(compseg.segment_number,
+                                              cdepth,
+                                              compseg.m_seqIndex,
+-                                             { compseg.m_distance_start, compseg.m_distance_end });
++                                             std::make_pair(compseg.m_distance_start,
++                                                            compseg.m_distance_end));
+                 }
+             }
+ 
+diff --git a/src/opm/input/eclipse/Schedule/Well/Connection.cpp b/src/opm/input/eclipse/Schedule/Well/Connection.cpp
+index f3080936b..b7f0958f3 100644
+--- a/src/opm/input/eclipse/Schedule/Well/Connection.cpp
++++ b/src/opm/input/eclipse/Schedule/Well/Connection.cpp
+@@ -281,7 +281,7 @@ const std::optional<std::pair<double, double>>& Connection::perf_range() const {
+     void Connection::updateSegment(int segment_number_arg,
+                                    double center_depth_arg,
+                                    std::size_t compseg_insert_index,
+-                                   const std::pair<double, double>& perf_range) {
++                                   const std::optional<std::pair<double, double>>& perf_range) {
+         this->segment_number = segment_number_arg;
+         this->center_depth = center_depth_arg;
+         this->m_sort_value = compseg_insert_index;
+diff --git a/src/opm/input/eclipse/Schedule/Well/WellConnections.cpp b/src/opm/input/eclipse/Schedule/Well/WellConnections.cpp
+index 965c9a44d..582ac9cd6 100644
+--- a/src/opm/input/eclipse/Schedule/Well/WellConnections.cpp
++++ b/src/opm/input/eclipse/Schedule/Well/WellConnections.cpp
+@@ -519,7 +519,7 @@ namespace Opm {
+                 prev->updateSegment(conSegNo,
+                                     depth,
+                                     css_ind,
+-                                    *perf_range);
++                                    perf_range);
+             }
+         }
+     }
+-- 
+2.34.1
+

@@ -4,19 +4,26 @@
 
 %define tag final
 %define rtype release
-%define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 1
 %define build_mpich 1
 
-Name:           opm-grid
-Version:        2023.10
-Release:        0
-Summary:        Cornerpoint grid management module for OPM
-License:        GPL-3.0
-Group:          Development/Libraries/C and C++
-Url:            http://www.opm-project.org/
-Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%define build_openmpi3 1
+%else
+%define toolset gcc-toolset-12
+%define build_openmpi3 0
+%endif
+
+Name:          opm-grid
+Version:       2023.10
+Release:       0
+Summary:       Cornerpoint grid management module for OPM
+License:       GPL-3.0
+Group:         Development/Libraries/C and C++
+Url:           http://www.opm-project.org/
+Source0:       https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:        0001-opm-grid-fixed-explicitly-check-against-double-precision-0.0.patch
 BuildRequires: blas-devel lapack-devel dune-common-devel
 BuildRequires: git suitesparse-devel doxygen bc
 BuildRequires: tinyxml-devel zlib-devel
@@ -26,7 +33,7 @@ BuildRequires: dune-geometry-devel
 BuildRequires: dune-grid-devel
 BuildRequires: dune-uggrid-devel
 BuildRequires: cmake3 tbb-devel
-BuildRequires: %{toolset}-toolchain
+BuildRequires: %{toolset}
 BuildRequires: boost-devel python3-devel
 
 %if %{build_openmpi}
@@ -308,6 +315,8 @@ This package contains the applications for opm-grid
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
 
+%patch0 -p1
+
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
 mkdir serial
@@ -419,9 +428,15 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
+%if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
+%endif
+%if %{build_openmpi3}
 %exclude /usr/include/openmpi3-x86_64
+%endif
+%if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
+%endif
 
 %files bin
 %{_bindir}/*

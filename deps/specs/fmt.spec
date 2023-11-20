@@ -1,3 +1,9 @@
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%else
+%define toolset gcc-toolset-12
+%endif
+
 Name:           fmt
 Version:        8.1.1
 Release:        0
@@ -10,7 +16,7 @@ Source0:        https://github.com/fmtlib/fmt/archive/8.1.1.tar.gz
 # fix for https://github.com/fmtlib/fmt/issues/2717
 Patch100:       %{name}-fix_implicit_ptr_conv.patch
 
-BuildRequires:  cmake3 devtoolset-9-toolchain
+BuildRequires:  cmake3 %{toolset}
 
 # This package replaces the old name of cppformat
 Provides:       cppformat = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -31,18 +37,22 @@ Obsoletes:      cppformat-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 %description    devel
 This package contains the header file for using %{name}.
 
+%global debug_package %{nil}
+
+%undefine __brp_strip_static_archive
+
 %prep
 %autosetup -p1
 
 %build
-scl enable devtoolset-9 'cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DFMT_CMAKE_DIR:STRING=%{_libdir}/cmake/%{name} -DBUILD_SHARED_LIBS=0 -DFMT_LIB_DIR:STRING=%{_libdir} -DCMAKE_INSTALL_PREFIX=/usr'
-scl enable devtoolset-9 'make %{?_smp_mflags}'
+scl enable %{toolset} 'cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DFMT_CMAKE_DIR:STRING=%{_libdir}/cmake/%{name} -DBUILD_SHARED_LIBS=0 -DFMT_LIB_DIR:STRING=%{_libdir} -DCMAKE_INSTALL_PREFIX=/usr'
+scl enable %{toolset} 'make %{?_smp_mflags}'
 
 %install
-scl enable devtoolset-9 'make install DESTDIR=%{buildroot}'
+scl enable %{toolset} 'make install DESTDIR=%{buildroot}'
 
 %check
-scl enable devtoolset-9 'make test'
+scl enable %{toolset} 'make test'
 
 %files
 %license LICENSE.rst

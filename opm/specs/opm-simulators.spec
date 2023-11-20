@@ -4,10 +4,16 @@
 
 %define tag final
 %define rtype release
-%define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 1
 %define build_mpich 1
+
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%define build_openmpi3 1
+%else
+%define toolset gcc-toolset-12
+%define build_openmpi3 0
+%endif
 
 Name:           opm-simulators
 Version:        2023.10
@@ -22,7 +28,7 @@ BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel
 BuildRequires: zoltan-devel
 BuildRequires: cmake3
-BuildRequires: %{toolset}-toolchain
+BuildRequires: %{toolset}
 BuildRequires: boost-devel python3-devel tbb-devel
 BuildRequires: hdf5-devel
 BuildRequires: dune-common-devel
@@ -374,9 +380,15 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
+%if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
+%endif
+%if %{build_openmpi3}
 %exclude /usr/include/openmpi3-x86_64
+%endif
+%if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
+%endif
 
 %files bin
 %{_bindir}/*

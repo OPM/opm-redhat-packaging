@@ -1,12 +1,12 @@
 ARG version=""
 ARG version_tag=""
-FROM centos:7 AS stage1
+FROM rockylinux:8 AS stage1
 ARG version
 ARG version_tag
 WORKDIR /tmp/opm
 ADD . .
 RUN echo "Configuring build environment"
-RUN /bin/bash /tmp/opm/scripts/setup_buildenv.sh
+RUN /bin/bash /tmp/opm/scripts/setup_buildenv_el8.sh
 RUN useradd builder
 RUN chown -R builder /tmp/opm/
 USER builder
