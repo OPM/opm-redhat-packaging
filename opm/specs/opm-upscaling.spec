@@ -4,10 +4,16 @@
 
 %define tag final
 %define rtype release
-%define toolset devtoolset-9
 %define build_openmpi 1
-%define build_openmpi3 1
 %define build_mpich 1
+
+%if 0%{?rhel} == 7
+%define toolset devtoolset-9
+%define build_openmpi3 1
+%else
+%define toolset gcc-toolset-12
+%define build_openmpi3 0
+%endif
 
 Name:           opm-upscaling
 Version:        2023.10
@@ -20,7 +26,7 @@ Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}
 BuildRequires:  blas-devel lapack-devel
 BuildRequires:  git suitesparse-devel doxygen bc tinyxml-devel
 BuildRequires:  cmake3 zlib-devel graphviz
-BuildRequires: %{toolset}-toolchain
+BuildRequires: %{toolset}
 BuildRequires: boost-devel python3-devel tbb-devel
 BuildRequires: dune-common-devel
 BuildRequires: dune-geometry-devel
@@ -297,9 +303,15 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
+%if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
+%endif
+%if %{build_openmpi3}
 %exclude /usr/include/openmpi3-x86_64
+%endif
+%if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
+%endif
 
 %files bin
 %{_bindir}/*
