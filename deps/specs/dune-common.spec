@@ -6,7 +6,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -14,15 +14,14 @@
 %endif
 
 Name:           dune-common
-Version:        2.8.0
+Version:        2.9.1
 Release:        1
 Summary:        Distributed and Unified Numerics Environment
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            https://dune-project.org/
-Source0:        https://dune-project.org/download/2.8.0/dune-common-2.8.0.tar.gz
-Patch0:         0001-dune-common-indices.patch
-Patch1:         0002-dune-common-py3.patch
+Source0:        https://gitlab.dune-project.org/core/dune-common/-/archive/releases/opm/2024.04/dune-common-releases-opm-2024.04.tar.gz
+Patch0:		0001-dune-common-py3.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig %{toolset}
@@ -149,9 +148,8 @@ This package contains the development and header files for DUNE. - mpich version
 %endif
 
 %prep
-%setup -q
+%setup -q -n dune-common-releases-opm-2024.04
 %patch0 -p1
-%patch1 -p1
 
 %build
 mkdir serial

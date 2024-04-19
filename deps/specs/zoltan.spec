@@ -19,7 +19,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12

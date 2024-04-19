@@ -6,7 +6,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -14,13 +14,13 @@
 %endif
 
 Name:           dune-geometry
-Version:        2.8.0
+Version:        2.9.1
 Release:        0
 Summary:        Everything related to the DUNE reference elements
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
-Source0:        https://dune-project.org/download/2.8.0/dune-geometry-2.8.0.tar.gz
+Source0:        https://dune-project.org/download/2.9.1/dune-geometry-2.9.1.tar.gz
 BuildRequires:  dune-common-devel
 BuildRequires:  gcc-c++ gcc-gfortran
 BuildRequires:  gmp-devel

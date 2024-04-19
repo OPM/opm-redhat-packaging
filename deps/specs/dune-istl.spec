@@ -19,7 +19,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -27,13 +27,13 @@
 %endif
 
 Name:           dune-istl
-Version:        2.8.0
+Version:        2.9.1
 Release:        0
 Summary:        An iterative solver template library for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
-Source0:        https://dune-project.org/download/2.8.0/dune-istl-2.8.0.tar.gz
+Source0:        https://gitlab.dune-project.org/core/dune-istl/-/archive/releases/opm/2024.04/dune-istl-releases-opm-2024.04.tar.gz
 BuildRequires:  dune-common-devel
 BuildRequires:  gmp-devel arpack-devel SuperLU-devel
 BuildRequires:  metis-devel suitesparse-devel
@@ -120,7 +120,7 @@ This package contains the development and header files for dune-istl - mpich ver
 %global debug_package %{nil}
 
 %prep
-%setup -q
+%setup -q -n dune-istl-releases-opm-2024.04
 
 %build
 mkdir serial

@@ -6,7 +6,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -14,13 +14,13 @@
 %endif
 
 Name:           dune-grid
-Version:        2.8.0
+Version:        2.9.1
 Release:        0
 Summary:        Grid management module for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
-Source0:        https://dune-project.org/download/2.8.0/dune-grid-2.8.0.tar.gz
+Source0:        https://dune-project.org/download/2.9.1/dune-grid-2.9.1.tar.gz
 BuildRequires:  dune-common-devel dune-geometry-devel dune-uggrid-devel
 BuildRequires:  mesa-libGL-devel metis-devel
 BuildRequires:  pkgconfig %{toolset}
