@@ -6,22 +6,19 @@
 %define rtype release
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %else
 %define toolset gcc-toolset-12
 %endif
 
 Name:           opm-common
-Version:        2023.10
+Version:        2024.04
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:		      0001-opm-common-close_at_tolerance.patch
-Patch1:         0002-opm-common-fixed-make-sure-vector-has-expected-size.patch
-Patch2:         0003-opm-common-fixed-pass-throug-perf-range-as-an-optional.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -93,9 +90,6 @@ This package contains the documentation files for opm-common
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
@@ -154,6 +148,8 @@ rm -rf %{buildroot}
 
 %files -n python3-opm-common
 %{_prefix}/lib/python3.6/site-packages/opm/*
+%{_prefix}/lib/python3.6/site-packages/opm_embedded/*
 
 %files -n python3-opm-common%{version}
 %{_prefix}/lib/python3.6/site-packages/opm/*
+%{_prefix}/lib/python3.6/site-packages/opm_embedded/*

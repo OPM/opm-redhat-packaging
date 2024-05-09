@@ -6,8 +6,6 @@ dnf -y install dnf-utils wget git ca-certificates rpm-build rpmdevtools createre
 mkdir -p /tmp/opm/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 mkdir -p /tmp/opm/current
 
-cp patches/* /tmp/opm/rpmbuild/SOURCES
-
 pushd /tmp/opm/current
 createrepo .
 popd

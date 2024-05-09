@@ -4,7 +4,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -13,7 +13,7 @@
 
 Name: opm-models
 Summary: OPM - Fully implicit models for flow and transport in porous media
-Version:        2023.10
+Version:        2024.04
 Release: 0
 License: GPL-3.0+
 Group:   Development/Libraries/C and C++

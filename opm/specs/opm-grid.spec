@@ -8,7 +8,7 @@
 %define build_mpich 1
 
 %if 0%{?rhel} == 7
-%define toolset devtoolset-9
+%define toolset devtoolset-11
 %define build_openmpi3 1
 %else
 %define toolset gcc-toolset-12
@@ -16,14 +16,13 @@
 %endif
 
 Name:          opm-grid
-Version:       2023.10
+Version:       2024.04
 Release:       0
 Summary:       Cornerpoint grid management module for OPM
 License:       GPL-3.0
 Group:         Development/Libraries/C and C++
 Url:           http://www.opm-project.org/
 Source0:       https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:        0001-opm-grid-fixed-explicitly-check-against-double-precision-0.0.patch
 BuildRequires: blas-devel lapack-devel dune-common-devel
 BuildRequires: git suitesparse-devel doxygen bc
 BuildRequires: tinyxml-devel zlib-devel
@@ -314,8 +313,6 @@ This package contains the applications for opm-grid
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
-
-%patch0 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build

@@ -6,6 +6,7 @@ yum-config-manager --add-repo https://www.opm-project.org/package/opm.repo
 
 mkdir -p /tmp/opm/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 mkdir -p /tmp/opm/current
+
 pushd /tmp/opm/current
 createrepo .
 popd
