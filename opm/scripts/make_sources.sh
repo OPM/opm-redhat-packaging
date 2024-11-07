@@ -5,7 +5,7 @@ RPMBUILD_ROOT=$4
 
 mkdir -p $ROOT
 pushd $ROOT
-for repo in opm-common opm-grid opm-models opm-simulators opm-upscaling
+for repo in opm-common opm-grid opm-simulators opm-upscaling
 do
   git clone https://github.com/OPM/$repo
   pushd $repo
@@ -13,3 +13,5 @@ do
   popd
 done
 popd
+
+cp /tmp/opm/patches/* $RPMBUILD_ROOT/SOURCES

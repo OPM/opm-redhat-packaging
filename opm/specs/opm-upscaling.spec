@@ -16,7 +16,7 @@
 %endif
 
 Name:           opm-upscaling
-Version:        2024.04
+Version:        2024.10
 Release:        0
 Summary:        Open Porous Media - upscaling library
 License:        GPL-3.0
@@ -210,7 +210,7 @@ mkdir serial
 pushd serial
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DINSTALL_BENCHMARKS=1 -DWITH_NATIVE=OFF ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 popd
 
 %if %{build_openmpi}
@@ -219,7 +219,7 @@ pushd openmpi
 module load mpi/openmpi-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DINSTALL_BENCHMARKS=1 -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -230,7 +230,7 @@ pushd openmpi3
 module load mpi/openmpi3-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DINSTALL_BENCHMARKS=1 -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi3-x86_64
 popd
 %endif
@@ -241,7 +241,7 @@ pushd mpich
 module load mpi/mpich-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DINSTALL_BENCHMARKS=1 -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/mpich-x86_64
 popd
 %endif

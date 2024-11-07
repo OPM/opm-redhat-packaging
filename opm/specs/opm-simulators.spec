@@ -16,13 +16,14 @@
 %endif
 
 Name:           opm-simulators
-Version:        2024.04
+Version:        2024.10
 Release:        0
 Summary:        Open Porous Media - core library
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:         0001-opm-simulators_skip_test_boost_return_code.patch
 BuildRequires:  lapack-devel openblas-devel
 BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel
@@ -39,7 +40,6 @@ BuildRequires: dune-localfunctions-devel
 BuildRequires: dune-istl-devel
 BuildRequires: opm-common-devel
 BuildRequires: opm-grid-devel
-BuildRequires: opm-models-devel
 
 %if %{build_openmpi}
 BuildRequires: openmpi-devel
@@ -52,7 +52,6 @@ BuildRequires: dune-grid-openmpi-devel
 BuildRequires: dune-localfunctions-openmpi-devel
 BuildRequires: dune-istl-openmpi-devel
 BuildRequires: opm-grid-openmpi-devel
-BuildRequires: opm-models-openmpi-devel
 %endif
 
 %if %{build_openmpi3}
@@ -66,7 +65,6 @@ BuildRequires: dune-grid-openmpi3-devel
 BuildRequires: dune-localfunctions-openmpi3-devel
 BuildRequires: dune-istl-openmpi3-devel
 BuildRequires: opm-grid-openmpi3-devel
-BuildRequires: opm-models-openmpi3-devel
 %endif
 
 %if %{build_mpich}
@@ -80,7 +78,6 @@ BuildRequires: dune-grid-mpich-devel
 BuildRequires: dune-localfunctions-mpich-devel
 BuildRequires: dune-istl-mpich-devel
 BuildRequires: opm-grid-mpich-devel
-BuildRequires: opm-models-mpich-devel
 %endif
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -265,13 +262,14 @@ This package contains the applications for opm-simulators
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
+%patch0 -p1
 
 %build
 mkdir serial
 pushd serial
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DCMAKE_INSTALL_SYSCONFDIR=/etc .. '
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 popd
 
 %if %{build_openmpi}
@@ -280,7 +278,7 @@ pushd openmpi
 module load mpi/openmpi-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -291,7 +289,7 @@ pushd openmpi3
 module load mpi/openmpi3-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi3-x86_64
 popd
 %endif
@@ -302,7 +300,7 @@ pushd mpich
 module load mpi/mpich-x86_64
 scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
 scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'make test'
+scl enable %{toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi3-x86_64
 popd
 %endif
