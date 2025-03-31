@@ -5,11 +5,7 @@
 %define tag final
 %define rtype release
 
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%else
 %define toolset gcc-toolset-12
-%endif
 
 Name:           opm-common
 Version:        2024.10
@@ -23,11 +19,7 @@ BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
 BuildRequires:  cmake3 python3-devel fmt-devel
-%if 0%{?rhel} == 7
-BuildRequires: python36-numpy python36-setuptools_scm python36-pytest-runner python36-decorator
-%else
-BuildRequires: python3-numpy python3-setuptools_scm python3-pytest-runner python3-decorator
-%endif
+BuildRequires:  python3-numpy python3-setuptools_scm python3-pytest-runner python3-decorator
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 

@@ -1,8 +1,4 @@
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%else
 %define toolset gcc-toolset-12
-%endif
 
 Name:           fmt
 Version:        8.1.1

@@ -5,13 +5,7 @@
 %define build_openmpi 1
 %define build_mpich 1
 
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%define build_openmpi3 1
-%else
 %define toolset gcc-toolset-12
-%define build_openmpi3 0
-%endif
 
 Name:           dune-localfunctions
 Version:        2.9.1
@@ -27,10 +21,6 @@ BuildRequires:  cmake3 boost-devel metis-devel
 %if %{build_openmpi}
 BuildRequires:  openmpi-devel dune-common-openmpi-devel dune-geometry-openmpi-devel
 BuildRequires:  dune-uggrid-openmpi-devel dune-grid-openmpi-devel
-%endif
-%if %{build_openmpi3}
-BuildRequires:  openmpi3-devel dune-common-openmpi3-devel dune-geometry-openmpi3-devel
-BuildRequires:  dune-uggrid-openmpi3-devel dune-grid-openmpi3-devel
 %endif
 %if %{build_mpich}
 BuildRequires:  mpich-devel dune-common-mpich-devel dune-geometry-mpich-devel
@@ -78,19 +68,6 @@ Requires:       dune-grid-openmpi-devel = %{version}
 This package contains the development and header files for %{name} - openmpi version.
 %endif
 
-%if %{build_openmpi3}
-%package openmpi3-devel
-Summary:        Development and header files for %{name} - openmpi3 version
-Group:          Development/Libraries/C and C++
-Requires:       %{name} = %{version}
-Requires:       dune-common-openmpi3-devel = %{version}
-Requires:       dune-geometry-openmpi3-devel = %{version}
-Requires:       dune-grid-openmpi3-devel = %{version}
-
-%description openmpi3-devel
-This package contains the development and header files for %{name} - openmpi3 version.
-%endif
-
 %if %{build_mpich}
 %package mpich-devel
 Summary:        Development and header files for %{name} - mpich version
@@ -126,16 +103,6 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_openmpi3}
-mkdir openmpi3
-pushd openmpi3
-module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-module unload mpi/openmpi3-x86_64
-popd
-%endif
-
 %if %{build_mpich}
 mkdir mpich
 pushd mpich
@@ -152,11 +119,6 @@ scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
 %if %{build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
-%endif
-
-%if %{build_openmpi3}
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi3'
-rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
 %endif
 
 %if %{build_mpich}
@@ -181,9 +143,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_openmpi3}
-%exclude /usr/include/openmpi3-x86_64
-%endif
 %if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
@@ -199,16 +158,6 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/lib/cmake
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/dunecontrol/%{name}
-%endif
-
-%if %{build_openmpi3}
-%files openmpi3-devel
-%defattr(-,root,root,-)
-%{_includedir}/openmpi3-x86_64/dune/localfunctions
-%{_libdir}/openmpi3/share/dune-localfunctions
-%{_libdir}/openmpi3/lib/cmake
-%{_libdir}/openmpi3/lib/pkgconfig/*.pc
-%{_libdir}/openmpi3/lib/dunecontrol/%{name}
 %endif
 
 %if %{build_mpich}

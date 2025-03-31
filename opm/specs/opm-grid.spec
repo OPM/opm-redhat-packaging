@@ -7,13 +7,7 @@
 %define build_openmpi 1
 %define build_mpich 1
 
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%define build_openmpi3 1
-%else
 %define toolset gcc-toolset-12
-%define build_openmpi3 0
-%endif
 
 Name:          opm-grid
 Version:       2024.10
@@ -42,15 +36,6 @@ BuildRequires: dune-uggrid-openmpi-devel
 BuildRequires: dune-grid-openmpi-devel
 BuildRequires: dune-geometry-openmpi-devel
 BuildRequires: dune-istl-openmpi-devel
-%endif
-
-%if %{build_openmpi3}
-BuildRequires: openmpi3-devel
-BuildRequires: zoltan-openmpi3-devel
-BuildRequires: dune-uggrid-openmpi3-devel
-BuildRequires: dune-grid-openmpi3-devel
-BuildRequires: dune-geometry-openmpi3-devel
-BuildRequires: dune-istl-openmpi3-devel
 %endif
 
 %if %{build_mpich}
@@ -196,64 +181,6 @@ Requires:       libopm-grid-openmpi = %{version}
 This package contains the applications for opm-grid
 %endif
 
-%if %{build_openmpi3}
-%package -n libopm-grid-openmpi3
-Summary:        Cornerpoint grid management module for OPM
-Group:          System/Libraries
-Requires:       libdune-common-openmpi3
-Requires:       libdune-grid-openmpi3
-Requires:       libdune-uggrid-openmpi3
-Requires:       libdune-geometry-openmpi3
-
-%description -n libopm-grid-openmpi3
-This module enables working with corner-point or, more
-generally, pillar grids.  A standard grid type in the petroleum
-industry, corner-point grids fill space with a relatively low number
-of cells while still providing sufficient flexibility to model faults,
-fractures and erosion.  The grid format was originally designed with
-an eye towards geological modelling rather than numerical simulation
-and this design choice does limit the number of feasible numerical
-methods.
-
-%package -n libopm-grid%{version}-openmpi3
-Summary:        Cornerpoint grid management module for OPM
-Group:          System/Libraries
-Requires:       libdune-common-openmpi3
-Requires:       libdune-grid-openmpi3
-Requires:       libdune-uggrid-openmpi3
-Requires:       libdune-geometry-openmpi3
-
-%description -n libopm-grid%{version}-openmpi3
-This module enables working with corner-point or, more
-generally, pillar grids.  A standard grid type in the petroleum
-industry, corner-point grids fill space with a relatively low number
-of cells while still providing sufficient flexibility to model faults,
-fractures and erosion.  The grid format was originally designed with
-an eye towards geological modelling rather than numerical simulation
-and this design choice does limit the number of feasible numerical
-methods.
-
-%package openmpi3-devel
-Summary:        Development and header files for opm-grid
-Group:          Development/Libraries/C and C++
-Requires:       %{name} = %{version}
-Requires:       blas-devel
-Requires:       lapack-devel
-Requires:       suitesparse-devel
-Requires:       libopm-grid-openmpi3 = %{version}
-
-%description openmpi3-devel
-This package contains the development and header files for opm-grid
-
-%package openmpi3-bin
-Summary:        Applications in opm-grid
-Group:          Scientific
-Requires:       libopm-grid-openmpi3 = %{version}
-
-%description openmpi3-bin
-This package contains the applications for opm-grid
-%endif
-
 %if %{build_mpich}
 %package -n libopm-grid-mpich
 Summary:        Cornerpoint grid management module for OPM
@@ -334,17 +261,6 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_openmpi3}
-mkdir openmpi3
-pushd openmpi3
-module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
-module unload mpi/openmpi3-x86_64
-popd
-%endif
-
 %if %{build_mpich}
 mkdir mpich
 pushd mpich
@@ -365,11 +281,6 @@ scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 %endif
 
-%if %{build_openmpi3}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi3'
-mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi3-x86_64/
-%endif
-
 %if %{build_mpich}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
@@ -388,13 +299,6 @@ rm -rf %{buildroot}
 %postun -n libopm-grid-openmpi -p /sbin/ldconfig
 %post -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
 %postun -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
-%endif
-
-%if %{build_openmpi3}
-%post -n libopm-grid-openmpi3 -p /sbin/ldconfig
-%postun -n libopm-grid-openmpi3 -p /sbin/ldconfig
-%post -n libopm-grid%{version}-openmpi3 -p /sbin/ldconfig
-%postun -n libopm-grid%{version}-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
@@ -428,9 +332,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_openmpi3}
-%exclude /usr/include/openmpi3-x86_64
-%endif
 %if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
@@ -459,28 +360,6 @@ rm -rf %{buildroot}
 %files openmpi-bin
 %{_libdir}/openmpi/bin/*
 %{_libdir}/openmpi/share/man/*
-%endif
-
-%if %{build_openmpi3}
-%files -n libopm-grid-openmpi3
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so.*
-
-%files -n libopm-grid%{version}-openmpi3
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so.*
-
-%files openmpi3-devel
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so
-%{_libdir}/openmpi3/lib/dunecontrol/*
-%{_includedir}/openmpi3-x86_64/*
-%{_libdir}/openmpi3/share/cmake/*
-%{_libdir}/openmpi3/share/opm/cmake/Modules/*
-
-%files openmpi3-bin
-%{_libdir}/openmpi3/bin/*
-%{_libdir}/openmpi3/share/man/*
 %endif
 
 %if %{build_mpich}

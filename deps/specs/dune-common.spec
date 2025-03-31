@@ -5,13 +5,7 @@
 %define build_openmpi 1
 %define build_mpich 1
 
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%define build_openmpi3 1
-%else
 %define toolset gcc-toolset-12
-%define build_openmpi3 0
-%endif
 
 Name:           dune-common
 Version:        2.9.1
@@ -28,9 +22,6 @@ BuildRequires:  pkgconfig %{toolset}
 BuildRequires:  cmake3 boost-devel
 %if %{build_openmpi}
 BuildRequires:  openmpi-devel
-%endif
-%if %{build_openmpi3}
-BuildRequires:  openmpi3-devel
 %endif
 %if %{build_mpich}
 BuildRequires:  mpich-devel
@@ -99,30 +90,6 @@ Requires:       libdune-common-openmpi = %{version}
 This package contains the development and header files for DUNE. - openmpi version
 %endif
 
-%if %{build_openmpi3}
-%package -n libdune-common-openmpi3
-Summary:        Distributed and Unified Numerics Environment - openmpi3 version
-Group:          System/Libraries
-
-%description -n libdune-common-openmpi3
-DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
-for solving partial differential equations (PDEs) with grid-based methods.
-It supports the easy implementation of methods like Finite Elements (FE),
-Finite Volumes (FV), and also Finite Differences (FD). This is built
-against OpenMPI3.
-
-%package openmpi3-devel
-Summary:        Development and header files for DUNE - openmpi3 version
-Group:          Development/Libraries/C and C++
-Requires:       %{name} = %{version}
-Requires:       blas-devel
-Requires:       lapack-devel
-Requires:       libdune-common-openmpi3 = %{version}
-
-%description openmpi3-devel
-This package contains the development and header files for DUNE. - openmpi3 version
-%endif
-
 %if %{build_mpich}
 %package -n libdune-common-mpich
 Summary:        Distributed and Unified Numerics Environment - mpich version
@@ -168,16 +135,6 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_openmpi3}
-mkdir openmpi3
-pushd openmpi3
-module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi3-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-module unload mpi/openmpi3-x86_64
-popd
-%endif
-
 %if %{build_mpich}
 mkdir mpich
 pushd mpich
@@ -196,11 +153,6 @@ scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 %endif
 
-%if %{build_openmpi3}
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi3'
-rm -rf %{buildroot}/usr/lib64/openmpi3/share/doc
-%endif
-
 %if %{build_mpich}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
@@ -215,11 +167,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %post -n libdune-common-openmpi -p /sbin/ldconfig
 %postun -n libdune-common-openmpi -p /sbin/ldconfig
-%endif
-
-%if %{build_openmpi3}
-%post -n libdune-common-openmpi3 -p /sbin/ldconfig
-%postun -n libdune-common-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
@@ -252,9 +199,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_openmpi3}
-%exclude /usr/include/openmpi3-x86_64
-%endif
 %if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
@@ -272,21 +216,6 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/cmake
 %{_libdir}/openmpi/share/*
-%endif
-
-%if %{build_openmpi3}
-%files -n libdune-common-openmpi3
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so
-%{_libdir}/openmpi3/bin/*
-
-%files openmpi3-devel
-%defattr(-,root,root,-)
-%{_includedir}/openmpi3-x86_64/dune/*
-%{_libdir}/openmpi3/lib/dune*
-%{_libdir}/openmpi3/lib/pkgconfig/*.pc
-%{_libdir}/openmpi3/lib/cmake
-%{_libdir}/openmpi3/share/*
 %endif
 
 %if %{build_mpich}

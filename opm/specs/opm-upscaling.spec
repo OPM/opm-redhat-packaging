@@ -7,13 +7,7 @@
 %define build_openmpi 1
 %define build_mpich 1
 
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%define build_openmpi3 1
-%else
 %define toolset gcc-toolset-12
-%define build_openmpi3 0
-%endif
 
 Name:           opm-upscaling
 Version:        2024.10
@@ -45,17 +39,6 @@ BuildRequires: dune-grid-openmpi-devel
 BuildRequires: dune-geometry-openmpi-devel
 BuildRequires: dune-istl-openmpi-devel
 BuildRequires: dune-uggrid-openmpi-devel
-%endif
-
-%if %{build_openmpi3}
-BuildRequires: openmpi3-devel
-BuildRequires: opm-grid-openmpi3-devel
-BuildRequires: zoltan-openmpi3-devel
-BuildRequires: dune-common-openmpi3-devel
-BuildRequires: dune-grid-openmpi3-devel
-BuildRequires: dune-geometry-openmpi3-devel
-BuildRequires: dune-istl-openmpi3-devel
-BuildRequires: dune-uggrid-openmpi3-devel
 %endif
 
 %if %{build_mpich}
@@ -141,36 +124,6 @@ Requires:       libopm-upscaling-openmpi = %{version}
 This package contains the applications for opm-upscaling
 %endif
 
-%if %{build_openmpi3}
-%package -n libopm-upscaling-openmpi3
-Summary:        Open Porous Media - upscaling library
-Group:          System/Libraries
-Requires:       libopm-grid-openmpi3 = %{version}
-
-%description -n libopm-upscaling-openmpi3
-This module implements single-phase and steady-state upscaling methods.
-
-%package openmpi3-devel
-Summary:        Development and header files for opm-upscaling
-Group:          Development/Libraries/C and C++
-Requires:       %{name} = %{version}
-Requires:       blas-devel
-Requires:       lapack-devel
-Requires:       suitesparse-devel
-Requires:       libopm-upscaling-openmpi3 = %{version}
-
-%description openmpi3-devel
-This package contains the development and header files for opm-upscaling
-
-%package openmpi3-bin
-Summary:        Applications in opm-upscaling
-Group:          Scientific
-Requires:       libopm-upscaling-openmpi3 = %{version}
-
-%description openmpi3-bin
-This package contains the applications for opm-upscaling
-%endif
-
 %if %{build_mpich}
 %package -n libopm-upscaling-mpich
 Summary:        Open Porous Media - upscaling library
@@ -224,17 +177,6 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_openmpi3}
-mkdir openmpi3
-pushd openmpi3
-module load mpi/openmpi3-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi3 -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DINSTALL_BENCHMARKS=1 -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi3-x86_64/zoltan ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
-module unload mpi/openmpi3-x86_64
-popd
-%endif
-
 %if %{build_mpich}
 mkdir mpich
 pushd mpich
@@ -255,11 +197,6 @@ scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 %endif
 
-%if %{build_openmpi3}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi3'
-mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi3/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi3-x86_64/
-%endif
-
 %if %{build_mpich}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
@@ -274,11 +211,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %post -n libopm-upscaling-openmpi -p /sbin/ldconfig
 %postun -n libopm-upscaling-openmpi -p /sbin/ldconfig
-%endif
-
-%if %{build_openmpi3}
-%post -n libopm-upscaling-openmpi3 -p /sbin/ldconfig
-%postun -n libopm-upscaling-openmpi3 -p /sbin/ldconfig
 %endif
 
 %if %{build_mpich}
@@ -306,9 +238,6 @@ rm -rf %{buildroot}
 %if %{build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_openmpi3}
-%exclude /usr/include/openmpi3-x86_64
-%endif
 %if %{build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
@@ -333,24 +262,6 @@ rm -rf %{buildroot}
 %files openmpi-bin
 %{_libdir}/openmpi/bin/*
 %{_libdir}/openmpi/share/man/*
-%endif
-
-%if %{build_openmpi3}
-%files -n libopm-upscaling-openmpi3
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so.*
-
-%files openmpi3-devel
-%defattr(-,root,root,-)
-%{_libdir}/openmpi3/lib/*.so
-%{_libdir}/openmpi3/lib/dunecontrol/*
-%{_includedir}/openmpi3-x86_64/*
-%{_libdir}/openmpi3/share/cmake/*
-%{_libdir}/openmpi3/share/opm/cmake/Modules/*
-
-%files openmpi3-bin
-%{_libdir}/openmpi3/bin/*
-%{_libdir}/openmpi3/share/man/*
 %endif
 
 %if %{build_mpich}
