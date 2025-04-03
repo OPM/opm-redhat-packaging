@@ -5,8 +5,6 @@
 %define tag final
 %define rtype release
 
-%define toolset gcc-toolset-12
-
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
@@ -20,7 +18,7 @@ Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
-BuildRequires:  %{toolset}
+BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
 BuildRequires:  cmake3 python3-devel fmt-devel
 BuildRequires:  python3-numpy python3-setuptools_scm python3-pytest-runner python3-decorator
@@ -78,14 +76,14 @@ rm -f python/pybind11/tools/mkdoc.py
 mkdir serial
 pushd serial
 echo $RPM_OPT_FLAGS
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 popd
 
 %install
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
-scl enable %{toolset} 'make install-html DESTDIR=%{buildroot} -C serial'
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
+scl enable %{_toolset} 'make install-html DESTDIR=%{buildroot} -C serial'
 
 %clean
 rm -rf %{buildroot}

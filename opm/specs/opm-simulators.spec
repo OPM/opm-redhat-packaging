@@ -5,8 +5,6 @@
 %define tag final
 %define rtype release
 
-%define toolset gcc-toolset-12
-
 Version:        2024.10
 
 %if 0%{?_build_versioned} == 1
@@ -26,7 +24,7 @@ BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel
 BuildRequires: zoltan-devel
 BuildRequires: cmake3
-BuildRequires: %{toolset}
+BuildRequires: %{_toolset}
 BuildRequires: boost-devel python3-devel tbb-devel
 BuildRequires: hdf5-devel
 BuildRequires: dune-common-devel
@@ -194,18 +192,18 @@ This package contains the applications for opm-simulators
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DCMAKE_INSTALL_SYSCONFDIR=/etc .. '
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DCMAKE_INSTALL_SYSCONFDIR=/etc .. '
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 popd
 
 %if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -214,23 +212,23 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_DOCDIR=share/doc/opm-simulators-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan -DCMAKE_INSTALL_SYSCONFDIR=/etc ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 module unload mpi/mpich-x86_64
 popd
 %endif
 
 %install
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
-scl enable %{toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
+scl enable %{_toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
 %if 0%{?_build_versioned} == 1
 mv ${RPM_BUILD_ROOT}/usr/bin/flow ${RPM_BUILD_ROOT}/usr/bin/flow-%{version}
 ln -sfr ${RPM_BUILD_ROOT}/usr/bin/flow-%{version} ${RPM_BUILD_ROOT}/usr/bin/flow
 %endif
 
 %if 0%{?_build_openmpi}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 %if 0%{?_build_versioned} == 1
@@ -240,7 +238,7 @@ ln -sfr ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version} ${RPM_BUILD_ROOT
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
 %if 0%{?_build_versioned} == 1

@@ -2,7 +2,6 @@
 # spec file for package dune-common
 #
 
-%define toolset gcc-toolset-12
 Name:           dune-common
 Version:        2.9.1
 Release:        1
@@ -14,7 +13,7 @@ Source0:        https://gitlab.dune-project.org/core/dune-common/-/archive/relea
 Patch0:		0001-dune-common-py3.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
-BuildRequires:  pkgconfig %{toolset}
+BuildRequires:  pkgconfig %{_toolset}
 BuildRequires:  cmake3 boost-devel
 %if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel
@@ -117,16 +116,16 @@ This package contains the development and header files for DUNE. - mpich version
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
-scl enable %{toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
 %if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable %{toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -135,22 +134,22 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
-scl enable %{toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
 %endif
 
 %install
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
 
 %if 0%{?_build_openmpi}
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 %endif
 

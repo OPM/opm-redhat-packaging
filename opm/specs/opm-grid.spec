@@ -5,8 +5,6 @@
 %define tag final
 %define rtype release
 
-%define toolset gcc-toolset-12
-
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
@@ -28,7 +26,7 @@ BuildRequires: dune-geometry-devel
 BuildRequires: dune-grid-devel
 BuildRequires: dune-uggrid-devel
 BuildRequires: cmake3 tbb-devel
-BuildRequires: %{toolset}
+BuildRequires: %{_toolset}
 BuildRequires: boost-devel python3-devel
 
 %if 0%{?_build_openmpi}
@@ -194,18 +192,18 @@ This package contains the applications for opm-grid
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 popd
 
 %if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/openmpi-x86_64/zoltan ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -214,24 +212,24 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3  -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan ..'
-scl enable %{toolset} 'make %{?_smp_mflags}'
-scl enable %{toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3  -DUSE_MPI=1 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_LIBDIR=lib -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DZOLTAN_INCLUDE_DIR=/usr/include/mpich-x86_64/zoltan ..'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'ctest3 --output-on-failure'
 module unload mpi/mpich-x86_64
 popd
 %endif
 
 %install
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
-scl enable %{toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
+scl enable %{_toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
 
 %if 0%{?_build_openmpi}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
+scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
 %endif
 

@@ -15,8 +15,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define toolset gcc-toolset-12
-
 Summary:        Zoltan grid partioning library
 License:        LGPL-2.0
 Group:          System/Libraries
@@ -26,7 +24,7 @@ Release:        0
 Url:            http://trilinos.sandia.gov/index.html
 Source0:        https://github.com/sandialabs/Zoltan/archive/refs/tags/v3.901.tar.gz
 BuildRequires:  doxygen
-BuildRequires:  %{toolset}
+BuildRequires:  %{_toolset}
 %if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel
 %endif
@@ -75,16 +73,16 @@ It also contains the various Trilinos packages' examples.
 %build
 mkdir serial
 pushd serial
-scl enable %{toolset} '../configure --prefix /usr --disable-mpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --libdir /usr/lib64'
-scl enable %{toolset} 'make %{?_smp_mflags} everything'
+scl enable %{_toolset} '../configure --prefix /usr --disable-mpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --libdir /usr/lib64'
+scl enable %{_toolset} 'make %{?_smp_mflags} everything'
 popd
 
 %if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{toolset} '../configure --prefix /usr/lib64/openmpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi-x86_64'
-scl enable %{toolset} 'make %{?_smp_mflags} everything'
+scl enable %{_toolset} '../configure --prefix /usr/lib64/openmpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi-x86_64'
+scl enable %{_toolset} 'make %{?_smp_mflags} everything'
 module unload mpi/openmpi-x86_64
 popd
 %endif
@@ -93,22 +91,22 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{toolset} '../configure --prefix /usr/lib64/mpich --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/mpich-x86_64'
-scl enable %{toolset} 'make %{?_smp_mflags} everything'
+scl enable %{_toolset} '../configure --prefix /usr/lib64/mpich --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/mpich-x86_64'
+scl enable %{_toolset} 'make %{?_smp_mflags} everything'
 module unload mpi/mpich-x86_64
 popd
 %endif
 
 %install
-scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C serial'
+scl enable %{_toolset} 'make DESTDIR=%{buildroot} install -C serial'
 rm -f %{buildroot}/usr/bin/mpirun
 
 %if 0%{?_build_openmpi}
-scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C openmpi'
+scl enable %{_toolset} 'make DESTDIR=%{buildroot} install -C openmpi'
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C mpich'
+scl enable %{_toolset} 'make DESTDIR=%{buildroot} install -C mpich'
 %endif
 
 %files devel
