@@ -7,17 +7,21 @@
 
 %define toolset gcc-toolset-12
 
-Name:           opm-upscaling
-Version:        2024.10
-Release:        0
-Summary:        Open Porous Media - upscaling library
-License:        GPL-3.0
-Group:          Development/Libraries/C and C++
-Url:            http://www.opm-project.org/
-Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
-BuildRequires:  blas-devel lapack-devel
-BuildRequires:  git suitesparse-devel doxygen bc tinyxml-devel
-BuildRequires:  cmake3 zlib-devel graphviz
+%if 0%{?_build_versioned} == 1
+%define postfix %{version}
+%endif
+
+Name:          opm-upscaling
+Version:       2024.10
+Release:       0
+Summary:       Open Porous Media - upscaling library
+License:       GPL-3.0
+Group:         Development/Libraries/C and C++
+Url:           http://www.opm-project.org/
+Source0:       https://github.com/OPM/opm-upscaling/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+BuildRequires: blas-devel lapack-devel
+BuildRequires: git suitesparse-devel doxygen bc tinyxml-devel
+BuildRequires: cmake3 zlib-devel graphviz
 BuildRequires: %{toolset}
 BuildRequires: boost-devel python3-devel tbb-devel
 BuildRequires: dune-common-devel
@@ -58,7 +62,7 @@ This module provides semi-implicit pressure and transport solvers using the IMPE
 %package -n libopm-upscaling
 Summary:        Open Porous Media - upscaling library
 Group:          System/Libraries
-Requires:       libopm-grid = %{version}
+Requires:       libopm-grid%{?postfix} = %{version}
 
 %description -n libopm-upscaling
 This module implements single-phase and steady-state upscaling methods.
@@ -78,7 +82,7 @@ This package contains the development and header files for opm-upscaling
 %package doc
 Summary:        Documentation files for opm-upscaling
 Group:          Documentation
-BuildArch:	noarch
+BuildArch:	    noarch
 
 %description doc
 This package contains the documentation files for opm-upscaling
@@ -95,7 +99,7 @@ This package contains the applications for opm-upscaling
 %package -n libopm-upscaling-openmpi
 Summary:        Open Porous Media - upscaling library
 Group:          System/Libraries
-Requires:       libopm-grid-openmpi = %{version}
+Requires:       libopm-grid%{?postfix}-openmpi = %{version}
 
 %description -n libopm-upscaling-openmpi
 This module implements single-phase and steady-state upscaling methods.
@@ -126,7 +130,7 @@ This package contains the applications for opm-upscaling
 %package -n libopm-upscaling-mpich
 Summary:        Open Porous Media - upscaling library
 Group:          System/Libraries
-Requires:       libopm-grid-mpich = %{version}
+Requires:       libopm-grid%{?postfix}-mpich = %{version}
 
 %description -n libopm-upscaling-mpich
 This module implements single-phase and steady-state upscaling methods.

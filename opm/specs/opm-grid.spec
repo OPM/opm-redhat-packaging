@@ -7,6 +7,10 @@
 
 %define toolset gcc-toolset-12
 
+%if 0%{?_build_versioned} == 1
+%define postfix %{version}
+%endif
+
 Name:          opm-grid
 Version:       2024.10
 Release:       0
@@ -57,7 +61,7 @@ an eye towards geological modelling rather than numerical simulation
 and this design choice does limit the number of feasible numerical
 methods.
 
-%package -n libopm-grid
+%package -n libopm-grid%{?postfix}
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 Requires:       libdune-common
@@ -65,25 +69,7 @@ Requires:       libdune-grid
 Requires:       libdune-uggrid
 Requires:       libdune-geometry
 
-%description -n libopm-grid
-This module enables working with corner-point or, more
-generally, pillar grids.  A standard grid type in the petroleum
-industry, corner-point grids fill space with a relatively low number
-of cells while still providing sufficient flexibility to model faults,
-fractures and erosion.  The grid format was originally designed with
-an eye towards geological modelling rather than numerical simulation
-and this design choice does limit the number of feasible numerical
-methods.
-
-%package -n libopm-grid%{version}
-Summary:        Cornerpoint grid management module for OPM
-Group:          System/Libraries
-Requires:       libdune-common
-Requires:       libdune-grid
-Requires:       libdune-uggrid
-Requires:       libdune-geometry
-
-%description -n libopm-grid%{version}
+%description -n libopm-grid%{?postfix}
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -100,7 +86,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid = %{version}
+Requires:       libopm-grid%{?postfix} = %{version}
 
 %description devel
 This package contains the development and header files for opm-grid
@@ -108,7 +94,7 @@ This package contains the development and header files for opm-grid
 %package doc
 Summary:        Documentation files for opm-grid
 Group:          Documentation
-BuildArch:	noarch
+BuildArch:	    noarch
 
 %description doc
 This package contains the documentation files for opm-grid
@@ -116,13 +102,13 @@ This package contains the documentation files for opm-grid
 %package bin
 Summary:        Applications in opm-grid
 Group:          Scientific
-Requires:       libopm-grid = %{version}
+Requires:       libopm-grid%{?postfix} = %{version}
 
 %description bin
 This package contains the applications for opm-grid
 
 %if 0%{?_build_openmpi}
-%package -n libopm-grid-openmpi
+%package -n libopm-grid%{?postfix}-openmpi
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 Requires:       libdune-common-openmpi
@@ -130,25 +116,7 @@ Requires:       libdune-grid-openmpi
 Requires:       libdune-uggrid-openmpi
 Requires:       libdune-geometry-openmpi
 
-%description -n libopm-grid-openmpi
-This module enables working with corner-point or, more
-generally, pillar grids.  A standard grid type in the petroleum
-industry, corner-point grids fill space with a relatively low number
-of cells while still providing sufficient flexibility to model faults,
-fractures and erosion.  The grid format was originally designed with
-an eye towards geological modelling rather than numerical simulation
-and this design choice does limit the number of feasible numerical
-methods.
-
-%package -n libopm-grid%{version}-openmpi
-Summary:        Cornerpoint grid management module for OPM
-Group:          System/Libraries
-Requires:       libdune-common-openmpi
-Requires:       libdune-grid-openmpi
-Requires:       libdune-uggrid-openmpi
-Requires:       libdune-geometry-openmpi
-
-%description -n libopm-grid%{version}-openmpi
+%description -n libopm-grid%{?postfix}-openmpi
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -165,7 +133,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid-openmpi = %{version}
+Requires:       libopm-grid%{?postfix}-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for opm-grid
@@ -173,14 +141,14 @@ This package contains the development and header files for opm-grid
 %package openmpi-bin
 Summary:        Applications in opm-grid
 Group:          Scientific
-Requires:       libopm-grid-openmpi = %{version}
+Requires:       libopm-grid%{?postfix}-openmpi = %{version}
 
 %description openmpi-bin
 This package contains the applications for opm-grid
 %endif
 
 %if 0%{?_build_mpich}
-%package -n libopm-grid-mpich
+%package -n libopm-grid%{?postfix}-mpich
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
 Requires:       libdune-common-mpich
@@ -188,24 +156,7 @@ Requires:       libdune-grid-mpich
 Requires:       libdune-uggrid-mpich
 Requires:       libdune-geometry-mpich
 
-%description -n libopm-grid-mpich
-This module enables working with corner-point or, more
-generally, pillar grids.  A standard grid type in the petroleum
-industry, corner-point grids fill space with a relatively low number
-of cells while still providing sufficient flexibility to model faults,
-fractures and erosion.  The grid format was originally designed with
-an eye towards geological modelling rather than numerical simulation
-and this design choice does limit the number of feasible numerical
-methods.
-%package -n libopm-grid%{version}-mpich
-Summary:        Cornerpoint grid management module for OPM
-Group:          System/Libraries
-Requires:       libdune-common-mpich
-Requires:       libdune-grid-mpich
-Requires:       libdune-uggrid-mpich
-Requires:       libdune-geometry-mpich
-
-%description -n libopm-grid%{version}-mpich
+%description -n libopm-grid%{?postfix}-mpich
 This module enables working with corner-point or, more
 generally, pillar grids.  A standard grid type in the petroleum
 industry, corner-point grids fill space with a relatively low number
@@ -222,7 +173,7 @@ Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
 Requires:       suitesparse-devel
-Requires:       libopm-grid-mpich = %{version}
+Requires:       libopm-grid%{?postfix}-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for opm-grid
@@ -287,23 +238,17 @@ mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpi
 %clean
 rm -rf %{buildroot}
 
-%post -n libopm-grid -p /sbin/ldconfig
-%postun -n libopm-grid -p /sbin/ldconfig
-%post -n libopm-grid%{version} -p /sbin/ldconfig
-%postun -n libopm-grid%{version} -p /sbin/ldconfig
+%post -n libopm-grid%{?postfix} -p /sbin/ldconfig
+%postun -n libopm-grid%{?postfix} -p /sbin/ldconfig
 
 %if 0%{?_build_openmpi}
-%post -n libopm-grid-openmpi -p /sbin/ldconfig
-%postun -n libopm-grid-openmpi -p /sbin/ldconfig
-%post -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
-%postun -n libopm-grid%{version}-openmpi -p /sbin/ldconfig
+%post -n libopm-grid%{?postfix}-openmpi -p /sbin/ldconfig
+%postun -n libopm-grid%{?postfix}-openmpi -p /sbin/ldconfig
 %endif
 
 %if 0%{?_build_mpich}
-%post -n libopm-grid-mpich -p /sbin/ldconfig
-%postun -n libopm-grid-mpich -p /sbin/ldconfig
-%post -n libopm-grid%{version}-mpich -p /sbin/ldconfig
-%postun -n libopm-grid%{version}-mpich -p /sbin/ldconfig
+%post -n libopm-grid%{?postfix}-mpich -p /sbin/ldconfig
+%postun -n libopm-grid%{?postfix}-mpich -p /sbin/ldconfig
 %endif
 
 %files
@@ -312,11 +257,7 @@ rm -rf %{buildroot}
 %files doc
 %{_docdir}/*
 
-%files -n libopm-grid
-%defattr(-,root,root,-)
-%{_libdir}/*.so.*
-
-%files -n libopm-grid%{version}
+%files -n libopm-grid%{?postfix}
 %defattr(-,root,root,-)
 %{_libdir}/*.so.*
 
@@ -339,11 +280,7 @@ rm -rf %{buildroot}
 %{_datadir}/man/*
 
 %if 0%{?_build_openmpi}
-%files -n libopm-grid-openmpi
-%defattr(-,root,root,-)
-%{_libdir}/openmpi/lib/*.so.*
-
-%files -n libopm-grid%{version}-openmpi
+%files -n libopm-grid%{?postfix}-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
 
@@ -361,11 +298,7 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_mpich}
-%files -n libopm-grid-mpich
-%defattr(-,root,root,-)
-%{_libdir}/mpich/lib/*.so.*
-
-%files -n libopm-grid%{version}-mpich
+%files -n libopm-grid%{?postfix}-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
 
