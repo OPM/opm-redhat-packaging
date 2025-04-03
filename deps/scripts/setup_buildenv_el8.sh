@@ -14,7 +14,7 @@ dnf config-manager --add-repo current.repo
 dnf config-manager --set-enabled powertools
 
 printf "%%_topdir /tmp/opm/rpmbuild
-%%_toolset gcc-toolset-12
+%%_toolset gcc-toolset-13
 %%_smp_mflags -j%i
 %%_build_openmpi %i
 %%_build_mpich %i" $1 $2 $3 > ~/.rpmmacros

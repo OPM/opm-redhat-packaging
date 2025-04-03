@@ -17,7 +17,7 @@
 
 Name:           dune-istl
 Version:        2.9.1
-Release:        0
+Release:        1
 Summary:        An iterative solver template library for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++

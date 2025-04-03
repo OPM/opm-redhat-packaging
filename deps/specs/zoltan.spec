@@ -20,7 +20,7 @@ License:        LGPL-2.0
 Group:          System/Libraries
 Name:           zoltan
 Version:        3.901
-Release:        0
+Release:        1
 Url:            http://trilinos.sandia.gov/index.html
 Source0:        https://github.com/sandialabs/Zoltan/archive/refs/tags/v3.901.tar.gz
 BuildRequires:  doxygen
