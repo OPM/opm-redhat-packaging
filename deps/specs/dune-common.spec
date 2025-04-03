@@ -2,11 +2,7 @@
 # spec file for package dune-common
 #
 
-%define build_openmpi 1
-%define build_mpich 1
-
 %define toolset gcc-toolset-12
-
 Name:           dune-common
 Version:        2.9.1
 Release:        1
@@ -20,10 +16,10 @@ BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig %{toolset}
 BuildRequires:  cmake3 boost-devel
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 BuildRequires:  mpich-devel
 %endif
 BuildRequires:  doxygen inkscape graphviz texlive-amscls
@@ -66,7 +62,7 @@ Requires:       libdune-common = %{version}
 %description devel
 This package contains the development and header files for DUNE.
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %package -n libdune-common-openmpi
 Summary:        Distributed and Unified Numerics Environment - openmpi version
 Group:          System/Libraries
@@ -90,7 +86,7 @@ Requires:       libdune-common-openmpi = %{version}
 This package contains the development and header files for DUNE. - openmpi version
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %package -n libdune-common-mpich
 Summary:        Distributed and Unified Numerics Environment - mpich version
 Group:          System/Libraries
@@ -125,7 +121,7 @@ scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 
 scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
@@ -135,7 +131,7 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
@@ -148,12 +144,12 @@ popd
 %install
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 %endif
@@ -164,12 +160,12 @@ rm -rf %{buildroot}
 %post -n libdune-common -p /sbin/ldconfig
 %postun -n libdune-common -p /sbin/ldconfig
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %post -n libdune-common-openmpi -p /sbin/ldconfig
 %postun -n libdune-common-openmpi -p /sbin/ldconfig
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %post -n libdune-common-mpich -p /sbin/ldconfig
 %postun -n libdune-common-mpich -p /sbin/ldconfig
 %endif
@@ -196,14 +192,14 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/cmake
 %{_datadir}/dune
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %files -n libdune-common-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so
@@ -218,7 +214,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/share/*
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %files -n libdune-common-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so

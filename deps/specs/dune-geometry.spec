@@ -2,9 +2,6 @@
 # spec file for package dune-geometry
 #
 
-%define build_openmpi 1
-%define build_mpich 1
-
 %define toolset gcc-toolset-12
 
 Name:           dune-geometry
@@ -20,10 +17,10 @@ BuildRequires:  gcc-c++ gcc-gfortran
 BuildRequires:  gmp-devel
 BuildRequires:  pkgconfig %{toolset}
 BuildRequires:  cmake3 boost-devel
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel dune-common-openmpi-devel
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 BuildRequires:  mpich-devel dune-common-mpich-devel
 %endif
 BuildRequires:  doxygen inkscape
@@ -64,7 +61,7 @@ BuildArch:      noarch
 %description doc
 Doxygen documentation for dune-geometry
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %package -n libdune-geometry-openmpi
 Summary:        Everything related to the DUNE reference elements - openmpi version
 Group:          System/Libraries
@@ -85,7 +82,7 @@ Requires:       libdune-geometry-openmpi = %{version}
 This package contains the development and header files for DUNE - openmpi version
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %package -n libdune-geometry-mpich
 Summary:        Everything related to the DUNE reference elements - mpich version
 Group:          System/Libraries
@@ -116,7 +113,7 @@ scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 
 scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
@@ -126,7 +123,7 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
@@ -139,12 +136,12 @@ popd
 %install
 rm -rf %{buildroot}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 %endif
@@ -154,11 +151,11 @@ rm -rf %{buildroot}
 
 %post -n libdune-geometry -p /sbin/ldconfig
 %postun -n libdune-geometry -p /sbin/ldconfig
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %post -n libdune-geometry-openmpi -p /sbin/ldconfig
 %postun -n libdune-geometry-openmpi -p /sbin/ldconfig
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %post -n libdune-geometry-mpich -p /sbin/ldconfig
 %postun -n libdune-geometry-mpich -p /sbin/ldconfig
 %endif
@@ -181,14 +178,14 @@ rm -rf %{buildroot}
 %{_libdir}/cmake/*
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dunecontrol/%{name}
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %files -n libdune-geometry-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so
@@ -202,7 +199,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/share/*
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %files -n libdune-geometry-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so

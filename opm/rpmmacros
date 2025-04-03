@@ -1,2 +1,0 @@
-%_topdir /tmp/opm/rpmbuild
-%_smp_mflags -j16

@@ -2,9 +2,6 @@
 # spec file for package dune-uggrid
 #
 
-%define build_openmpi 1
-%define build_mpich 1
-
 %define toolset gcc-toolset-12
 
 Name:           dune-uggrid
@@ -16,10 +13,10 @@ Group:          Development/Libraries/C and C++
 Source0:        https://dune-project.org/download/2.9.1/dune-uggrid-2.9.1.tar.gz
 BuildRequires:  dune-common-devel dune-geometry-devel
 BuildRequires:  openmpi-devel mpich-devel
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 BuildRequires: openmpi-devel dune-common-openmpi-devel dune-geometry-openmpi-devel
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 BuildRequires: mpich-devel dune-common-mpich-devel dune-geometry-mpich-devel
 %endif
 BuildRequires:  mesa-libGL-devel gmp-devel metis-devel
@@ -65,7 +62,7 @@ BuildArch:      noarch
 %description doc
 This package contains the doxygen documentation for %{name}.
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %package -n libdune-uggrid-openmpi
 Summary:        Grid management module for DUNE - openmpi version
 Group:          System/Libraries
@@ -87,7 +84,7 @@ Requires:       libdune-uggrid-openmpi = %{version}
 This package contains the development and header files for %{name} - openmpi version.
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %package -n libdune-uggrid-mpich
 Summary:        Grid management module for DUNE - mpich version
 Group:          System/Libraries
@@ -119,7 +116,7 @@ scl enable %{toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 
 scl enable %{toolset} 'make %{?_smp_mflags}'
 popd
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
@@ -129,7 +126,7 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
@@ -142,11 +139,11 @@ popd
 %install
 rm -rf %{buildroot}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C serial'
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 scl enable %{toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 %endif
 
@@ -156,12 +153,12 @@ rm -rf %{buildroot}
 %post -n libdune-uggrid -p /sbin/ldconfig
 %postun -n libdune-uggrid -p /sbin/ldconfig
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %post -n libdune-uggrid-openmpi -p /sbin/ldconfig
 %postun -n libdune-uggrid-openmpi -p /sbin/ldconfig
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %post -n libdune-uggrid-mpich -p /sbin/ldconfig
 %postun -n libdune-uggrid-mpich -p /sbin/ldconfig
 %endif
@@ -188,14 +185,14 @@ rm -rf %{buildroot}
 %{_datadir}/RefRules.data
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dune*
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %files -n libdune-uggrid-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so
@@ -209,7 +206,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/share/*
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %files -n libdune-uggrid-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so

@@ -14,6 +14,12 @@ dnf config-manager --add-repo https://www.opm-project.org/package/opm.repo
 yum-config-manager --add-repo current.repo
 dnf config-manager --set-enabled powertools
 
-cp /tmp/opm/rpmmacros ~/.rpmmacros
+printf "%%_topdir /tmp/opm/rpmbuild
+%%_smp_mflags -j%i
+%%_build_openmpi %i
+%%_build_mpich %i
+%%_build_versioned %i" $1 $2 $3 $4 > ~/.rpmmacros
+cp ~/.rpmmacros /home/builder
+chown builder:builder /home/builder/.rpmmacros
 
 exit 0

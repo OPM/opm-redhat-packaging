@@ -15,9 +15,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define build_openmpi 1
-%define build_mpich 1
-
 %define toolset gcc-toolset-12
 
 Summary:        Zoltan grid partioning library
@@ -30,10 +27,10 @@ Url:            http://trilinos.sandia.gov/index.html
 Source0:        https://github.com/sandialabs/Zoltan/archive/refs/tags/v3.901.tar.gz
 BuildRequires:  doxygen
 BuildRequires:  %{toolset}
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 BuildRequires:  mpich-devel
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -49,7 +46,7 @@ Group:          Development/Libraries/C and C++
 This package contains the development headers needed for the Trilinos packages.
 It also contains the various Trilinos packages' examples.
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %package openmpi-devel
 Summary:        A collection of libraries of numerical algorithms - openmpi version - development headers
 Group:          Development/Libraries/C and C++
@@ -58,7 +55,7 @@ Group:          Development/Libraries/C and C++
 Zoltan Toolkit for Load-balancing, Partitioning, Ordering and Coloring compiled against openmpi - development headers
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %package mpich-devel
 Summary:        A collection of libraries of numerical algorithms
 Group:          Development/Libraries/C and C++
@@ -82,7 +79,7 @@ scl enable %{toolset} '../configure --prefix /usr --disable-mpi --with-cflags="$
 scl enable %{toolset} 'make %{?_smp_mflags} everything'
 popd
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
@@ -92,7 +89,7 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
@@ -106,11 +103,11 @@ popd
 scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C serial'
 rm -f %{buildroot}/usr/bin/mpirun
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C openmpi'
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C mpich'
 %endif
 
@@ -118,21 +115,21 @@ scl enable %{toolset} 'make DESTDIR=%{buildroot} install -C mpich'
 %defattr(-, root, root, -)
 %{_includedir}/*
 %{_libdir}/*
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %files openmpi-devel
 %defattr(-, root, root, -)
 %{_includedir}/openmpi-x86_64/*
 %{_libdir}/openmpi/lib/*
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %files mpich-devel
 %defattr(-, root, root, -)
 %{_includedir}/mpich-x86_64/*

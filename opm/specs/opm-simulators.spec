@@ -4,8 +4,6 @@
 
 %define tag final
 %define rtype release
-%define build_openmpi 1
-%define build_mpich 1
 
 %define toolset gcc-toolset-12
 
@@ -35,7 +33,7 @@ BuildRequires: dune-istl-devel
 BuildRequires: opm-common-devel
 BuildRequires: opm-grid-devel
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 BuildRequires: openmpi-devel
 BuildRequires: zoltan-openmpi-devel
 BuildRequires: hdf5-openmpi-devel
@@ -48,7 +46,7 @@ BuildRequires: dune-istl-openmpi-devel
 BuildRequires: opm-grid-openmpi-devel
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 BuildRequires: mpich-devel
 BuildRequires: zoltan-mpich-devel
 BuildRequires: hdf5-mpich-devel
@@ -114,7 +112,7 @@ Requires:       libopm-simulators%{version} = %{version}
 %description -n opm-simulators%{version}-bin
 This package contains the applications for opm-simulators
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %package -n libopm-simulators-openmpi
 Summary:        Open Porous Media - automatic differentiation library
 Group:          System/Libraries
@@ -156,7 +154,7 @@ Requires:       libopm-simulators%{version}-openmpi
 This package contains the applications for opm-simulators
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %package -n libopm-simulators-mpich
 Summary:        Open Porous Media - automatic differentiation library
 Group:          System/Libraries
@@ -211,7 +209,7 @@ scl enable %{toolset} 'make %{?_smp_mflags}'
 scl enable %{toolset} 'ctest3 --output-on-failure'
 popd
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
@@ -222,7 +220,7 @@ module unload mpi/openmpi-x86_64
 popd
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
@@ -238,14 +236,14 @@ scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C serial'
 scl enable %{toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
 cp ${RPM_BUILD_ROOT}/usr/bin/flow ${RPM_BUILD_ROOT}/usr/bin/flow-%{version}
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/include/* ${RPM_BUILD_ROOT}/usr/include/openmpi-x86_64/
 cp ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version}
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 scl enable %{toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mkdir -p ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/include/* ${RPM_BUILD_ROOT}/usr/include/mpich-x86_64/
@@ -260,14 +258,14 @@ rm -rf %{buildroot}
 %post -n libopm-simulators%{version} -p /sbin/ldconfig
 %postun -n libopm-simulators%{version} -p /sbin/ldconfig
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %post -n libopm-simulators-openmpi -p /sbin/ldconfig
 %postun -n libopm-simulators-openmpi -p /sbin/ldconfig
 %post -n libopm-simulators%{version}-openmpi -p /sbin/ldconfig
 %postun -n libopm-simulators%{version}-openmpi -p /sbin/ldconfig
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %post -n libopm-simulators-mpich -p /sbin/ldconfig
 %postun -n libopm-simulators-mpich -p /sbin/ldconfig
 %post -n libopm-simulators%{version}-mpich -p /sbin/ldconfig
@@ -292,10 +290,10 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_datadir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %exclude /usr/include/mpich-x86_64
 %endif
 
@@ -308,7 +306,7 @@ rm -rf %{buildroot}
 %files -n opm-simulators%{version}-bin
 %{_bindir}/flow-%{version}
 
-%if %{build_openmpi}
+%if 0%{?_build_openmpi}
 %files -n libopm-simulators-openmpi
 %defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.so.*
@@ -334,7 +332,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/bin/flow-%{version}
 %endif
 
-%if %{build_mpich}
+%if 0%{?_build_mpich}
 %files -n libopm-simulators-mpich
 %defattr(-,root,root,-)
 %{_libdir}/mpich/lib/*.so.*
