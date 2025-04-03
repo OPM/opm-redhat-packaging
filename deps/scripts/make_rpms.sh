@@ -6,7 +6,7 @@ MODULE_LIST="fmt zoltan dune-common dune-istl dune-geometry dune-uggrid dune-gri
 
 for module in $MODULE_LIST
 do
-  yum-builddep -y /tmp/opm/rpmbuild/SPECS/${module}.spec
+  dnf builddep -y /tmp/opm/rpmbuild/SPECS/${module}.spec
   su builder -c "rpmbuild -bb /tmp/opm/rpmbuild/SPECS/${module}.spec"
   test $? -eq 0 || exit 1
   pushd /tmp/opm/current
