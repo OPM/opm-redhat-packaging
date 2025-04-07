@@ -1,14 +1,11 @@
 Name:           fmt
-Version:        8.1.1
-Release:        1
+Version:        10.1.1
+Release:        0
 
 License:        BSD
 Summary:        Small, safe and fast formatting library for C++
 URL:            https://github.com/fmtlib/%{name}
-Source0:        https://github.com/fmtlib/fmt/archive/8.1.1.tar.gz
-
-# fix for https://github.com/fmtlib/fmt/issues/2717
-Patch100:       %{name}-fix_implicit_ptr_conv.patch
+Source0:        https://github.com/fmtlib/fmt/archive/10.1.1.tar.gz
 
 BuildRequires:  cmake3 %{_toolset}
 
