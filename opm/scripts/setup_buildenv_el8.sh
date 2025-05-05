@@ -11,7 +11,7 @@ createrepo .
 popd
 
 dnf config-manager --add-repo https://www.opm-project.org/package/opm.repo
-yum-config-manager --add-repo current.repo
+dnf config-manager --add-repo current.repo
 dnf config-manager --set-enabled powertools
 
 printf "%%_topdir /tmp/opm/rpmbuild

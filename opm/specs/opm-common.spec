@@ -10,13 +10,15 @@
 %endif
 
 Name:           opm-common
-Version:        2024.10
+Version:        2025.04
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:         0001-opm-common_disable_data_interregflow.patch
+Patch1:         0002-opm-common_remove_ml_tools.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -69,6 +71,8 @@ This package contains the documentation files for opm-common
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
+%patch0 -p1
+%patch1 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build

@@ -5,7 +5,7 @@
 %define tag final
 %define rtype release
 
-Version:        2024.10
+Version:        2025.04
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
@@ -19,6 +19,8 @@ Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/opm-simulators/archive/release/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
 Patch0:         0001-opm-simulators_skip_test_boost_return_code.patch
+Patch1:         0002-opm-simulators_avoid_negative_rs_rv_max.patch
+Patch2:         0003-opm-simulators_avoid_nullptr_dereference.patch
 BuildRequires:  lapack-devel openblas-devel
 BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel
@@ -104,6 +106,7 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-bin = %{version}
+Requires:       opm-simulators2024.10-bin
 
 %description -n opm-simulators-bin
 This package contains the applications for opm-simulators
@@ -139,7 +142,7 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-openmpi-bin = %{version}
-Requires:       opm-simulators2024.10-openmpi-bin = %{version}
+Requires:       opm-simulators2024.10-openmpi-bin
 
 %description -n opm-simulators-openmpi-bin
 This package contains the applications for opm-simulators
@@ -177,7 +180,7 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-mpich-bin = %{version}
-Requires:       opm-simulators2024.10-mpich-bin = %{version}
+Requires:       opm-simulators2024.10-mpich-bin
 
 %description -n opm-simulators-mpich-bin
 This package contains the applications for opm-simulators
@@ -188,6 +191,8 @@ This package contains the applications for opm-simulators
 %prep
 %setup -q -n opm-simulators-%{rtype}-%{version}-%{tag}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 mkdir serial

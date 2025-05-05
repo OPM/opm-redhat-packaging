@@ -1,3 +1,15 @@
 #!/bin/bash
 
-yum -y install opm-upscaling-bin opm-upscaling-openmpi-bin opm-upscaling-openmpi3-bin opm-upscaling-mpich-bin
+set -e
+
+dnf -y install opm-upscaling-bin
+
+if test "$1" -eq "1"
+then
+  dnf -y install opm-upscaling-openmpi-bin
+fi
+
+if test "$2" -eq "1"
+then
+  dnf -y install opm-upscaling-mpich-bin
+fi

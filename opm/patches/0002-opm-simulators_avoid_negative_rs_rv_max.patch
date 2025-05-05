@@ -1,0 +1,26 @@
+commit c92e7248215a82f2d65b8eae8df0ca8cd0e17d39
+Author: Tor Harald Sandve <tosa@norceresearch.no>
+Date:   Mon Dec 9 13:21:01 2024 +0100
+
+    avoid negative rs/rv max
+
+diff --git a/opm/simulators/wells/MultisegmentWellPrimaryVariables.cpp b/opm/simulators/wells/MultisegmentWellPrimaryVariables.cpp
+index 6ceb1b493..a14c71bd6 100644
+--- a/opm/simulators/wells/MultisegmentWellPrimaryVariables.cpp
++++ b/opm/simulators/wells/MultisegmentWellPrimaryVariables.cpp
+@@ -306,11 +306,11 @@ copyToWellState(const MultisegmentWellGeneric<Scalar>& mswell,
+         Scalar rvMax = 0.0;
+         if (FluidSystem::phaseIsActive(FluidSystem::gasPhaseIdx) && FluidSystem::phaseIsActive(FluidSystem::oilPhaseIdx)) {
+             // Both oil and gas active.
+-            rsMax = FluidSystem::oilPvt()
+-                .saturatedGasDissolutionFactor(pvtReg, temperature, segment_pressure[seg]);
++            rsMax = std::max(Scalar{0.0}, FluidSystem::oilPvt()
++                .saturatedGasDissolutionFactor(pvtReg, temperature, segment_pressure[seg]));
+ 
+-            rvMax = FluidSystem::gasPvt()
+-                .saturatedOilVaporizationFactor(pvtReg, temperature, segment_pressure[seg]);
++            rvMax = std::max(Scalar{0.0}, FluidSystem::gasPvt()
++                .saturatedOilVaporizationFactor(pvtReg, temperature, segment_pressure[seg]));
+         }
+ 
+         // 1) Infer phase splitting for oil/gas.

@@ -10,7 +10,7 @@
 %endif
 
 Name:          opm-upscaling
-Version:       2024.10
+Version:       2025.04
 Release:       0
 Summary:       Open Porous Media - upscaling library
 License:       GPL-3.0
