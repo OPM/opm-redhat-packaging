@@ -1,0 +1,5 @@
+[current]
+name=current
+baseurl=file:///tmp/opm/current
+enabled=1
+gpgcheck=0
