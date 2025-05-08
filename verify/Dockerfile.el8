@@ -1,0 +1,32 @@
+ARG version=""
+ARG version_tag=""
+ARG test_openmpi=1
+ARG test_mpich=1
+ARG test_versioned=0
+FROM rockylinux:8 AS stage1
+ARG version
+ARG version_tag
+ARG test_openmpi
+ARG test_mpich
+ARG test_versioned
+WORKDIR /tmp/opm
+ADD . .
+RUN echo "Configuring runtime environment"
+RUN /bin/bash /tmp/opm/scripts/setup_runtime_env.sh ${test_openmpi} ${test_mpich} ${test_versioned}
+RUN useradd builder
+RUN chown -R builder /tmp/opm/
+USER builder
+RUN echo "Cloning opm-tests"
+RUN git clone --depth 1 https://github.com/OPM/opm-tests
+USER root
+RUN /bin/bash /tmp/opm/scripts/setup_simulators_env.sh ${test_openmpi} ${test_mpich}
+RUN echo "Running Norne checks"
+USER builder
+RUN /bin/bash /tmp/opm/scripts/run_norne.sh ${test_openmpi} ${test_mpich}
+RUN echo "Running Drogon checks"
+RUN /bin/bash /tmp/opm/scripts/run_drogon.sh ${test_openmpi} ${test_mpich}
+USER root
+RUN /bin/bash /tmp/opm/scripts/setup_upscaling_env.sh ${test_openmpi} ${test_mpich}
+USER builder
+RUN echo "Running upscaling checks"
+RUN /bin/bash /tmp/opm/scripts/upscale_spe9.sh ${test_openmpi} ${test_mpich}

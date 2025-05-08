@@ -1,3 +1,13 @@
 #!/bin/bash
 
-yum -y install opm-simulators-bin opm-simulators-openmpi-bin opm-simulators-openmpi3-bin opm-simulators-mpich-bin
+set -e
+
+dnf -y install opm-simulators-bin
+if test "$1" -eq "1"
+then
+  dnf -y install opm-simulators-openmpi-bin
+fi
+if test "$2" -eq "1"
+then
+  dnf -y install opm-simulators-mpich-bin
+fi

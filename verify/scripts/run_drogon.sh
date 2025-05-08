@@ -4,7 +4,8 @@ set -e
 
 source /etc/profile.d/modules.sh
 
-upscale_perm /tmp/opm/opm-tests/spe9/SPE9_CP.DATA
+flow /tmp/opm/opm-tests/drogon/model/DROGON_HIST
+flow /tmp/opm/opm-tests/drogon/model/DROGON_PRED
 
 BINS=""
 if test "$1" -eq "1"
@@ -19,6 +20,7 @@ fi
 for bin in $BINS
 do
   module load mpi/$bin-x86_64
-  mpirun -np 1 upscale_perm /tmp/opm/opm-tests/spe9/SPE9_CP.DATA
+  mpirun -np 8 flow /tmp/opm/opm-tests/drogon/model/DROGON_HIST
+  mpirun -np 8 flow /tmp/opm/opm-tests/drogon/model/DROGON_PRED
   module unload mpi/$bin-x86_64
 done

@@ -1,22 +1,13 @@
-%if 0%{?rhel} == 7
-%define toolset devtoolset-11
-%else
-%define toolset gcc-toolset-12
-%endif
-
 Name:           fmt
-Version:        8.1.1
+Version:        10.1.1
 Release:        0
 
 License:        BSD
 Summary:        Small, safe and fast formatting library for C++
 URL:            https://github.com/fmtlib/%{name}
-Source0:        https://github.com/fmtlib/fmt/archive/8.1.1.tar.gz
+Source0:        https://github.com/fmtlib/fmt/archive/10.1.1.tar.gz
 
-# fix for https://github.com/fmtlib/fmt/issues/2717
-Patch100:       %{name}-fix_implicit_ptr_conv.patch
-
-BuildRequires:  cmake3 %{toolset}
+BuildRequires:  cmake3 %{_toolset}
 
 # This package replaces the old name of cppformat
 Provides:       cppformat = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -45,14 +36,14 @@ This package contains the header file for using %{name}.
 %autosetup -p1
 
 %build
-scl enable %{toolset} 'cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DFMT_CMAKE_DIR:STRING=%{_libdir}/cmake/%{name} -DBUILD_SHARED_LIBS=0 -DFMT_LIB_DIR:STRING=%{_libdir} -DCMAKE_INSTALL_PREFIX=/usr'
-scl enable %{toolset} 'make %{?_smp_mflags}'
+scl enable %{_toolset} 'cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DFMT_CMAKE_DIR:STRING=%{_libdir}/cmake/%{name} -DBUILD_SHARED_LIBS=0 -DFMT_LIB_DIR:STRING=%{_libdir} -DCMAKE_INSTALL_PREFIX=/usr'
+scl enable %{_toolset} 'make %{?_smp_mflags}'
 
 %install
-scl enable %{toolset} 'make install DESTDIR=%{buildroot}'
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 
 %check
-scl enable %{toolset} 'make test'
+scl enable %{_toolset} 'make test'
 
 %files
 %license LICENSE.rst
