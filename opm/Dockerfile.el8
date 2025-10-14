@@ -25,5 +25,5 @@ RUN /bin/bash /tmp/opm/scripts/make_srpms.sh /tmp/opm/rpmbuild ${version}
 RUN echo "Building RPMs"
 USER root
 RUN /bin/bash /tmp/opm/scripts/make_rpms.sh
-FROM scratch as export_stage
+FROM scratch AS export_stage
 COPY --from=stage1 /tmp/opm/rpmbuild .
