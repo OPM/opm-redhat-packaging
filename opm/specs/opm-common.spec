@@ -10,7 +10,7 @@
 %endif
 
 Name:           opm-common
-Version:        2025.04
+Version:        2025.10
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0

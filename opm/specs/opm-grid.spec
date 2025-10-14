@@ -10,7 +10,7 @@
 %endif
 
 Name:          opm-grid
-Version:       2025.04
+Version:       2025.10
 Release:       0
 Summary:       Cornerpoint grid management module for OPM
 License:       GPL-3.0
