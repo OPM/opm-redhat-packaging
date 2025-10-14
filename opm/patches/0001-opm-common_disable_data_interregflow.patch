@@ -1,8 +1,8 @@
 diff --git a/CMakeLists_files.cmake b/CMakeLists_files.cmake
-index 63ae83d69..9a2cfd450 100644
+index 23a36fdeb..b4da8ced6 100644
 --- a/CMakeLists_files.cmake
 +++ b/CMakeLists_files.cmake
-@@ -640,7 +640,7 @@ if(ENABLE_ECL_OUTPUT)
+@@ -658,7 +658,7 @@ if(ENABLE_ECL_OUTPUT)
            tests/test_ArrayDimChecker.cpp
            tests/test_DoubHEAD.cpp
            tests/test_data_GuideRateValue.cpp
@@ -10,4 +10,4 @@ index 63ae83d69..9a2cfd450 100644
 +#          tests/test_data_InterRegFlow.cpp
            tests/test_data_InterRegFlowMap.cpp
            tests/test_EclipseIO.cpp
-           tests/test_Inplace.cpp
+           tests/test_EclipseIO_LGR.cpp

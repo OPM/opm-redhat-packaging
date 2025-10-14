@@ -1,28 +1,16 @@
-From 0d1b2b4a55c53d53d17db3b0b47f56c495b5ac95 Mon Sep 17 00:00:00 2001
-From: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
-Date: Tue, 6 May 2025 07:02:51 +0200
-Subject: [PATCH] remove ml tools
+commit a9cd7aee10be093ed2c4cb4da6935aa6189f8791
+Author: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
+Date:   Mon Oct 13 13:07:52 2025 +0200
 
----
- python/opm/ml/ml_tools/README.md        |  24 ---
- python/opm/ml/ml_tools/__init__.py      |   2 -
- python/opm/ml/ml_tools/kerasify.py      | 159 -------------------
- python/opm/ml/ml_tools/requirements.txt |  17 --
- python/opm/ml/ml_tools/scaler_layers.py | 201 ------------------------
- 5 files changed, 403 deletions(-)
- delete mode 100644 python/opm/ml/ml_tools/README.md
- delete mode 100644 python/opm/ml/ml_tools/__init__.py
- delete mode 100644 python/opm/ml/ml_tools/kerasify.py
- delete mode 100644 python/opm/ml/ml_tools/requirements.txt
- delete mode 100644 python/opm/ml/ml_tools/scaler_layers.py
+    remove ml_tools
 
 diff --git a/python/opm/ml/ml_tools/README.md b/python/opm/ml/ml_tools/README.md
 deleted file mode 100644
-index b1583dffb..000000000
+index 337de9272..000000000
 --- a/python/opm/ml/ml_tools/README.md
 +++ /dev/null
 @@ -1,24 +0,0 @@
--These ML modules are extending the previous work done in Kerasify by Maevskikh and Rose licensed under the terms of the MIT 
+-These ML modules are extending the previous work done in Kerasify by Maevskikh and Rose licensed under the terms of the MIT
 -license (https://github.com/moof2k/kerasify/tree/77a0c42). Kerasify is a library for running trained Keras models from a C++ platform.
 -Our implementation is also compliant with the automatic differentiation approach used in OPM.
 -The implementation works with Python v.3.9.0 and above (up to <=3.12.0).
@@ -33,7 +21,7 @@ index b1583dffb..000000000
 -
 -
 --To compile run the unit tests:
-- 
+-
 -$ make ml_model_test
 -$ ./bin/ml_model_test
 -TEST tensor_test
@@ -46,25 +34,23 @@ index b1583dffb..000000000
 -TEST dense_relu_10
 -TEST dense_tanh_10
 -TEST scalingdense_10x1
-\ No newline at end of file
 diff --git a/python/opm/ml/ml_tools/__init__.py b/python/opm/ml/ml_tools/__init__.py
 deleted file mode 100644
-index d6a2782e0..000000000
+index 27273543e..000000000
 --- a/python/opm/ml/ml_tools/__init__.py
 +++ /dev/null
 @@ -1,2 +0,0 @@
 -from .kerasify import *
 -from .scaler_layers import *
-\ No newline at end of file
 diff --git a/python/opm/ml/ml_tools/kerasify.py b/python/opm/ml/ml_tools/kerasify.py
 deleted file mode 100644
-index cc2db75b8..000000000
+index 5ac321fc3..000000000
 --- a/python/opm/ml/ml_tools/kerasify.py
 +++ /dev/null
 @@ -1,159 +0,0 @@
 -
 -#   Copyright (c) 2016 Robert W. Rose
--#   Copyright (c) 2018 Paul Maevskikh 
+-#   Copyright (c) 2018 Paul Maevskikh
 -#   Copyright (c) 2024 NORCE
 -#
 -# Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -165,7 +151,7 @@ index cc2db75b8..000000000
 -            elif activation == 'hard_sigmoid':
 -                f.write(struct.pack('I', ACTIVATION_HARD_SIGMOID))
 -            else:
--                assert False, f"Unsupported activation type:{activation}" 
+-                assert False, f"Unsupported activation type:{activation}"
 -
 -        model_layers = [l for l in model.layers]
 -
@@ -220,7 +206,7 @@ index cc2db75b8..000000000
 -                write_activation(activation)
 -
 -            else:
--                assert False, f"Unsupported layer type:{layer_type}" 
+-                assert False, f"Unsupported layer type:{layer_type}"
 diff --git a/python/opm/ml/ml_tools/requirements.txt b/python/opm/ml/ml_tools/requirements.txt
 deleted file mode 100644
 index bf0e660ab..000000000
@@ -246,7 +232,7 @@ index bf0e660ab..000000000
 -################################################################
 diff --git a/python/opm/ml/ml_tools/scaler_layers.py b/python/opm/ml/ml_tools/scaler_layers.py
 deleted file mode 100644
-index fd0a4047a..000000000
+index e4f7864f7..000000000
 --- a/python/opm/ml/ml_tools/scaler_layers.py
 +++ /dev/null
 @@ -1,201 +0,0 @@
@@ -292,7 +278,7 @@ index fd0a4047a..000000000
 -        data_min: Optional[float | ArrayLike] = None,
 -        data_max: Optional[float | ArrayLike] = None,
 -        feature_range: Sequence[float] | np.ndarray | tf.Tensor = (0, 1),
--        **kwargs, 
+-        **kwargs,
 -    ) -> None:
 -        super().__init__(**kwargs)
 -        if feature_range[0] >= feature_range[1]:
@@ -383,7 +369,7 @@ index fd0a4047a..000000000
 -        self._is_adapted = True
 -
 -
--class MinMaxScalerLayer(ScalerLayer, PreprocessingLayer): 
+-class MinMaxScalerLayer(ScalerLayer, PreprocessingLayer):
 -    """Scales the input according to MinMaxScaling.
 -
 -    See
@@ -402,7 +388,7 @@ index fd0a4047a..000000000
 -        super().__init__(data_min, data_max, feature_range, **kwargs)
 -        self._name: str = "MinMaxScalerLayer"
 -
--    def call(self, inputs: tf.Tensor) -> tf.Tensor: 
+-    def call(self, inputs: tf.Tensor) -> tf.Tensor:
 -        if not self.is_adapted:
 -            print(np.greater_equal(self.data_min, self.data_max))
 -            raise RuntimeError(
@@ -433,12 +419,12 @@ index fd0a4047a..000000000
 -        data_min: Optional[float | ArrayLike] = None,
 -        data_max: Optional[float | ArrayLike] = None,
 -        feature_range: Sequence[float] | np.ndarray | tf.Tensor = (0, 1),
--        **kwargs, 
+-        **kwargs,
 -    ) -> None:
 -        super().__init__(data_min, data_max, feature_range, **kwargs)
 -        self._name: str = "MinMaxUnScalerLayer"
 -
--    def call(self, inputs: tf.Tensor) -> tf.Tensor: 
+-    def call(self, inputs: tf.Tensor) -> tf.Tensor:
 -        if not self._is_adapted:
 -            raise RuntimeError(
 -                """The layer has not been adapted correctly. Call ``adapt`` before using
@@ -451,6 +437,15 @@ index fd0a4047a..000000000
 -            self.feature_range[1] - self.feature_range[0]
 -        )
 -        return unscaled_data * self.scalar + self.min
--- 
-2.43.0
-
+diff --git a/python/setup.py.in b/python/setup.py.in
+index 17a680358..5a058343f 100644
+--- a/python/setup.py.in
++++ b/python/setup.py.in
+@@ -38,7 +38,6 @@ setup(
+                 'opm.io.sim',
+                 'opm.io.summary',
+                 'opm.io.ecl',
+-                'opm.ml.ml_tools',
+                 'opm.tools',
+                 'opm.util'
+             ],

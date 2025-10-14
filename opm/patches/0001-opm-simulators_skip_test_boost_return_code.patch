@@ -1,22 +1,30 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index df09b8c49..740f1e946 100644
+index b2e015b12..bdd0c6246 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -454,6 +454,9 @@ target_sources(test_glift1 PRIVATE $<TARGET_OBJECTS:moduleVersion>)
+@@ -504,6 +504,9 @@ endif()
  
  include (${CMAKE_CURRENT_SOURCE_DIR}/modelTests.cmake)
  
 +set_tests_properties(tasklets_failure PROPERTIES DISABLED True)
-+set_tests_properties(SatfuncConsistencyChecks_parallel PROPERTIES SKIP_RETURN_CODE 200)
++set_tests_properties(SatfuncConsistencyChecks_parallel rftcontainer PROPERTIES SKIP_RETURN_CODE 200)
 +
  if (HAVE_OPM_TESTS)
    include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
  
 diff --git a/parallelUnitTests.cmake b/parallelUnitTests.cmake
-index 4036bf7a1..b7630cdf5 100644
+index b70891de6..e4e113f04 100644
 --- a/parallelUnitTests.cmake
 +++ b/parallelUnitTests.cmake
-@@ -126,6 +126,7 @@ foreach(NPROC 2 3 4)
+@@ -109,6 +109,7 @@ foreach(NPROC 2 3 4)
+     PROCESSORS
+       ${NPROC}
+   )
++  set_tests_properties(rftcontainer_np${NPROC} PROPERTIES SKIP_RETURN_CODE 200)
+ endforeach()
+ 
+ foreach(NPROC 2 3 4)
+@@ -141,6 +142,7 @@ foreach(NPROC 2 3 4)
      PROCESSORS
        ${NPROC}
    )

@@ -20,7 +20,6 @@ Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/opm-simulators/archive/release/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
 Patch0:         0001-opm-simulators_skip_test_boost_return_code.patch
 Patch1:         0002-opm-simulators_avoid_negative_rs_rv_max.patch
-Patch2:         0003-opm-simulators_avoid_nullptr_dereference.patch
 BuildRequires:  lapack-devel openblas-devel
 BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel
@@ -192,7 +191,6 @@ This package contains the applications for opm-simulators
 %setup -q -n opm-simulators-%{rtype}-%{version}-%{tag}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 mkdir serial
