@@ -294,7 +294,11 @@ rm -rf %{buildroot}
 %{_bindir}/flow
 %endif
 /etc/bash_completion.d/*
+%if 0%{?_build_versioned} == 1
+%exclude %{_datadir}/man/*
+%else
 %{_datadir}/man/*
+%endif
 
 %if 0%{?_build_versioned} == 1
 %files -n opm-simulators-bin
@@ -320,7 +324,11 @@ rm -rf %{buildroot}
 %else
 %{_libdir}/openmpi/bin/flow
 %endif
+%if 0%{?_build_versioned} == 1
+%exclude %{_libdir}/openmpi/share/man/*
+%else
 %{_libdir}/openmpi/share/man/*
+%endif
 
 %if 0%{?_build_versioned} == 1
 %files -n opm-simulators-openmpi-bin
@@ -348,7 +356,11 @@ rm -rf %{buildroot}
 %else
 %{_libdir}/mpich/bin/flow
 %endif
+%if 0%{?_build_versioned} == 1
+%exclude %{_libdir}/mpich/share/man/*
+%else
 %{_libdir}/mpich/share/man/*
+%endif
 
 %if 0%{?_build_versioned} == 1
 %files -n opm-simulators-mpich-bin
