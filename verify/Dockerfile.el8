@@ -18,6 +18,8 @@ RUN chown -R builder /tmp/opm/
 USER builder
 RUN echo "Cloning opm-tests"
 RUN git clone --depth 1 https://github.com/OPM/opm-tests
+RUN echo "Cloning opm-upscaling"
+RUN git clone --depth 1 https://github.com/OPM/opm-upscaling
 USER root
 RUN /bin/bash /tmp/opm/scripts/setup_simulators_env.sh ${test_openmpi} ${test_mpich}
 RUN echo "Running Norne checks"
@@ -30,3 +32,4 @@ RUN /bin/bash /tmp/opm/scripts/setup_upscaling_env.sh ${test_openmpi} ${test_mpi
 USER builder
 RUN echo "Running upscaling checks"
 RUN /bin/bash /tmp/opm/scripts/upscale_spe9.sh ${test_openmpi} ${test_mpich}
+RUN /bin/bash /tmp/opm/scripts/upscale_benchmark.sh ${test_openmpi} ${test_mpich}
