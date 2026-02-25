@@ -233,7 +233,7 @@ rm -rf %{buildroot}
 %{_libdir}/*.so
 /usr/lib/dunecontrol/*
 %{_includedir}/*
-%{_datadir}/cmake/*
+%{_libdir}/cmake/*
 %{_datadir}/opm/cmake/Modules/*
 %if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
@@ -256,7 +256,7 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dunecontrol/*
 %{_includedir}/openmpi-x86_64/*
-%{_libdir}/openmpi/share/cmake/*
+%{_libdir}/openmpi/lib/cmake/*
 %{_libdir}/openmpi/share/opm/cmake/Modules/*
 
 %files openmpi-bin
@@ -274,7 +274,7 @@ rm -rf %{buildroot}
 %{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dunecontrol/*
 %{_includedir}/mpich-x86_64/*
-%{_libdir}/mpich/share/cmake/*
+%{_libdir}/mpich/lib/cmake/*
 %{_libdir}/mpich/share/opm/cmake/Modules/*
 
 %files mpich-bin

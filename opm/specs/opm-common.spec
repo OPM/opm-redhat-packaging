@@ -117,10 +117,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 /usr/lib/dunecontrol/*
 %{_includedir}/*
-%{_datadir}/cmake/*
+%{_libdir}/cmake/*
 %{_datadir}/opm/*
 %{_libdir}/*.so
 
 %files -n python3-opm-common
-%{_prefix}/lib/python3.6/site-packages/opm/*
-%{_prefix}/lib/python3.6/site-packages/opm_embedded/*
+%{python3_sitelib}/opm/*
+%{python3_sitelib}/opm_embedded/*
