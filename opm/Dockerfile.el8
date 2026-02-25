@@ -1,5 +1,6 @@
 ARG version=""
 ARG version_tag=""
+ARG build_type="release"
 ARG build_openmpi="1"
 ARG build_mpich="1"
 ARG build_versioned="0"
@@ -7,6 +8,7 @@ ARG build_jobs=16
 FROM rockylinux:8 AS stage1
 ARG version
 ARG version_tag
+ARG build_type
 ARG build_openmpi
 ARG build_mpich
 ARG build_versioned
@@ -19,7 +21,7 @@ RUN /bin/bash /tmp/opm/scripts/setup_buildenv_el8.sh ${build_jobs} ${build_openm
 RUN chown -R builder /tmp/opm/
 USER builder
 RUN echo "Making orig sources"
-RUN /bin/bash /tmp/opm/scripts/make_sources.sh ${version} ${version_tag} /tmp/opm/git /tmp/opm/rpmbuild
+RUN /bin/bash /tmp/opm/scripts/make_sources.sh ${version} ${version_tag} /tmp/opm/git /tmp/opm/rpmbuild ${build_type}
 RUN echo "Making SRPMs"
 RUN /bin/bash /tmp/opm/scripts/make_srpms.sh /tmp/opm/rpmbuild ${version}
 RUN echo "Building RPMs"
