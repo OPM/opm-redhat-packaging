@@ -10,7 +10,12 @@ pushd /tmp/opm/current
 createrepo .
 popd
 
-dnf config-manager --add-repo https://www.opm-project.org/package/opm.repo
+if test "$4" -eq "1"
+then
+  dnf config-manager --add-repo https://www.opm-project.org/package/equinor.repo
+else
+  dnf config-manager --add-repo https://www.opm-project.org/package/opm.repo
+fi
 dnf config-manager --add-repo current.repo
 dnf config-manager --set-enabled powertools
 
