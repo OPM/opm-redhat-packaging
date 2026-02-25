@@ -3,14 +3,14 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
 
 Name:          opm-upscaling
-Version:       2025.10
+Version:       2026.02
 Release:       0
 Summary:       Open Porous Media - upscaling library
 License:       GPL-3.0

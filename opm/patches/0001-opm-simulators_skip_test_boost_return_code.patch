@@ -1,22 +1,28 @@
+From dc968b1d2bf6f13672c2f352db893a32ef0fc0ed Mon Sep 17 00:00:00 2001
+From: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
+Date: Wed, 25 Feb 2026 11:10:26 +0100
+Subject: [PATCH] disable tests and/or workaround boost 1.66 issues
+
+
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index b2e015b12..bdd0c6246 100644
+index 47b87e862..4318970f7 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -504,6 +504,9 @@ endif()
+@@ -370,6 +370,9 @@ endmacro()
+ macro(opm-simulators_tests_hook)
+   include(${CMAKE_CURRENT_SOURCE_DIR}/modelTests.cmake)
  
- include (${CMAKE_CURRENT_SOURCE_DIR}/modelTests.cmake)
- 
-+set_tests_properties(tasklets_failure PROPERTIES DISABLED True)
-+set_tests_properties(SatfuncConsistencyChecks_parallel rftcontainer PROPERTIES SKIP_RETURN_CODE 200)
++  set_tests_properties(tasklets_failure PROPERTIES DISABLED True)
++  set_tests_properties(SatfuncConsistencyChecks_parallel rftcontainer PROPERTIES SKIP_RETURN_CODE 200)
 +
- if (HAVE_OPM_TESTS)
-   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
- 
+   # Look for the opm-tests repository; if found the variable
+   # HAVE_OPM_TESTS will be set to true.
+   include(Findopm-tests)
 diff --git a/parallelUnitTests.cmake b/parallelUnitTests.cmake
-index b70891de6..e4e113f04 100644
+index 26b83e403..3afcf3be1 100644
 --- a/parallelUnitTests.cmake
 +++ b/parallelUnitTests.cmake
-@@ -109,6 +109,7 @@ foreach(NPROC 2 3 4)
+@@ -117,6 +117,7 @@ foreach(NPROC 2 3 4)
      PROCESSORS
        ${NPROC}
    )
@@ -24,7 +30,7 @@ index b70891de6..e4e113f04 100644
  endforeach()
  
  foreach(NPROC 2 3 4)
-@@ -141,6 +142,7 @@ foreach(NPROC 2 3 4)
+@@ -149,6 +150,7 @@ foreach(NPROC 2 3 4)
      PROCESSORS
        ${NPROC}
    )
@@ -32,3 +38,6 @@ index b70891de6..e4e113f04 100644
  endforeach()
  
  opm_add_test(test_broadcast
+-- 
+2.43.0
+

@@ -3,9 +3,9 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
 
-Version:        2025.10
+Version:        2026.02
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
@@ -107,6 +107,7 @@ Group:          Scientific
 Requires:       opm-simulators%{postfix}-bin = %{version}
 Requires:       opm-simulators2024.10-bin
 Requires:       opm-simulators2025.04-bin
+Requires:       opm-simulators2025.10-bin
 
 %description -n opm-simulators-bin
 This package contains the applications for opm-simulators
@@ -144,6 +145,7 @@ Group:          Scientific
 Requires:       opm-simulators%{postfix}-openmpi-bin = %{version}
 Requires:       opm-simulators2024.10-openmpi-bin
 Requires:       opm-simulators2025.04-openmpi-bin
+Requires:       opm-simulators2025.10-openmpi-bin
 
 %description -n opm-simulators-openmpi-bin
 This package contains the applications for opm-simulators
@@ -183,6 +185,7 @@ Group:          Scientific
 Requires:       opm-simulators%{postfix}-mpich-bin = %{version}
 Requires:       opm-simulators2024.10-mpich-bin
 Requires:       opm-simulators2025.04-mpich-bin
+Requires:       opm-simulators2025.10-mpich-bin
 
 %description -n opm-simulators-mpich-bin
 This package contains the applications for opm-simulators

@@ -1,12 +1,12 @@
-commit a9cd7aee10be093ed2c4cb4da6935aa6189f8791
-Author: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
-Date:   Mon Oct 13 13:07:52 2025 +0200
+From c131aaeac8b4539f1cab88f831e8021938e7b908 Mon Sep 17 00:00:00 2001
+From: Arne Morten Kvarving <arne.morten.kvarving@sintef.no>
+Date: Tue, 24 Feb 2026 13:47:11 +0100
+Subject: [PATCH] remove ml_tools
 
-    remove ml_tools
 
 diff --git a/python/opm/ml/ml_tools/README.md b/python/opm/ml/ml_tools/README.md
 deleted file mode 100644
-index 337de9272..000000000
+index c0a9ed893..000000000
 --- a/python/opm/ml/ml_tools/README.md
 +++ /dev/null
 @@ -1,24 +0,0 @@
@@ -22,8 +22,8 @@ index 337de9272..000000000
 -
 --To compile run the unit tests:
 -
--$ make ml_model_test
--$ ./bin/ml_model_test
+-$ make test_ml_model
+-$ ./bin/test_ml_model
 -TEST tensor_test
 -TEST dense_1x1
 -TEST dense_10x1
@@ -36,18 +36,152 @@ index 337de9272..000000000
 -TEST scalingdense_10x1
 diff --git a/python/opm/ml/ml_tools/__init__.py b/python/opm/ml/ml_tools/__init__.py
 deleted file mode 100644
-index 27273543e..000000000
+index 1c69e1783..000000000
 --- a/python/opm/ml/ml_tools/__init__.py
 +++ /dev/null
-@@ -1,2 +0,0 @@
+@@ -1,4 +0,0 @@
 -from .kerasify import *
+-from .dense_layers import *
 -from .scaler_layers import *
+-
+diff --git a/python/opm/ml/ml_tools/dense_layers.py b/python/opm/ml/ml_tools/dense_layers.py
+deleted file mode 100644
+index db501f914..000000000
+--- a/python/opm/ml/ml_tools/dense_layers.py
++++ /dev/null
+@@ -1,125 +0,0 @@
+-#   Copyright (c) 2025 NORCE
+-#   This file is part of the Open Porous Media project (OPM).
+-#   OPM is free software: you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation, either version 3 of the License, or
+-#   (at your option) any later version.
+-#   OPM is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#   GNU General Public License for more details.
+-#   You should have received a copy of the GNU General Public License
+-#   along with OPM.  If not, see <http://www.gnu.org/licenses/>.
+-
+-import numpy as np
+-
+-from opm.ml.ml_tools.scaler_layers import (
+-    MinMaxScalerLayer,
+-    MinMaxUnScalerLayer,
+-)
+-
+-# Activation functions
+-def linear(x):
+-    return x
+-
+-
+-def relu(x):
+-    return np.maximum(0, x)
+-
+-
+-def softplus(x):
+-    return np.log1p(np.exp(x))
+-
+-
+-def sigmoid(x):
+-    return 1 / (1 + np.exp(-x))
+-
+-
+-def tanh(x):
+-    return np.tanh(x)
+-
+-
+-def hard_sigmoid(x):
+-    return np.clip(0.2 * x + 0.5, 0, 1)
+-
+-
+-# Mapping of activation names to functions
+-ACTIVATIONS = {
+-    "linear": linear,
+-    "relu": relu,
+-    "softplus": softplus,
+-    "sigmoid": sigmoid,
+-    "tanh": tanh,
+-    "hard_sigmoid": hard_sigmoid
+-}
+-
+-
+-class Dense:
+-    def __init__(self, input_dim, output_dim, activation="linear"):
+-        # Random initialization for generality
+-        self.weights = np.random.randn(input_dim, output_dim).astype(np.float32) * 0.01
+-        self.biases = np.zeros((output_dim,), dtype=np.float32)
+-        self.activation_name = activation
+-        self.activation_func = ACTIVATIONS.get(activation, linear)
+-
+-    def set_weights(self, w_b):
+-        self.weights = w_b[0].astype(np.float32)
+-        self.biases = w_b[1].astype(np.float32)
+-
+-    def get_weights(self):
+-        return [self.weights, self.biases]
+-
+-    def get_config(self):
+-        return {
+-            "input_dim": self.weights.shape[0],
+-            "output_dim": self.weights.shape[1],
+-            "activation": self.activation_name,
+-        }
+-
+-    def forward(self, x):
+-        z = np.dot(x, self.weights) + self.biases
+-        return self.activation_func(z)
+-
+-    def __call__(self, x) -> np.ndarray:
+-        return self.forward(x)
+-
+-
+-class Sequential:
+-    def __init__(self, layers):
+-        self.layers = layers
+-
+-    def forward(self, x):
+-        """Forward propagate input through all layers."""
+-        for layer in self.layers:
+-            x = layer.forward(x)
+-        return x
+-
+-    def summary(self):
+-        print("Model Summary:")
+-        for i, layer in enumerate(self.layers):
+-            cfg = layer.get_config()
+-            # Determine type-specific info
+-            if isinstance(layer, Dense):
+-                print(
+-                    f" Layer {i+1}: Dense({cfg['input_dim']} -> {cfg['output_dim']}), activation={cfg['activation']}"
+-                )
+-            elif isinstance(layer, (MinMaxScalerLayer, MinMaxUnScalerLayer)):
+-                print(
+-                    f" Layer {i+1}: {cfg.get('name', layer.__class__.__name__)}, "
+-                    f"feature_range={cfg.get('feature_range')}, "
+-                    f"is_adapted={cfg.get('is_adapted')}"
+-                )
+-            else:
+-                # fallback for unknown layers
+-                print(f" Layer {i+1}: {layer.__class__.__name__}, config={cfg}")
+-
+-    def get_weights(self):
+-        return [layer.get_weights() for layer in self.layers]
+-
+-    def set_weights(self, weights_list):
+-        for layer, w in zip(self.layers, weights_list):
+-            layer.set_weights(w)
+-
+-    def __call__(self, x) -> np.ndarray:
+-        return self.forward(x)
+-    
+\ No newline at end of file
 diff --git a/python/opm/ml/ml_tools/kerasify.py b/python/opm/ml/ml_tools/kerasify.py
 deleted file mode 100644
-index 5ac321fc3..000000000
+index 9827d7bab..000000000
 --- a/python/opm/ml/ml_tools/kerasify.py
 +++ /dev/null
-@@ -1,159 +0,0 @@
+@@ -1,161 +0,0 @@
 -
 -#   Copyright (c) 2016 Robert W. Rose
 -#   Copyright (c) 2018 Paul Maevskikh
@@ -163,8 +297,9 @@ index 5ac321fc3..000000000
 -
 -            if layer_type == 'MinMaxScalerLayer':
 -                write_scaling(f)
--                feat_inf = layer.get_weights()[0]
--                feat_sup = layer.get_weights()[1]
+-                feat_range = layer.get_weights()[2]
+-                feat_inf = feat_range[0]
+-                feat_sup = feat_range[1]
 -                f.write(struct.pack('f', layer.data_min))
 -                f.write(struct.pack('f', layer.data_max))
 -                f.write(struct.pack('f', feat_inf))
@@ -173,8 +308,9 @@ index 5ac321fc3..000000000
 -
 -            elif layer_type == 'MinMaxUnScalerLayer':
 -                write_unscaling(f)
--                feat_inf = layer.get_weights()[0]
--                feat_sup = layer.get_weights()[1]
+-                feat_range = layer.get_weights()[2]
+-                feat_inf = feat_range[0]
+-                feat_sup = feat_range[1]
 -                f.write(struct.pack('f', layer.data_min))
 -                f.write(struct.pack('f', layer.data_max))
 -                f.write(struct.pack('f', feat_inf))
@@ -207,12 +343,167 @@ index 5ac321fc3..000000000
 -
 -            else:
 -                assert False, f"Unsupported layer type:{layer_type}"
+diff --git a/python/opm/ml/ml_tools/load_model.py b/python/opm/ml/ml_tools/load_model.py
+deleted file mode 100644
+index ebaa8ef57..000000000
+--- a/python/opm/ml/ml_tools/load_model.py
++++ /dev/null
+@@ -1,149 +0,0 @@
+-#   Copyright (C) 2025 NORCE Research AS.
+-
+-#   This file is part of the Open Porous Media project (OPM).
+-
+-#   OPM is free software: you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation, either version 3 of the License, or
+-#   (at your option) any later version.
+-
+-#   OPM is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#   GNU General Public License for more details.
+-
+-#   You should have received a copy of the GNU General Public License
+-#   along with OPM.  If not, see <http://www.gnu.org/licenses/>.
+-
+-import struct
+-import numpy as np
+-
+-from opm.ml.ml_tools.kerasify import (
+-    LAYER_SCALING, LAYER_UNSCALING, LAYER_DENSE, LAYER_ACTIVATION,
+-    ACTIVATION_LINEAR, ACTIVATION_RELU, ACTIVATION_SOFTPLUS, 
+-    ACTIVATION_TANH, ACTIVATION_SIGMOID, ACTIVATION_HARD_SIGMOID,
+-)
+-
+-from opm.ml.ml_tools.scaler_layers import (
+-    MinMaxScalerLayer,
+-    MinMaxUnScalerLayer,
+-)
+-
+-from opm.ml.ml_tools.dense_layers import (
+-    Dense, Sequential
+-)
+-
+-def read_floats(f, count):
+-    """Read `count` float32 values from file."""
+-    data = f.read(4 * count)
+-    return np.array(struct.unpack(f"{count}f", data), dtype=np.float32)
+-
+-def read_activation(f):
+-    """Reverse of write_activation."""
+-    act_id = struct.unpack('I', f.read(4))[0]
+-
+-    if act_id == ACTIVATION_LINEAR:
+-        return "linear"
+-    elif act_id == ACTIVATION_RELU:
+-        return "relu"
+-    elif act_id == ACTIVATION_SOFTPLUS:
+-        return "softplus"
+-    elif act_id == ACTIVATION_TANH:
+-        return "tanh"
+-    elif act_id == ACTIVATION_SIGMOID:
+-        return "sigmoid"
+-    elif act_id == ACTIVATION_HARD_SIGMOID:
+-        return "hard_sigmoid"
+-    else:
+-        raise ValueError(f"Unknown activation ID: {act_id}")
+-
+-
+-def load_model(filename):
+-    """
+-    Load a Sequential model previously saved with `export_model`.
+-
+-    This function reads a binary file containing layer information,
+-    weights, biases, and scaler parameters, and reconstructs a
+-    Python `Sequential` model with `Dense`, `MinMaxScalerLayer`,
+-    and `MinMaxUnScalerLayer` layers.
+-
+-    Parameters
+-    ----------
+-    filename : str or os.PathLike
+-        Path to the binary file created by `export_model`.
+-
+-    Returns
+-    -------
+-    model : Sequential
+-        A Sequential model with layers and weights restored from the file.
+-
+-    Notes
+-    -----
+-    - Dense layers with activations are saved as separate Dense + Activation entries
+-      in the file, so this function automatically merges them into a single Dense layer
+-      with the correct activation.
+-    - MinMaxScalerLayer and MinMaxUnScalerLayer require the stored data_min, data_max,
+-      and feature_range to properly reconstruct the internal scaling parameters.
+-    - The function currently supports only scalar or single-feature scaling.
+-    """
+-    layers = []
+-
+-    with open(filename, "rb") as f:
+-        num_layers = struct.unpack('I', f.read(4))[0]
+-
+-        for _ in range(num_layers):
+-
+-            layer_type_id = struct.unpack('I', f.read(4))[0]
+-
+-            # ---- MinMaxScalerLayer ----
+-            if layer_type_id == LAYER_SCALING:
+-                data_min = struct.unpack('f', f.read(4))[0]
+-                data_max = struct.unpack('f', f.read(4))[0]
+-                feat_inf = struct.unpack('f', f.read(4))[0]
+-                feat_sup = struct.unpack('f', f.read(4))[0]
+-
+-                layer = MinMaxScalerLayer(feature_range=(feat_inf, feat_sup))
+-                layer.data_min = data_min
+-                layer.data_max = data_max
+-                layer._adapt() 
+-                layers.append(layer)
+-
+-            # ---- MinMaxUnScalerLayer ----
+-            elif layer_type_id == LAYER_UNSCALING:
+-                data_min = struct.unpack('f', f.read(4))[0]
+-                data_max = struct.unpack('f', f.read(4))[0]
+-                feat_inf = struct.unpack('f', f.read(4))[0]
+-                feat_sup = struct.unpack('f', f.read(4))[0]
+-
+-                layer = MinMaxUnScalerLayer(feature_range=(feat_inf, feat_sup))
+-                layer.data_min = data_min
+-                layer.data_max = data_max
+-                layer._adapt()
+-                layers.append(layer)
+-
+-            # ---- Dense ----
+-            elif layer_type_id == LAYER_DENSE:
+-                in_dim = struct.unpack('I', f.read(4))[0]
+-                out_dim = struct.unpack('I', f.read(4))[0]
+-                bias_dim = struct.unpack('I', f.read(4))[0]
+-
+-                w_count = in_dim * out_dim
+-                weights = read_floats(f, w_count).reshape((in_dim, out_dim))
+-                biases = read_floats(f, bias_dim)
+-
+-                activation = read_activation(f)
+-
+-                layer = Dense(in_dim, out_dim, activation=activation)
+-                layer.set_weights([weights, biases])
+-
+-                layers.append(layer)
+-
+-            # ---- Standalone Activation (ignored) ----
+-            elif layer_type_id == LAYER_ACTIVATION:
+-                _ = read_activation(f)
+-                continue
+-
+-            else:
+-                raise ValueError(f"Unsupported layer type id: {layer_type_id}")
+-
+-    return Sequential(layers)
 diff --git a/python/opm/ml/ml_tools/requirements.txt b/python/opm/ml/ml_tools/requirements.txt
 deleted file mode 100644
-index bf0e660ab..000000000
+index 3b04a65e7..000000000
 --- a/python/opm/ml/ml_tools/requirements.txt
 +++ /dev/null
-@@ -1,17 +0,0 @@
+@@ -1,9 +0,0 @@
 -################################################################
 -# Python v.3.9.0 and above
 -python>=3.9.0<=3.12.0
@@ -222,20 +513,12 @@ index bf0e660ab..000000000
 -numpy>=1.23.0
 -
 -################################################################
--# TensorFlow v.2.1 and above include both CPU and GPU versions.
--tensorflow>=2.1.0
--
--################################################################
--# Keras v.2.12.0 and above
--keras>=2.12.0
--
--################################################################
 diff --git a/python/opm/ml/ml_tools/scaler_layers.py b/python/opm/ml/ml_tools/scaler_layers.py
 deleted file mode 100644
-index e4f7864f7..000000000
+index 42fc59889..000000000
 --- a/python/opm/ml/ml_tools/scaler_layers.py
 +++ /dev/null
-@@ -1,201 +0,0 @@
+@@ -1,164 +0,0 @@
 -#   Copyright (c) 2024 NORCE
 -#   Copyright (c) 2024 UiB
 -#   This file is part of the Open Porous Media project (OPM).
@@ -250,193 +533,156 @@ index e4f7864f7..000000000
 -#   You should have received a copy of the GNU General Public License
 -#   along with OPM.  If not, see <http://www.gnu.org/licenses/>.
 -
--"""Provide MinMax scaler layers for tensorflow.keras."""
+-"""Provide MinMax scaler layers in Numpy implementation."""
 -
 -from __future__ import annotations
--
--from typing import Optional, Sequence
--
+-from typing import Optional, Sequence, Union
 -import numpy as np
--import tensorflow as tf
--from numpy.typing import ArrayLike
--from tensorflow import keras
--from tensorflow.python.keras.engine.base_preprocessing_layer import (
--    PreprocessingLayer,
--)
 -
+-ArrayLike = Union[np.ndarray, list, float, int]
 -
--class ScalerLayer(keras.layers.Layer):
--    """MixIn to provide functionality for the Scaler Layer."""
--
--    data_min: tf.Tensor
--    data_max: tf.Tensor
--    min: tf.Tensor
--    scalar: tf.Tensor
+-class ScalerLayer:
+-    """Base layer for scaling using NumPy, providing min/max functionality."""
 -
 -    def __init__(
 -        self,
--        data_min: Optional[float | ArrayLike] = None,
--        data_max: Optional[float | ArrayLike] = None,
--        feature_range: Sequence[float] | np.ndarray | tf.Tensor = (0, 1),
--        **kwargs,
--    ) -> None:
--        super().__init__(**kwargs)
+-        data_min: Optional[ArrayLike] = None,
+-        data_max: Optional[ArrayLike] = None,
+-        feature_range: Sequence[float] = (0, 1),
+-    ):
 -        if feature_range[0] >= feature_range[1]:
 -            raise ValueError("Feature range must be strictly increasing.")
--        self.feature_range: tf.Tensor = tf.convert_to_tensor(
--            feature_range, dtype=tf.float32
--        )
--        self._is_adapted: bool = False
+-        self.feature_range = np.array(feature_range, dtype=float)
+-        self._is_adapted = False
+-
 -        if data_min is not None and data_max is not None:
--            self.data_min = tf.convert_to_tensor(data_min, dtype=tf.float32)
--            self.data_max = tf.convert_to_tensor(data_max, dtype=tf.float32)
+-            self.data_min = np.array(data_min, dtype=float)
+-            self.data_max = np.array(data_max, dtype=float)
 -            self._adapt()
--
--    def build(self, input_shape: tuple[int, ...]) -> None:
--        """Initialize ``data_min`` and ``data_max`` with the default values if they have
--        not been initialized yet.
--
--        Args:
--            input_shape (tuple[int, ...]): _description_
--
--        """
--        if not self._is_adapted:
--            # ``data_min`` and ``data_max`` have the same shape as one input tensor.
--            self.data_min = tf.zeros(input_shape[1:])
--            self.data_max = tf.ones(input_shape[1:])
--            self._adapt()
--
--    def get_weights(self) -> list[ArrayLike]:
--        """Return parameters of the scaling.
--
--        Returns:
--            list[ArrayLike]: List with three elements in the following order:
--            ``self.data_min``, ``self.data_max``, ``self.feature_range``
--
--        """
--        return [self.feature_range[0], self.feature_range[1], self.data_min, self.data_max, self.feature_range]
--
--    def set_weights(self, weights: list[ArrayLike]) -> None:
--        """Set parameters of the scaling.
--
--        Args:
--            weights (list[ArrayLike]): List with three elements in the following order:
--            ``data_min``, ``data_max``, ``feature_range``
--
--        Raises:
--            ValueError: If ``feature_range[0] >= feature_range[1]``.
--
--        """
--        self.feature_range = tf.convert_to_tensor(weights[2], dtype=tf.float32)
--        if self.feature_range[0] >= self.feature_range[1]:
--            raise ValueError("Feature range must be strictly increasing.")
--        self.data_min = tf.convert_to_tensor(weights[0], dtype=tf.float32)
--        self.data_max = tf.convert_to_tensor(weights[1], dtype=tf.float32)
 -
 -    def adapt(self, data: ArrayLike) -> None:
--        """Fit the layer to the min and max of the data. This is done individually for
--        each input feature.
--
--        Note:
--            So far, this is only tested for 1 dimensional input and output. For higher
--            dimensional input and output some functionality might need to be added.
--
--        Args:
--            data: _description_
--
--        """
--        data = tf.convert_to_tensor(data, dtype=tf.float32)
--        self.data_min = tf.math.reduce_min(data, axis=0)
--        self.data_max = tf.math.reduce_max(data, axis=0)
+-        """Fit the layer to the min and max of the data."""
+-        data = np.asarray(data, dtype=float)
+-        self.data_min = np.min(data, axis=0)
+-        self.data_max = np.max(data, axis=0)
 -        self._adapt()
 -
--    def _adapt(self) -> None:
--        if tf.math.reduce_any(self.data_min > self.data_max):
+-    def _adapt(self):
+-        """Compute internal scalar and min for scaling."""
+-        if np.any(self.data_min > self.data_max):
 -            raise RuntimeError(
--                f"""self.data_min {self.data_min} cannot be larger than self.data_max
--                {self.data_max} for any element."""
+-                f"data_min {self.data_min} cannot be larger than data_max {self.data_max}"
 -            )
--        self.scalar = tf.where(
--            self.data_max > self.data_min,
--            self.data_max - self.data_min,
--            tf.ones_like(self.data_min),
--        )
--        self.min = tf.where(
--            self.data_max > self.data_min,
--            self.data_min,
--            tf.zeros_like(self.data_min),
--        )
+-
+-        scale = self.data_max - self.data_min
+-        constant_mask = scale == 0
+-        self.scalar = np.where(constant_mask, 1.0, scale)
+-        self.min = np.where(constant_mask, 0.0, self.data_min)
+-        self._constant_mask = constant_mask
+-
 -        self._is_adapted = True
 -
+-    @property
+-    def is_adapted(self) -> bool:
+-        return self._is_adapted
 -
--class MinMaxScalerLayer(ScalerLayer, PreprocessingLayer):
--    """Scales the input according to MinMaxScaling.
+-    def get_weights(self):
+-        """Return [data_min, data_max, feature_range]."""
+-        return [self.data_min, self.data_max, self.feature_range]
 -
--    See
--    https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
--    for an explanation of the transform.
+-    def set_weights(self, weights):
+-        """Set [data_min, data_max, feature_range]."""
+-        self.data_min, self.data_max, self.feature_range = map(np.array, weights)
+-        if self.feature_range[0] >= self.feature_range[1]:
+-            raise ValueError("Feature range must be strictly increasing.")
+-        self._adapt()
 -
+-
+-class MinMaxScalerLayer(ScalerLayer):
+-    """Scales the input according to MinMaxScaling. 
+-    
+-    See: 
+-    https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html 
+-    for an explanation of the transform. 
 -    """
 -
 -    def __init__(
 -        self,
--        data_min: Optional[float | ArrayLike] = None,
--        data_max: Optional[float | ArrayLike] = None,
--        feature_range: Sequence[float] | np.ndarray | tf.Tensor = (0, 1),
--        **kwargs,
--    ) -> None:
--        super().__init__(data_min, data_max, feature_range, **kwargs)
--        self._name: str = "MinMaxScalerLayer"
+-        data_min: Optional[ArrayLike] = None,
+-        data_max: Optional[ArrayLike] = None,
+-        feature_range: Sequence[float] = (0, 1),
+-    ):
+-        super().__init__(data_min, data_max, feature_range)
+-        self._name = "MinMaxScalerLayer"
 -
--    def call(self, inputs: tf.Tensor) -> tf.Tensor:
+-    def get_config(self):
+-        """Return layer configuration as a dictionary."""
+-        return {
+-            "feature_range": self.feature_range.tolist(),
+-            "data_min": self.data_min.tolist() if hasattr(self, "data_min") else None,
+-            "data_max": self.data_max.tolist() if hasattr(self, "data_max") else None,
+-            "is_adapted": self.is_adapted,
+-            "name": getattr(self, "_name", "MinMaxScalerLayer")
+-        }
+-    
+-    def forward(self, inputs: ArrayLike) -> np.ndarray:
 -        if not self.is_adapted:
--            print(np.greater_equal(self.data_min, self.data_max))
--            raise RuntimeError(
--                """The layer has not been adapted correctly. Call ``adapt`` before using
--                the layer or set the ``data_min`` and ``data_max`` values manually.
--                """
--            )
+-            raise RuntimeError("The layer has not been adapted.")
 -
--        # Ensure the dtype is correct.
--        inputs = tf.convert_to_tensor(inputs, dtype=tf.float32)
+-        inputs = np.asarray(inputs, dtype=float)
 -        scaled_data = (inputs - self.min) / self.scalar
--        return (
--            scaled_data * (self.feature_range[1] - self.feature_range[0])
--        ) + self.feature_range[0]
+-
+-        scaled_data = np.where(self._constant_mask, 0.0, scaled_data)
+-
+-        return scaled_data * (self.feature_range[1] - self.feature_range[0]) + self.feature_range[0]
+-
+-    def __call__(self, inputs: ArrayLike) -> np.ndarray:
+-        """Enable calling the layer like a Keras layer: layer(x)."""
+-        return self.forward(inputs)
 -
 -
--class MinMaxUnScalerLayer(ScalerLayer, tf.keras.layers.Layer):
--    """Unscales the input by applying the inverse transform of ``MinMaxScalerLayer``.
+-class MinMaxUnScalerLayer(ScalerLayer):
+-    """Unscales the input by applying the inverse transform of `MinMaxScalerLayer`.
 -
--    See
+-    See:
 -    https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
 -    for an explanation of the transformation.
--
 -    """
 -
 -    def __init__(
 -        self,
--        data_min: Optional[float | ArrayLike] = None,
--        data_max: Optional[float | ArrayLike] = None,
--        feature_range: Sequence[float] | np.ndarray | tf.Tensor = (0, 1),
--        **kwargs,
--    ) -> None:
--        super().__init__(data_min, data_max, feature_range, **kwargs)
--        self._name: str = "MinMaxUnScalerLayer"
+-        data_min: Optional[ArrayLike] = None,
+-        data_max: Optional[ArrayLike] = None,
+-        feature_range: Sequence[float] = (0, 1),
+-    ):
+-        super().__init__(data_min, data_max, feature_range)
+-        self._name = "MinMaxUnScalerLayer"
 -
--    def call(self, inputs: tf.Tensor) -> tf.Tensor:
--        if not self._is_adapted:
--            raise RuntimeError(
--                """The layer has not been adapted correctly. Call ``adapt`` before using
--                the layer or set the ``data_min`` and ``data_max`` values manually."""
--            )
+-    def get_config(self):
+-        return {
+-            "feature_range": self.feature_range.tolist(),
+-            "data_min": self.data_min.tolist() if hasattr(self, "data_min") else None,
+-            "data_max": self.data_max.tolist() if hasattr(self, "data_max") else None,
+-            "is_adapted": self.is_adapted,
+-            "name": getattr(self, "_name", "MinMaxUnScalerLayer")
+-        }
+-    
+-    def forward(self, inputs: ArrayLike) -> np.ndarray:
+-        if not self.is_adapted:
+-            raise RuntimeError("The layer has not been adapted.")
 -
--        # Ensure the dtype is correct.
--        inputs = tf.convert_to_tensor(inputs, dtype=tf.float32)
--        unscaled_data = (inputs - self.feature_range[0]) / (
+-        inputs = np.asarray(inputs, dtype=float)
+-        unscaled = (inputs - self.feature_range[0]) / (
 -            self.feature_range[1] - self.feature_range[0]
 -        )
--        return unscaled_data * self.scalar + self.min
+-
+-        unscaled = np.where(self._constant_mask, 0.0, unscaled)
+-
+-        return unscaled * self.scalar + self.min
+-
+-    def __call__(self, inputs: ArrayLike) -> np.ndarray:
+-        """Enable calling the layer like a Keras layer: layer(x)."""
+-        return self.forward(inputs)
 diff --git a/python/setup.py.in b/python/setup.py.in
 index 17a680358..5a058343f 100644
 --- a/python/setup.py.in
@@ -449,3 +695,426 @@ index 17a680358..5a058343f 100644
                  'opm.tools',
                  'opm.util'
              ],
+diff --git a/python/tests/test_dense_layers.py b/python/tests/test_dense_layers.py
+deleted file mode 100644
+index 1b7691503..000000000
+--- a/python/tests/test_dense_layers.py
++++ /dev/null
+@@ -1,136 +0,0 @@
+-import io
+-import sys
+-
+-import unittest
+-import numpy as np
+-
+-from opm.ml.ml_tools.dense_layers import (
+-    linear, relu, softplus, sigmoid, tanh, hard_sigmoid,
+-    Dense, Sequential, ACTIVATIONS
+-)
+-
+-
+-class TestActivations(unittest.TestCase):
+-
+-    def test_linear(self):
+-        x = np.array([1, -2, 3])
+-        y = linear(x)
+-        self.assertTrue(np.allclose(y, x))
+-
+-    def test_relu(self):
+-        x = np.array([-1.0, 0.0, 2.0])
+-        y = relu(x)
+-        self.assertTrue(np.allclose(y, np.array([0.0, 0.0, 2.0])))
+-
+-    def test_softplus(self):
+-        x = np.array([0.0])
+-        y = softplus(x)
+-        self.assertTrue(np.allclose(y, np.log1p(np.exp(x))))
+-
+-    def test_sigmoid(self):
+-        x = np.array([0.0])
+-        y = sigmoid(x)
+-        self.assertTrue(np.allclose(y, np.array([0.5])))
+-
+-    def test_tanh(self):
+-        x = np.array([0.0])
+-        y = tanh(x)
+-        self.assertTrue(np.allclose(y, np.array([0.0])))
+-
+-    def test_hard_sigmoid(self):
+-        x = np.array([-10.0, 0.0, 10.0])
+-        y = hard_sigmoid(x)
+-        exp = np.clip(0.2 * x + 0.5, 0.0, 1.0)
+-        self.assertTrue(np.allclose(y, exp))
+-
+-    def test_activation_mapping(self):
+-        for _, fn in ACTIVATIONS.items():
+-            self.assertTrue(callable(fn))
+-        self.assertEqual(ACTIVATIONS["linear"], linear)
+-        self.assertEqual(ACTIVATIONS["relu"], relu)
+-
+-
+-class TestDense(unittest.TestCase):
+-
+-    def test_forward_shape(self):
+-        layer = Dense(input_dim=4, output_dim=3, activation="linear")
+-        x = np.random.randn(2, 4).astype(np.float32)
+-        y = layer.forward(x)
+-        self.assertEqual(y.shape, (2, 3))
+-
+-    def test_forward_relu(self):
+-        layer = Dense(2, 2, activation="relu")
+-        layer.weights = np.array([[1, -1], [1, -1]], dtype=np.float32)
+-        layer.biases = np.array([0.0, 0.0], dtype=np.float32)
+-
+-        x = np.array([[1.0, 1.0]], dtype=np.float32)
+-        y = layer.forward(x)
+-
+-        # dot = [2, -2], relu → [2, 0]
+-        self.assertTrue(np.allclose(y, np.array([[2.0, 0.0]])))
+-
+-    def test_set_get_weights(self):
+-        layer = Dense(3, 2)
+-        w = np.array([[1, 2], [3, 4], [5, 6]], dtype=np.float32)
+-        b = np.array([0.1, 0.2], dtype=np.float32)
+-
+-        layer.set_weights([w, b])
+-        w2, b2 = layer.get_weights()
+-
+-        self.assertTrue(np.allclose(w, w2))
+-        self.assertTrue(np.allclose(b, b2))
+-
+-    def test_get_config(self):
+-        layer = Dense(5, 7, activation="softplus")
+-        cfg = layer.get_config()
+-        self.assertEqual(cfg["input_dim"], 5)
+-        self.assertEqual(cfg["output_dim"], 7)
+-        self.assertEqual(cfg["activation"], "softplus")
+-
+-
+-class TestSequential(unittest.TestCase):
+-
+-    def test_forward(self):
+-        model = Sequential([
+-            Dense(3, 4, activation="relu"),
+-            Dense(4, 2, activation="linear")
+-        ])
+-        x = np.random.randn(5, 3).astype(np.float32)
+-        y = model.forward(x)
+-        self.assertEqual(y.shape, (5, 2))
+-
+-    def test_weights_roundtrip(self):
+-        model = Sequential([
+-            Dense(2, 3),
+-            Dense(3, 1)
+-        ])
+-
+-        original = model.get_weights()
+-        model.set_weights(original)
+-        new = model.get_weights()
+-
+-        for (w1, b1), (w2, b2) in zip(original, new):
+-            self.assertTrue(np.allclose(w1, w2))
+-            self.assertTrue(np.allclose(b1, b2))
+-
+-    def test_summary_output(self):
+-        model = Sequential([
+-            Dense(2, 3, activation="relu"),
+-            Dense(3, 1, activation="sigmoid")
+-        ])
+-
+-        buf = io.StringIO()
+-        sys_stdout_backup = sys.stdout
+-        sys.stdout = buf
+-
+-        model.summary()
+-
+-        sys.stdout = sys_stdout_backup
+-        out = buf.getvalue()
+-
+-        self.assertIn("Dense(2 -> 3), activation=relu", out)
+-        self.assertIn("Dense(3 -> 1), activation=sigmoid", out)
+-
+-
+-if __name__ == "__main__":
+-    unittest.main()
+diff --git a/python/tests/test_load_model.py b/python/tests/test_load_model.py
+deleted file mode 100644
+index fcc3e20c9..000000000
+--- a/python/tests/test_load_model.py
++++ /dev/null
+@@ -1,121 +0,0 @@
+-#   Copyright (C) 2025 NORCE Research AS.
+-
+-#   This file is part of the Open Porous Media project (OPM).
+-
+-#   OPM is free software: you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation, either version 3 of the License, or
+-#   (at your option) any later version.
+-
+-#   OPM is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#   GNU General Public License for more details.
+-
+-#   You should have received a copy of the GNU General Public License
+-#   along with OPM.  If not, see <http://www.gnu.org/licenses/>.
+-
+-import unittest
+-import numpy as np
+-import tempfile
+-
+-from opm.ml.ml_tools.dense_layers import Dense, Sequential
+-from opm.ml.ml_tools.scaler_layers import MinMaxScalerLayer, MinMaxUnScalerLayer
+-from opm.ml.ml_tools.load_model import load_model
+-from opm.ml.ml_tools.kerasify import export_model
+-
+-
+-class TestLoadModel(unittest.TestCase):
+-
+-    def _compare_dense_layers(self, layer1, layer2):
+-        w1, b1 = layer1.get_weights()
+-        w2, b2 = layer2.get_weights()
+-        self.assertTrue(np.allclose(w1, w2))
+-        self.assertTrue(np.allclose(b1, b2))
+-        self.assertEqual(layer1.activation_name, layer2.activation_name)
+-
+-    def test_dense_roundtrip(self):
+-        model = Sequential([
+-            Dense(2, 3, activation="relu"),
+-            Dense(3, 1, activation="sigmoid")
+-        ])
+-
+-        with tempfile.NamedTemporaryFile(suffix=".bin") as tmp:
+-            export_model(model, tmp.name)
+-            loaded_model = load_model(tmp.name)
+-
+-        self.assertEqual(len(model.layers), len(loaded_model.layers))
+-        for l1, l2 in zip(model.layers, loaded_model.layers):
+-            self._compare_dense_layers(l1, l2)
+-
+-        x = np.random.randn(5, 2).astype(np.float32)
+-        y_orig = model.forward(x)
+-        y_loaded = loaded_model.forward(x)
+-        self.assertTrue(np.allclose(y_orig, y_loaded))
+-
+-    def test_scaler_roundtrip(self):
+-        scaler = MinMaxScalerLayer(feature_range=(0, 1))
+-        unscaler = MinMaxUnScalerLayer(feature_range=(-1, 1))
+-
+-        # Use single-feature data for scalers
+-        data = np.array([[0], [1], [2]], dtype=np.float32)
+-        scaler.adapt(data)
+-        unscaler.adapt(scaler.forward(data))
+-        scaler.data_min = float(scaler.data_min.item())
+-        scaler.data_max = float(scaler.data_max.item())
+-        unscaler.data_min = float(unscaler.data_min.item())
+-        unscaler.data_max = float(unscaler.data_max.item())
+-         
+-        model = Sequential([scaler, unscaler])
+-
+-        with tempfile.NamedTemporaryFile(suffix=".bin") as tmp:
+-            export_model(model, tmp.name)
+-            loaded_model = load_model(tmp.name)
+-
+-        self.assertEqual(len(model.layers), len(loaded_model.layers))
+-        for l1, l2 in zip(model.layers, loaded_model.layers):
+-            self.assertTrue(np.allclose(l1.data_min, l2.data_min))
+-            self.assertTrue(np.allclose(l1.data_max, l2.data_max))
+-            self.assertTrue(np.allclose(l1.feature_range, l2.feature_range))
+-
+-        x = np.random.randn(4, 2).astype(np.float32)
+-        y_orig = model.forward(x)
+-        y_loaded = loaded_model.forward(x)
+-        self.assertTrue(np.allclose(y_orig, y_loaded))
+-
+-    def test_full_model(self):
+-        scaler = MinMaxScalerLayer(feature_range=(0, 1))
+-        scaler.adapt(np.random.rand(10, 1))
+-        scaler.data_min = float(scaler.data_min.item())
+-        scaler.data_max = float(scaler.data_max.item())
+-
+-        model = Sequential([
+-            scaler,
+-            Dense(2, 3, activation="relu"),
+-            Dense(3, 1, activation="linear")
+-        ])
+-
+-        with tempfile.NamedTemporaryFile(suffix=".bin") as tmp:
+-            export_model(model, tmp.name)
+-            loaded_model = load_model(tmp.name)
+-
+-        self.assertEqual(len(model.layers), len(loaded_model.layers))
+-
+-        # Check scaler layer
+-        self.assertTrue(np.allclose(model.layers[0].data_min, loaded_model.layers[0].data_min))
+-        self.assertTrue(np.allclose(model.layers[0].data_max, loaded_model.layers[0].data_max))
+-
+-        # Check Dense layers
+-        for l1, l2 in zip(model.layers[1:], loaded_model.layers[1:]):
+-            self.assertTrue(np.allclose(l1.get_weights()[0], l2.get_weights()[0]))
+-            self.assertTrue(np.allclose(l1.get_weights()[1], l2.get_weights()[1]))
+-            self.assertEqual(l1.activation_name, l2.activation_name)
+-
+-        x = np.random.randn(5, 2).astype(np.float32)
+-        y_orig = model.forward(x)
+-        y_loaded = loaded_model.forward(x)
+-        self.assertTrue(np.allclose(y_orig, y_loaded))
+-
+-
+-if __name__ == "__main__":
+-    unittest.main()
+diff --git a/python/tests/test_scaler_layers.py b/python/tests/test_scaler_layers.py
+deleted file mode 100644
+index b52ba17b8..000000000
+--- a/python/tests/test_scaler_layers.py
++++ /dev/null
+@@ -1,145 +0,0 @@
+-import unittest
+-import numpy as np
+-
+-from opm.ml.ml_tools.scaler_layers import (
+-    ScalerLayer,
+-    MinMaxScalerLayer,
+-    MinMaxUnScalerLayer,
+-)
+-
+-
+-class TestScalerLayer(unittest.TestCase):
+-
+-    def test_init_feature_range_error(self):
+-        with self.assertRaises(ValueError):
+-            ScalerLayer(feature_range=(1, 0))
+-
+-        with self.assertRaises(ValueError):
+-            ScalerLayer(feature_range=(0, 0))
+-
+-    def test_adapt_sets_min_max_and_scalar(self):
+-        data = np.array([[1, 10], [3, 30], [2, 20]], dtype=float)
+-        layer = ScalerLayer()
+-        layer.adapt(data)
+-
+-        self.assertTrue(layer.is_adapted)
+-        self.assertTrue(np.allclose(layer.data_min, np.array([1, 10])))
+-        self.assertTrue(np.allclose(layer.data_max, np.array([3, 30])))
+-
+-        # scalar = max - min
+-        self.assertTrue(np.allclose(layer.scalar, np.array([2, 20])))
+-        self.assertTrue(np.allclose(layer.min, np.array([1, 10])))
+-
+-    def test_zero_range_dimension_uses_scalar_1(self):
+-        data = np.array([[5, 10], [5, 20]]) 
+-        layer = ScalerLayer()
+-        layer.adapt(data)
+-
+-        self.assertTrue(np.allclose(layer.scalar, np.array([1.0, 10.0])))
+-        self.assertTrue(np.allclose(layer.min, np.array([0.0, 10.0])))
+-
+-    def test_set_get_weights_roundtrip(self):
+-        data_min = np.array([1, 2], dtype=float)
+-        data_max = np.array([5, 10], dtype=float)
+-        fr = np.array([0.0, 1.0], dtype=float)
+-
+-        layer = ScalerLayer(data_min, data_max, fr)
+-        w = layer.get_weights()
+-
+-        layer2 = ScalerLayer()
+-        layer2.set_weights(w)
+-
+-        w2 = layer2.get_weights()
+-
+-        for a, b in zip(w, w2):
+-            self.assertTrue(np.allclose(a, b))
+-
+-
+-class TestMinMaxScalerLayer(unittest.TestCase):
+-
+-    def test_forward_without_adapt_raises(self):
+-        layer = MinMaxScalerLayer()
+-        with self.assertRaises(RuntimeError):
+-            _ = layer.forward([1, 2, 3])
+-
+-    def test_scaling_simple(self):
+-        data = np.array([0, 5, 10], dtype=float)
+-        layer = MinMaxScalerLayer()
+-        layer.adapt(data)
+-
+-        x = np.array([0, 5, 10], dtype=float)
+-        y = layer(x)
+-
+-        # Expect 0 → 0, 5 → 0.5, 10 → 1.0
+-        self.assertTrue(np.allclose(y, np.array([0.0, 0.5, 1.0])))
+-
+-    def test_scaling_custom_range(self):
+-        data = np.array([0, 10], dtype=float)
+-        layer = MinMaxScalerLayer(feature_range=(2, 4))
+-        layer.adapt(data)
+-
+-        # 0 → 2, 5 → 3, 10 → 4
+-        x = np.array([0, 5, 10])
+-        y = layer(x)
+-
+-        self.assertTrue(np.allclose(y, np.array([2.0, 3.0, 4.0])))
+-
+-    def test_inverse_scaling_roundtrip(self):
+-        data = np.linspace(0, 100, 6)
+-        scaler = MinMaxScalerLayer()
+-        scaler.adapt(data)
+-
+-        unscaler = MinMaxUnScalerLayer()
+-        unscaler.set_weights(scaler.get_weights())
+-
+-        x = np.array([0, 25, 50, 75, 100], dtype=float)
+-        y = scaler(x)
+-        z = unscaler(y)
+-
+-        self.assertTrue(np.allclose(x, z))
+-
+-    def test_scaler_min_equals_max(self):
+-        data = np.array([3, 3, 3], dtype=float)
+-        layer = MinMaxScalerLayer()
+-        layer.adapt(data)
+-
+-        x = np.array([3], dtype=float)
+-        y = layer(x)
+-
+-        self.assertEqual(y[0], layer.feature_range[0])
+-
+-
+-class TestMinMaxUnScalerLayer(unittest.TestCase):
+-
+-    def test_forward_without_adapt_raises(self):
+-        layer = MinMaxUnScalerLayer()
+-        with self.assertRaises(RuntimeError):
+-            _ = layer.forward([0.1, 0.2])
+-
+-    def test_unscaling(self):
+-        data_min = np.array([0.0])
+-        data_max = np.array([10.0])
+-        layer = MinMaxUnScalerLayer(data_min, data_max)
+-
+-        # Inverse of [0 → 0, 0.5 → 5, 1 → 10]
+-        x = np.array([0.0, 0.5, 1.0])
+-        y = layer(x)
+-
+-        self.assertTrue(np.allclose(y, np.array([0.0, 5.0, 10.0])))
+-
+-    def test_custom_range_inverse(self):
+-        data = np.array([0, 10])
+-        scaler = MinMaxScalerLayer(feature_range=(-2, 2))
+-        scaler.adapt(data)
+-
+-        unscaler = MinMaxUnScalerLayer()
+-        unscaler.set_weights(scaler.get_weights())
+-
+-        scaled = scaler([0, 10, 5])
+-        unscaled = unscaler(scaled)
+-
+-        self.assertTrue(np.allclose(unscaled, np.array([0.0, 10.0, 5.0])))
+-
+-
+-if __name__ == "__main__":
+-    unittest.main()
+-- 
+2.43.0
+
