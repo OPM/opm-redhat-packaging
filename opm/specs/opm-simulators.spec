@@ -2,10 +2,10 @@
 # spec file for package opm-simulators
 #
 
-%define tag final
-%define rtype interim_release
+%define tag rc1
+%define rtype release 
 
-Version:        2026.02
+Version:        2026.04
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
