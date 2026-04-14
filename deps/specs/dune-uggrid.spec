@@ -3,12 +3,12 @@
 #
 
 Name:           dune-uggrid
-Version:        2.9.1
+Version:        2.11.0
 Release:        1
 Summary:        UG Grid module for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
-Source0:        https://dune-project.org/download/2.9.1/dune-uggrid-2.9.1.tar.gz
+Source0:        https://gitlab.dune-project.org/staging/dune-uggrid/-/archive/v2.11.0/dune-uggrid-v2.11.0.tar.gz
 BuildRequires:  dune-common-devel dune-geometry-devel
 BuildRequires:  openmpi-devel mpich-devel
 %if 0%{?_build_openmpi}
@@ -105,12 +105,12 @@ This package contains the development and header files for %{name} - mpich versi
 %endif
 
 %prep
-%setup -q
+%setup -q -n dune-uggrid-v2.11.0
 
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -118,7 +118,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
@@ -128,7 +128,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
@@ -136,13 +136,19 @@ popd
 
 %install
 rm -rf %{buildroot}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
+cd serial
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 %if 0%{?_build_openmpi}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+cd openmpi
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
+cd mpich
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 %endif
 
 %clean
@@ -170,11 +176,11 @@ rm -rf %{buildroot}
 %{_libdir}/*.so
 
 %files doc
-%{_datadir}/doc/*
+%{_docdir}/dune-uggrid/*
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/dune/*
+%{_includedir}/*
 %{_libdir}/cmake/*
 %{_datadir}/dune
 %{_datadir}/dune-uggrid
@@ -197,7 +203,7 @@ rm -rf %{buildroot}
 
 %files openmpi-devel
 %defattr(-,root,root,-)
-%{_includedir}/openmpi-x86_64/dune/*
+%{_includedir}/openmpi-x86_64/*
 %{_libdir}/openmpi/lib/dune*
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/cmake
@@ -211,7 +217,7 @@ rm -rf %{buildroot}
 
 %files mpich-devel
 %defattr(-,root,root,-)
-%{_includedir}/mpich-x86_64/dune/*
+%{_includedir}/mpich-x86_64/*
 %{_libdir}/mpich/lib/dune*
 %{_libdir}/mpich/lib/pkgconfig/*.pc
 %{_libdir}/mpich/lib/cmake

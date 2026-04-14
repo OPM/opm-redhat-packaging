@@ -3,13 +3,13 @@
 #
 
 Name:           dune-grid
-Version:        2.9.1
+Version:        2.11.0
 Release:        1
 Summary:        Grid management module for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
-Source0:        https://dune-project.org/download/2.9.1/dune-grid-2.9.1.tar.gz
+Source0:        https://gitlab.dune-project.org/core/dune-grid/-/archive/v2.11.0/dune-grid-v2.11.0.tar.gz
 BuildRequires:  dune-common-devel dune-geometry-devel dune-uggrid-devel
 BuildRequires:  mesa-libGL-devel metis-devel
 BuildRequires:  pkgconfig %{_toolset}
@@ -23,8 +23,10 @@ BuildRequires: dune-geometry-openmpi-devel dune-uggrid-openmpi-devel
 BuildRequires: mpich-devel dune-common-mpich-devel
 BuildRequires: dune-geometry-mpich-devel dune-uggrid-mpich-devel
 %endif
-BuildRequires:  doxygen inkscape graphviz
-BuildRequires:  tbb-devel python3-sphinx latexmk
+#BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
+#BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
+#BuildRequires:  texlive-cm texlive-mfware
+BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       libdune-grid = %{version}
 
@@ -109,12 +111,12 @@ This package contains the development and header files for %{name} - mpich versi
 %endif
 
 %prep
-%setup -q
+%setup -q -n dune-grid-v2.11.0
 
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -122,7 +124,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
@@ -132,7 +134,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
@@ -140,15 +142,21 @@ popd
 
 %install
 rm -rf %{buildroot}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
+cd serial
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 %if 0%{?_build_openmpi}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+cd openmpi
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
+cd ..
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
+cd mpich
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
+cd ..
 %endif
 
 %clean
@@ -178,12 +186,13 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/dune/*
+%{_includedir}/*
 %{_libdir}/cmake/*
 %{_datadir}/%{name}
 %{_datadir}/dune
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dune*
+%{_docdir}/dune-grid/grids/*
 %if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif
@@ -192,7 +201,7 @@ rm -rf %{buildroot}
 %endif
 
 %files doc
-%{_datadir}/doc/*
+%{_docdir}/*
 
 %if 0%{?_build_openmpi}
 %files -n libdune-grid-openmpi

@@ -3,13 +3,13 @@
 #
 
 Name:           dune-geometry
-Version:        2.9.1
+Version:        2.11.0
 Release:        1
 Summary:        Everything related to the DUNE reference elements
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.dune-project.org/
-Source0:        https://dune-project.org/download/2.9.1/dune-geometry-2.9.1.tar.gz
+Source0:        https://gitlab.dune-project.org/core/dune-geometry/-/archive/v2.11.0/dune-geometry-v2.11.0.tar.gz
 BuildRequires:  dune-common-devel
 BuildRequires:  gcc-c++ gcc-gfortran
 BuildRequires:  gmp-devel
@@ -21,8 +21,10 @@ BuildRequires:  openmpi-devel dune-common-openmpi-devel
 %if 0%{?_build_mpich}
 BuildRequires:  mpich-devel dune-common-mpich-devel
 %endif
-BuildRequires:  doxygen inkscape
-BuildRequires:  tbb-devel python3-sphinx latexmk graphviz
+#BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
+#BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
+#BuildRequires:  texlive-cm texlive-mfware
+BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       dune-common = %{version}
 Requires:       libdune-geometry = %{version}
@@ -102,12 +104,12 @@ This package contains the development and header files for DUNE - mpich version
 %endif
 
 %prep
-%setup -q
+%setup -q -n dune-geometry-v2.11.0
 
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -115,7 +117,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
@@ -125,7 +127,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
@@ -133,15 +135,21 @@ popd
 
 %install
 rm -rf %{buildroot}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
+cd serial
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 %if 0%{?_build_openmpi}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+cd openmpi
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
+cd ..
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
+cd mpich
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
+cd ..
 %endif
 
 %clean
@@ -163,7 +171,7 @@ rm -rf %{buildroot}
 %doc COPYING README.md
 
 %files doc
-%{_datadir}/doc/dune-geometry
+%{_docdir}/dune-geometry/*
 
 %files -n libdune-geometry
 %defattr(-,root,root,-)

@@ -3,26 +3,28 @@
 #
 
 Name:           dune-common
-Version:        2.9.1
-Release:        2
+Version:        2.11.0
+Release:        1
 Summary:        Distributed and Unified Numerics Environment
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            https://dune-project.org/
-Source0:        https://gitlab.dune-project.org/core/dune-common/-/archive/releases/opm/2024.04/dune-common-releases-opm-2024.04.tar.gz
+Source0:        https://gitlab.dune-project.org/core/dune-common/-/archive/v2.11.0/dune-common-v2.11.0.tar.gz
 Patch0:		0001-dune-common-py3.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig %{_toolset}
-BuildRequires:  cmake3 boost-devel
+BuildRequires:  cmake3 boost-devel suitesparse-devel
 %if 0%{?_build_openmpi}
 BuildRequires:  openmpi-devel
 %endif
 %if 0%{?_build_mpich}
 BuildRequires:  mpich-devel
 %endif
-BuildRequires:  doxygen inkscape graphviz texlive-amscls
-BuildRequires:  tbb-devel python3-sphinx latexmk texlive-cm texlive-mfware
+#BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
+#BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
+#BuildRequires:  texlive-cm texlive-mfware
+BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       libdune-common = %{version}
 
@@ -110,13 +112,13 @@ This package contains the development and header files for DUNE. - mpich version
 %endif
 
 %prep
-%setup -q -n dune-common-releases-opm-2024.04
+%setup -q -n dune-common-v2.11.0
 %patch0 -p1
 
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -124,7 +126,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/openmpi -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/openmpi-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/openmpi-x86_64
 popd
@@ -134,23 +136,29 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=lib'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix}/lib64/mpich -DCMAKE_INSTALL_INCLUDEDIR=/usr/include/mpich-x86_64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 module unload mpi/mpich-x86_64
 popd
 %endif
 
 %install
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C serial'
+cd serial
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
+cd ..
 
 %if 0%{?_build_openmpi}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C openmpi'
+cd openmpi
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
+cd ..
 %endif
 
 %if 0%{?_build_mpich}
-scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
+cd mpich
+scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
 rm -rf %{buildroot}/usr/lib64/mpich/share/doc
+cd ..
 %endif
 
 %clean
@@ -171,14 +179,15 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING README.md TODO
+%doc CHANGELOG.md CONTRIBUTING.md README.md
+%license LICENSE.md
 %{_bindir}/*
 %{_datadir}/dune-common
 %{_datadir}/man
 %{_datadir}/bash-completion/*
 
 %files doc
-%{_datadir}/doc/dune-common
+%{_docdir}/dune-common/*
 
 %files -n libdune-common
 %defattr(-,root,root,-)
