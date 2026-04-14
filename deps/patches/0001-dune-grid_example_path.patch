@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d5dbeecc5..2db385e1e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -73,7 +73,7 @@ endif()
+ # Use a  custom section to export path to the grid examples.
+ set(DUNE_CUSTOM_PKG_CONFIG_SECTION "#Export the directory with the grid example for downstream modules
+ if(${ProjectName}_INSTALLED)
+-  set_and_check(DUNE_GRID_EXAMPLE_GRIDS_PATH \"\${dune-grid_PREFIX}/${CMAKE_INSTALL_DOCDIR}/grids/\")
++  set_and_check(DUNE_GRID_EXAMPLE_GRIDS_PATH \"\${dune-grid_PREFIX}/share/doc/dune-grid/grids/\")
+ else()
+   set_and_check(DUNE_GRID_EXAMPLE_GRIDS_PATH \"\${dune-grid_PREFIX}/doc/grids/\")
+ endif()
