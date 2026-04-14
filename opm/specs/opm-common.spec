@@ -3,20 +3,21 @@
 #
 
 %define tag final
-%define rtype interim_release
+%define rtype release
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
 
 Name:           opm-common
-Version:        2026.02
+Version:        2026.04
 Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:         0001-opm-common_remove_tbb.patch
 Patch1:         0002-opm-common_remove_ml_tools.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
@@ -40,6 +41,7 @@ This package contains library for opm-common
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
 Requires:       libopm-common%{?postfix} = %{version}
+Requires:       %{name}-bin = %{version}
 
 %description devel
 This package contains the development and header files for opm-common
@@ -70,7 +72,7 @@ This package contains the documentation files for opm-common
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
@@ -81,7 +83,7 @@ pushd serial
 echo $RPM_OPT_FLAGS
 scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
-scl enable %{_toolset} 'ctest3 --output-on-failure'
+scl enable %{_toolset} 'ctest3 --output-on-failure %{?_smp_mflags}'
 popd
 
 %install
