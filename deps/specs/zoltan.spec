@@ -20,7 +20,7 @@ License:        LGPL-2.0
 Group:          System/Libraries
 Name:           zoltan
 Version:        3.901
-Release:        1
+Release:        2
 Url:            http://trilinos.sandia.gov/index.html
 Source0:        https://github.com/sandialabs/Zoltan/archive/refs/tags/v3.901.tar.gz
 BuildRequires:  doxygen
@@ -81,7 +81,7 @@ popd
 mkdir openmpi
 pushd openmpi
 module load mpi/openmpi-x86_64
-scl enable %{_toolset} '../configure --prefix /usr/lib64/openmpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi-x86_64'
+scl enable %{_toolset} '../configure --prefix /usr/lib64/openmpi --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/openmpi-x86_64/zoltan'
 scl enable %{_toolset} 'make %{?_smp_mflags} everything'
 module unload mpi/openmpi-x86_64
 popd
@@ -91,7 +91,7 @@ popd
 mkdir mpich
 pushd mpich
 module load mpi/mpich-x86_64
-scl enable %{_toolset} '../configure --prefix /usr/lib64/mpich --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/mpich-x86_64'
+scl enable %{_toolset} '../configure --prefix /usr/lib64/mpich --with-cflags="$RPM_OPT_FLAGS -fPIC -g" --includedir /usr/include/mpich-x86_64/zoltan'
 scl enable %{_toolset} 'make %{?_smp_mflags} everything'
 module unload mpi/mpich-x86_64
 popd

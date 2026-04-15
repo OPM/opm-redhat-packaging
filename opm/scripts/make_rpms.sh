@@ -2,7 +2,8 @@
 
 source /etc/profile.d/modules.sh
 
-for module in opm-common opm-grid opm-simulators opm-upscaling
+#for module in opm-common opm-grid opm-simulators opm-upscaling
+for module in opm-simulators opm-upscaling
 do
   dnf builddep -y /tmp/opm/rpmbuild/SPECS/${module}.spec
   su builder -c "rpmbuild -bb /tmp/opm/rpmbuild/SPECS/${module}.spec"

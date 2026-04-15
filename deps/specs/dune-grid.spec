@@ -148,14 +148,12 @@ cd ..
 %if 0%{?_build_openmpi}
 cd openmpi
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 cd ..
 %endif
 
 %if 0%{?_build_mpich}
 cd mpich
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 cd ..
 %endif
 

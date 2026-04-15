@@ -19,6 +19,7 @@ Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         0001-opm-common_remove_tbb.patch
 Patch1:         0002-opm-common_remove_ml_tools.patch
+Patch2:         0003-opm-common_no_library_dirs.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -41,6 +42,7 @@ This package contains library for opm-common
 Summary:        Development and header files for opm-common
 Group:          Development/Libraries/C and C++
 Requires:       libopm-common%{?postfix} = %{version}
+Requires:       %{name}-bin = %{version}
 
 %description devel
 This package contains the development and header files for opm-common
@@ -73,6 +75,7 @@ This package contains the documentation files for opm-common
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
