@@ -86,7 +86,7 @@ This package contains the development and header files for %{name} - openmpi3 ve
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/dune-localfunctions'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -118,14 +118,12 @@ cd ..
 %if 0%{?_build_openmpi}
 cd openmpi
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 cd ..
 %endif
 
 %if 0%{?_build_mpich}
 cd mpich
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 cd ..
 %endif
 
@@ -151,7 +149,7 @@ rm -rf %{buildroot}
 %endif
 
 %files doc
-%{_docdir}/dune-localfunctions/*
+%{_docdir}/*
 
 %if 0%{?_build_openmpi}
 %files openmpi-devel

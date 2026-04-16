@@ -110,7 +110,7 @@ This package contains the development and header files for %{name} - mpich versi
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/dune-uggrid'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -176,7 +176,7 @@ rm -rf %{buildroot}
 %{_libdir}/*.so
 
 %files doc
-%{_docdir}/dune-uggrid/*
+%{_docdir}/*
 
 %files devel
 %defattr(-,root,root,-)

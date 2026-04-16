@@ -21,9 +21,9 @@ BuildRequires:  openmpi-devel
 %if 0%{?_build_mpich}
 BuildRequires:  mpich-devel
 %endif
-#BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
-#BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
-#BuildRequires:  texlive-cm texlive-mfware
+BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
+BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
+BuildRequires:  texlive-cm texlive-mfware
 BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       libdune-common = %{version}
@@ -118,7 +118,7 @@ This package contains the development and header files for DUNE. - mpich version
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/dune-common'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -150,14 +150,12 @@ cd ..
 %if 0%{?_build_openmpi}
 cd openmpi
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/openmpi/share/doc
 cd ..
 %endif
 
 %if 0%{?_build_mpich}
 cd mpich
 scl enable %{_toolset} 'make install DESTDIR=%{buildroot}'
-rm -rf %{buildroot}/usr/lib64/mpich/share/doc
 cd ..
 %endif
 
@@ -182,12 +180,11 @@ rm -rf %{buildroot}
 %doc CHANGELOG.md CONTRIBUTING.md README.md
 %license LICENSE.md
 %{_bindir}/*
-%{_datadir}/dune-common
 %{_datadir}/man
 %{_datadir}/bash-completion/*
 
 %files doc
-%{_docdir}/dune-common/*
+%{_docdir}/*
 
 %files -n libdune-common
 %defattr(-,root,root,-)
@@ -200,6 +197,7 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/cmake
 %{_datadir}/dune
+%{_datadir}/dune-common/*
 %if 0%{?_build_openmpi}
 %exclude /usr/include/openmpi-x86_64
 %endif

@@ -23,9 +23,9 @@ BuildRequires: dune-geometry-openmpi-devel dune-uggrid-openmpi-devel
 BuildRequires: mpich-devel dune-common-mpich-devel
 BuildRequires: dune-geometry-mpich-devel dune-uggrid-mpich-devel
 %endif
-#BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
-#BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
-#BuildRequires:  texlive-cm texlive-mfware
+BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
+BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
+BuildRequires:  texlive-cm texlive-mfware
 BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       libdune-grid = %{version}
@@ -116,7 +116,7 @@ This package contains the development and header files for %{name} - mpich versi
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/dune-grid'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -199,7 +199,7 @@ rm -rf %{buildroot}
 %endif
 
 %files doc
-%{_docdir}/*
+%{_docdir}/dune-grid/doxygen/*
 
 %if 0%{?_build_openmpi}
 %files -n libdune-grid-openmpi

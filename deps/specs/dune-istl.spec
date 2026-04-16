@@ -61,13 +61,13 @@ Requires:       metis-devel suitesparse-devel
 %description devel
 This package contains the development and header files for dune-istl.
 
-#%package doc
-#Summary:        Doxygen documentation for dune-istl
-#Group:          Documentation
-#BuildArch:      noarch
+%package doc
+Summary:        Doxygen documentation for dune-istl
+Group:          Documentation
+BuildArch:      noarch
 
-#%description doc
-#This package contains the doxygen documentation for dune-istl.
+%description doc
+This package contains the doxygen documentation for dune-istl.
 
 %if 0%{?_build_openmpi}
 %package openmpi-devel
@@ -101,7 +101,7 @@ This package contains the development and header files for dune-istl - mpich ver
 %build
 mkdir serial
 pushd serial
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 .. -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/dune-istl'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 popd
 
@@ -154,8 +154,8 @@ rm -rf %{buildroot}
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/*
-%{_datadir}/%{name}
 %{_datadir}/dune
+%{_datadir}/dune-istl/*
 %{_libdir}/*
 %{_prefix}/lib/dunecontrol/*
 %if 0%{?_build_openmpi}
@@ -165,8 +165,8 @@ rm -rf %{buildroot}
 %exclude /usr/include/mpich-x86_64
 %endif
 
-#%files doc
-#%{_docdir}/dune-istl/*
+%files doc
+%{_docdir}/*
 
 %if 0%{?_build_openmpi}
 %files openmpi-devel
@@ -175,9 +175,6 @@ rm -rf %{buildroot}
 %{_libdir}/openmpi/share/%{name}
 %{_libdir}/openmpi/share/dune
 %{_libdir}/openmpi/lib/*
-%{_libdir}/openmpi/lib/cmake/*
-%{_libdir}/openmpi/lib/pkgconfig/*.pc
-%{_libdir}/openmpi/lib/dunecontrol/%{name}
 %endif
 
 %if 0%{?_build_mpich}
@@ -187,7 +184,4 @@ rm -rf %{buildroot}
 %{_libdir}/mpich/share/%{name}
 %{_libdir}/mpich/share/dune
 %{_libdir}/mpich/lib/*
-%{_libdir}/mpich/lib/cmake/*
-%{_libdir}/mpich/lib/pkgconfig/*.pc
-%{_libdir}/mpich/lib/dunecontrol/%{name}
 %endif
