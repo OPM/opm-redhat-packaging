@@ -4,7 +4,7 @@
 
 Name:           dune-geometry
 Version:        2.11.0
-Release:        1
+Release:        3
 Summary:        Everything related to the DUNE reference elements
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
@@ -27,18 +27,19 @@ BuildRequires:  texlive-cm texlive-mfware
 BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       dune-common = %{version}
-Requires:       libdune-geometry = %{version}
+Requires:       libdune-geometry2.11 = %{version}
 
 %description
 dune-geometry includes everything related to the DUNE reference elements.
 This includes the reference elements themselves, mappings on the reference
 elements (geometries), and quadratures.
 
-%package -n libdune-geometry
+%package -n libdune-geometry2.11
 Summary:        Everything related to the DUNE reference elements
 Group:          System/Libraries
+Obsoletes:      libdune-geometry
 
-%description -n libdune-geometry
+%description -n libdune-geometry2.11
 dune-geometry includes everything related to the DUNE reference elements.
 This includes the reference elements themselves, mappings on the reference
 elements (geometries), and quadratures.
@@ -48,7 +49,7 @@ Summary:        Development and header files for DUNE
 Group:          Development/Libraries/C and C++
 Requires:       dune-common-devel = %{version}
 Requires:       gmp-devel
-Requires:       libdune-geometry = %{version}
+Requires:       libdune-geometry2.11 = %{version}
 
 %description devel
 This package contains the development and header files for DUNE.
@@ -62,11 +63,12 @@ BuildArch:      noarch
 Doxygen documentation for dune-geometry
 
 %if 0%{?_build_openmpi}
-%package -n libdune-geometry-openmpi
+%package -n libdune-geometry2.11-openmpi
 Summary:        Everything related to the DUNE reference elements - openmpi version
 Group:          System/Libraries
+Obsoletes:      libdune-geometry-openmpi
 
-%description -n libdune-geometry-openmpi
+%description -n libdune-geometry2.11-openmpi
 dune-geometry includes everything related to the DUNE reference elements - openmpi-version
 This includes the reference elements themselves, mappings on the reference
 elements (geometries), and quadratures.
@@ -76,18 +78,19 @@ Summary:        Development and header files for DUNE - openmpi version
 Group:          Development/Libraries/C and C++
 Requires:       dune-common-openmpi-devel = %{version}
 Requires:       gmp-devel
-Requires:       libdune-geometry-openmpi = %{version}
+Requires:       libdune-geometry2.11-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for DUNE - openmpi version
 %endif
 
 %if 0%{?_build_mpich}
-%package -n libdune-geometry-mpich
+%package -n libdune-geometry2.11-mpich
 Summary:        Everything related to the DUNE reference elements - mpich version
 Group:          System/Libraries
+Obsoletes:      libdune-geometry-mpich
 
-%description -n libdune-geometry-mpich
+%description -n libdune-geometry2.11-mpich
 dune-geometry includes everything related to the DUNE reference elements - mpich-version
 This includes the reference elements themselves, mappings on the reference
 elements (geometries), and quadratures.
@@ -97,7 +100,7 @@ Summary:        Development and header files for DUNE - mpich version
 Group:          Development/Libraries/C and C++
 Requires:       dune-common-mpich-devel = %{version}
 Requires:       gmp-devel
-Requires:       libdune-geometry-mpich = %{version}
+Requires:       libdune-geometry2.11-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for DUNE - mpich version
@@ -147,15 +150,15 @@ scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 %clean
 rm -rf %{buildroot}
 
-%post -n libdune-geometry -p /sbin/ldconfig
-%postun -n libdune-geometry -p /sbin/ldconfig
+%post -n libdune-geometry2.11 -p /sbin/ldconfig
+%postun -n libdune-geometry2.11 -p /sbin/ldconfig
 %if 0%{?_build_openmpi}
-%post -n libdune-geometry-openmpi -p /sbin/ldconfig
-%postun -n libdune-geometry-openmpi -p /sbin/ldconfig
+%post -n libdune-geometry2.11-openmpi -p /sbin/ldconfig
+%postun -n libdune-geometry2.11-openmpi -p /sbin/ldconfig
 %endif
 %if 0%{?_build_mpich}
-%post -n libdune-geometry-mpich -p /sbin/ldconfig
-%postun -n libdune-geometry-mpich -p /sbin/ldconfig
+%post -n libdune-geometry2.11-mpich -p /sbin/ldconfig
+%postun -n libdune-geometry2.11-mpich -p /sbin/ldconfig
 %endif
 
 %files
@@ -165,13 +168,14 @@ rm -rf %{buildroot}
 %files doc
 %{_docdir}/*
 
-%files -n libdune-geometry
+%files -n libdune-geometry2.11
 %defattr(-,root,root,-)
-%{_libdir}/*.so
+%{_libdir}/*.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/*
+%{_libdir}/*.so
 %{_libdir}/cmake/*
 %{_libdir}/pkgconfig/*.pc
 %{_prefix}/lib/dunecontrol/%{name}
@@ -184,13 +188,14 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_openmpi}
-%files -n libdune-geometry-openmpi
+%files -n libdune-geometry2.11-openmpi
 %defattr(-,root,root,-)
-%{_libdir}/openmpi/lib/*.so
+%{_libdir}/openmpi/lib/*.so.*
 
 %files openmpi-devel
 %defattr(-,root,root,-)
-%{_includedir}/openmpi-x86_64/dune/*
+%{_includedir}/openmpi-x86_64/*
+%{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dune*
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/cmake
@@ -198,13 +203,14 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_mpich}
-%files -n libdune-geometry-mpich
+%files -n libdune-geometry2.11-mpich
 %defattr(-,root,root,-)
-%{_libdir}/mpich/lib/*.so
+%{_libdir}/mpich/lib/*.so.*
 
 %files mpich-devel
 %defattr(-,root,root,-)
-%{_includedir}/mpich-x86_64/dune/*
+%{_includedir}/mpich-x86_64/*
+%{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dune*
 %{_libdir}/mpich/lib/pkgconfig/*.pc
 %{_libdir}/mpich/lib/cmake
