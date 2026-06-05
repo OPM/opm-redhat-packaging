@@ -212,7 +212,7 @@ rm -rf %{buildroot}
 
 %files openmpi-devel
 %defattr(-,root,root,-)
-%{_includedir}/openmpi-x86_64/dune/*
+%{_includedir}/openmpi-x86_64/*
 %{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dune*
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
@@ -228,7 +228,7 @@ rm -rf %{buildroot}
 
 %files mpich-devel
 %defattr(-,root,root,-)
-%{_includedir}/mpich-x86_64/dune/*
+%{_includedir}/mpich-x86_64/*
 %{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dune*
 %{_libdir}/mpich/lib/pkgconfig/*.pc
