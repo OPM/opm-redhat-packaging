@@ -22,7 +22,7 @@ BuildRequires:  pkgconfig %{_toolset}
 BuildRequires:  cmake3 boost-devel doxygen inkscape
 BuildRequires:  tbb-devel python3-sphinx latexmk graphviz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Requires:       libdune-uggrid = %{version}
+Requires:       libdune-uggrid2.11 = %{version}
 
 %description
 dune-uggrid defines nonconforming, hierarchically nested, multi-element-type,
@@ -32,11 +32,12 @@ XML format for unstructured grids). The graphics package Grape has been integrat
 in interactive mode. This module also provides some grid implementations and
 further grid managers can be added through seprate modules.
 
-%package -n libdune-uggrid
+%package -n libdune-uggrid2.11
 Summary:        Grid management module for DUNE
 Group:          System/Libraries
+Obsoletes:      libdune-uggrid
 
-%description -n libdune-uggrid
+%description -n libdune-uggrid2.11
 dune-grid defines nonconforming, hierarchically nested, multi-element-type,
 parallel grids in arbitrary space dimensions. Graphical output with several
 packages is available, e.g. file output to IBM data explorer and VTK (parallel
@@ -47,7 +48,7 @@ further grid managers can be added through separate modules.
 %package devel
 Summary:        Development and header files for %{name}
 Group:          Development/Libraries/C and C++
-Requires:       libdune-uggrid = %{version}
+Requires:       libdune-uggrid2.11 = %{version}
 
 %description devel
 This package contains the development and header files for %{name}.
@@ -61,11 +62,12 @@ BuildArch:      noarch
 This package contains the doxygen documentation for %{name}.
 
 %if 0%{?_build_openmpi}
-%package -n libdune-uggrid-openmpi
+%package -n libdune-uggrid2.11-openmpi
 Summary:        Grid management module for DUNE - openmpi version
 Group:          System/Libraries
+Obsoletes:      libdune-uggrid-openmpi
 
-%description -n libdune-uggrid-openmpi
+%description -n libdune-uggrid2.11-openmpi
 dune-grid defines nonconforming, hierarchically nested, multi-element-type,
 parallel grids in arbitrary space dimensions. Graphical output with several
 packages is available, e.g. file output to IBM data explorer and VTK (parallel
@@ -76,18 +78,19 @@ further grid managers can be added through separate modules.
 %package openmpi-devel
 Summary:        Development and header files for %{name} - openmpi version
 Group:          Development/Libraries/C and C++
-Requires:       libdune-uggrid-openmpi = %{version}
+Requires:       libdune-uggrid2.11-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for %{name} - openmpi version.
 %endif
 
 %if 0%{?_build_mpich}
-%package -n libdune-uggrid-mpich
+%package -n libdune-uggrid2.11-mpich
 Summary:        Grid management module for DUNE - mpich version
 Group:          System/Libraries
+Obsoletes:      libdune-uggrid-mpich
 
-%description -n libdune-uggrid-mpich
+%description -n libdune-uggrid2.11-mpich
 dune-grid defines nonconforming, hierarchically nested, multi-element-type,
 parallel grids in arbitrary space dimensions. Graphical output with several
 packages is available, e.g. file output to IBM data explorer and VTK (parallel
@@ -98,7 +101,7 @@ further grid managers can be added through separate modules.
 %package mpich-devel
 Summary:        Development and header files for %{name} - mpich version
 Group:          Development/Libraries/C and C++
-Requires:       libdune-uggrid-mpich = %{version}
+Requires:       libdune-uggrid2.11-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for %{name} - mpich version.
@@ -148,26 +151,26 @@ scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 %clean
 rm -rf %{buildroot}
 
-%post -n libdune-uggrid -p /sbin/ldconfig
-%postun -n libdune-uggrid -p /sbin/ldconfig
+%post -n libdune-uggrid2.11 -p /sbin/ldconfig
+%postun -n libdune-uggrid2.11 -p /sbin/ldconfig
 
 %if 0%{?_build_openmpi}
-%post -n libdune-uggrid-openmpi -p /sbin/ldconfig
-%postun -n libdune-uggrid-openmpi -p /sbin/ldconfig
+%post -n libdune-uggrid2.11-openmpi -p /sbin/ldconfig
+%postun -n libdune-uggrid2.11-openmpi -p /sbin/ldconfig
 %endif
 
 %if 0%{?_build_mpich}
-%post -n libdune-uggrid-mpich -p /sbin/ldconfig
-%postun -n libdune-uggrid-mpich -p /sbin/ldconfig
+%post -n libdune-uggrid2.11-mpich -p /sbin/ldconfig
+%postun -n libdune-uggrid2.11-mpich -p /sbin/ldconfig
 %endif
 
 %files
 %defattr(-,root,root,-)
 %doc COPYING CHANGELOG.md
 
-%files -n libdune-uggrid
+%files -n libdune-uggrid2.11
 %defattr(-,root,root,-)
-%{_libdir}/*.so
+%{_libdir}/*.so.*
 
 %files doc
 %{_docdir}/*
@@ -175,6 +178,7 @@ rm -rf %{buildroot}
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/*
+%{_libdir}/*.so
 %{_libdir}/cmake/*
 %{_datadir}/dune
 %{_datadir}/dune-uggrid
@@ -191,13 +195,14 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_openmpi}
-%files -n libdune-uggrid-openmpi
+%files -n libdune-uggrid2.11-openmpi
 %defattr(-,root,root,-)
-%{_libdir}/openmpi/lib/*.so
+%{_libdir}/openmpi/lib/*.so.*
 
 %files openmpi-devel
 %defattr(-,root,root,-)
 %{_includedir}/openmpi-x86_64/*
+%{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dune*
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/cmake
@@ -205,13 +210,14 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_mpich}
-%files -n libdune-uggrid-mpich
+%files -n libdune-uggrid2.11-mpich
 %defattr(-,root,root,-)
-%{_libdir}/mpich/lib/*.so
+%{_libdir}/mpich/lib/*.so.*
 
 %files mpich-devel
 %defattr(-,root,root,-)
 %{_includedir}/mpich-x86_64/*
+%{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dune*
 %{_libdir}/mpich/lib/pkgconfig/*.pc
 %{_libdir}/mpich/lib/cmake

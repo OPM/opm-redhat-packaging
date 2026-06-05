@@ -10,7 +10,8 @@ License:        GPL-2.0
 Group:          Development/Libraries/C and C++
 Url:            https://dune-project.org/
 Source0:        https://gitlab.dune-project.org/core/dune-common/-/archive/v2.11.0/dune-common-v2.11.0.tar.gz
-Patch0:		0001-dune-common-py3.patch
+Patch0:         0001-dune-common-py3.patch
+Patch1:         0002-dune-common-soname.patch
 BuildRequires:  blas-devel gpm-devel
 BuildRequires:  lapack-devel metis-devel
 BuildRequires:  pkgconfig %{_toolset}
@@ -24,9 +25,8 @@ BuildRequires:  mpich-devel
 BuildRequires:  doxygen inkscape graphviz latexmk texlive-bibtex python3-sphinx
 BuildRequires:  texlive-amscls texlive-psfrag texlive-subfigure texlive-metafont
 BuildRequires:  texlive-cm texlive-mfware
-BuildRequires:  tbb-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Requires:       libdune-common = %{version}
+Requires:       libdune-common2.11 = %{version}
 
 %description
 DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
@@ -34,11 +34,12 @@ for solving partial differential equations (PDEs) with grid-based methods.
 It supports the easy implementation of methods like Finite Elements (FE),
 Finite Volumes (FV), and also Finite Differences (FD).
 
-%package -n libdune-common
+%package -n libdune-common2.11
 Summary:        Distributed and Unified Numerics Environment
 Group:          System/Libraries
+Obsoletes:      libdune-common
 
-%description -n libdune-common
+%description -n libdune-common2.11
 DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
 for solving partial differential equations (PDEs) with grid-based methods.
 It supports the easy implementation of methods like Finite Elements (FE),
@@ -58,17 +59,18 @@ Group:          Development/Libraries/C and C++
 Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
-Requires:       libdune-common = %{version}
+Requires:       libdune-common2.11 = %{version}
 
 %description devel
 This package contains the development and header files for DUNE.
 
 %if 0%{?_build_openmpi}
-%package -n libdune-common-openmpi
+%package -n libdune-common2.11-openmpi
 Summary:        Distributed and Unified Numerics Environment - openmpi version
 Group:          System/Libraries
+Obsoletes:      libdune-common-openmpi
 
-%description -n libdune-common-openmpi
+%description -n libdune-common2.11-openmpi
 DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
 for solving partial differential equations (PDEs) with grid-based methods.
 It supports the easy implementation of methods like Finite Elements (FE),
@@ -81,18 +83,19 @@ Group:          Development/Libraries/C and C++
 Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
-Requires:       libdune-common-openmpi = %{version}
+Requires:       libdune-common2.11-openmpi = %{version}
 
 %description openmpi-devel
 This package contains the development and header files for DUNE. - openmpi version
 %endif
 
 %if 0%{?_build_mpich}
-%package -n libdune-common-mpich
+%package -n libdune-common2.11-mpich
 Summary:        Distributed and Unified Numerics Environment - mpich version
 Group:          System/Libraries
+Obsoletes:      libdune-common-mpich
 
-%description -n libdune-common-mpich
+%description -n libdune-common2.11-mpich
 DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
 for solving partial differential equations (PDEs) with grid-based methods.
 It supports the easy implementation of methods like Finite Elements (FE),
@@ -105,7 +108,7 @@ Group:          Development/Libraries/C and C++
 Requires:       %{name} = %{version}
 Requires:       blas-devel
 Requires:       lapack-devel
-Requires:       libdune-common-mpich = %{version}
+Requires:       libdune-common2.11-mpich = %{version}
 
 %description mpich-devel
 This package contains the development and header files for DUNE. - mpich version
@@ -114,6 +117,7 @@ This package contains the development and header files for DUNE. - mpich version
 %prep
 %setup -q -n dune-common-v2.11.0
 %patch0 -p1
+%patch1 -p1
 
 %build
 mkdir serial
@@ -156,17 +160,17 @@ scl enable %{_toolset} 'make install DESTDIR=%{buildroot} -C mpich'
 %clean
 rm -rf %{buildroot}
 
-%post -n libdune-common -p /sbin/ldconfig
-%postun -n libdune-common -p /sbin/ldconfig
+%post -n libdune-common2.11 -p /sbin/ldconfig
+%postun -n libdune-common2.11 -p /sbin/ldconfig
 
 %if 0%{?_build_openmpi}
-%post -n libdune-common-openmpi -p /sbin/ldconfig
-%postun -n libdune-common-openmpi -p /sbin/ldconfig
+%post -n libdune-common2.11-openmpi -p /sbin/ldconfig
+%postun -n libdune-common2.11-openmpi -p /sbin/ldconfig
 %endif
 
 %if 0%{?_build_mpich}
-%post -n libdune-common-mpich -p /sbin/ldconfig
-%postun -n libdune-common-mpich -p /sbin/ldconfig
+%post -n libdune-common2.11-mpich -p /sbin/ldconfig
+%postun -n libdune-common2.11-mpich -p /sbin/ldconfig
 %endif
 
 %files
@@ -180,13 +184,14 @@ rm -rf %{buildroot}
 %files doc
 %{_docdir}/*
 
-%files -n libdune-common
+%files -n libdune-common2.11
 %defattr(-,root,root,-)
-%{_libdir}/*.so
+%{_libdir}/*.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/*
+%{_libdir}/*.so
 %{_prefix}/lib/dune*
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/cmake
@@ -200,14 +205,15 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_openmpi}
-%files -n libdune-common-openmpi
+%files -n libdune-common2.11-openmpi
 %defattr(-,root,root,-)
-%{_libdir}/openmpi/lib/*.so
+%{_libdir}/openmpi/lib/*.so.*
 %{_libdir}/openmpi/bin/*
 
 %files openmpi-devel
 %defattr(-,root,root,-)
 %{_includedir}/openmpi-x86_64/dune/*
+%{_libdir}/openmpi/lib/*.so
 %{_libdir}/openmpi/lib/dune*
 %{_libdir}/openmpi/lib/pkgconfig/*.pc
 %{_libdir}/openmpi/lib/cmake
@@ -215,14 +221,15 @@ rm -rf %{buildroot}
 %endif
 
 %if 0%{?_build_mpich}
-%files -n libdune-common-mpich
+%files -n libdune-common2.11-mpich
 %defattr(-,root,root,-)
-%{_libdir}/mpich/lib/*.so
+%{_libdir}/mpich/lib/*.so.*
 %{_libdir}/mpich/bin/*
 
 %files mpich-devel
 %defattr(-,root,root,-)
 %{_includedir}/mpich-x86_64/dune/*
+%{_libdir}/mpich/lib/*.so
 %{_libdir}/mpich/lib/dune*
 %{_libdir}/mpich/lib/pkgconfig/*.pc
 %{_libdir}/mpich/lib/cmake
