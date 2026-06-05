@@ -4,7 +4,7 @@
 
 Name:           dune-uggrid
 Version:        2.11.0
-Release:        1
+Release:        3
 Summary:        UG Grid module for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++

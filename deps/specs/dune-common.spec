@@ -4,7 +4,7 @@
 
 Name:           dune-common
 Version:        2.11.0
-Release:        1
+Release:        3
 Summary:        Distributed and Unified Numerics Environment
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++

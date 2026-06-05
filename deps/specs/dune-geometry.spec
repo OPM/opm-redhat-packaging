@@ -4,7 +4,7 @@
 
 Name:           dune-geometry
 Version:        2.11.0
-Release:        1
+Release:        3
 Summary:        Everything related to the DUNE reference elements
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++

@@ -4,7 +4,7 @@
 
 Name:           dune-grid
 Version:        2.11.0
-Release:        1
+Release:        3
 Summary:        Grid management module for DUNE
 License:        GPL-2.0
 Group:          Development/Libraries/C and C++
