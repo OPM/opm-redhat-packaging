@@ -1,0 +1,41 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2cc542987..5d7a5bffb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -396,12 +396,12 @@ macro(opm-common_install_hook)
+   # to make it available in a Python console and for e.g. opm-simulators.
+   if (OPM_INSTALL_PYTHON OR OPM_ENABLE_EMBEDDED_PYTHON)
+     include(PyInstallPrefix)
+-    install(
+-      TARGETS
+-        opmcommon_python
+-      DESTINATION
+-        ${PYTHON_INSTALL_PREFIX}/opm
+-    )
++    # install(
++    #   TARGETS
++    #     opmcommon_python
++    #   DESTINATION
++    #     ${PYTHON_INSTALL_PREFIX}/opm-${${project}_VERSION}
++    # )
+     if (OPM_INSTALL_PYTHON)
+       install(
+         CODE
+@@ -410,7 +410,7 @@ macro(opm-common_install_hook)
+                $<TARGET_FILE:Python3::Interpreter>
+                python/install.py
+                ${PROJECT_BINARY_DIR}/python/opm
+-               ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_PREFIX}
++               ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_PREFIX}/opm-${${project}_VERSION}
+                1
+            )"
+       )
+@@ -423,7 +423,7 @@ macro(opm-common_install_hook)
+                $<TARGET_FILE:Python3::Interpreter>
+                python/install.py
+                ${PROJECT_BINARY_DIR}/python/opm_embedded
+-               ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_PREFIX}
++               ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_PREFIX}/opm-${${project}_VERSION}
+                1
+            )"
+       )

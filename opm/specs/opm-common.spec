@@ -19,6 +19,7 @@ Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         0001-opm-common_remove_tbb.patch
 Patch1:         0002-opm-common_remove_ml_tools.patch
+Patch2:         0003-opm-common_python_version_dir.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -46,12 +47,12 @@ Requires:       %{name}-bin = %{version}
 %description devel
 This package contains the development and header files for opm-common
 
-%package -n python3-opm-common
+%package -n python3-opm-common%{?postfix}
 Summary:        opm-common - python library
 Group:          Python/Libraries
 Requires:       libopm-common%{?postfix} = %{version}
 
-%description -n python3-opm-common
+%description -n python3-opm-common%{?postfix}
 This package contains the python library for opm-common
 
 %package bin
@@ -74,6 +75,9 @@ This package contains the documentation files for opm-common
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
 %patch0 -p1
 %patch1 -p1
+%if 0%{?_build_versioned} == 1
+%patch2 -p1
+%endif
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
@@ -97,8 +101,8 @@ rm -rf %{buildroot}
 
 %post -n libopm-common%{?postfix} -p /sbin/ldconfig
 %postun -n libopm-common%{?postfix} -p /sbin/ldconfig
-%post -n python3-opm-common -p /sbin/ldconfig
-%postun -n python3-opm-common -p /sbin/ldconfig
+%post -n python3-opm-common%{?postfix} -p /sbin/ldconfig
+%postun -n python3-opm-common%{?postfix} -p /sbin/ldconfig
 
 %files
 %doc README.md
@@ -122,6 +126,10 @@ rm -rf %{buildroot}
 %{_datadir}/opm/*
 %{_libdir}/*.so
 
-%files -n python3-opm-common
+%files -n python3-opm-common%{?postfix}
+%if 0%{?_build_versioned} == 1
+%{python3_sitelib}/opm-%{?postfix}/*
+%else
 %{python3_sitelib}/opm/*
 %{python3_sitelib}/opm_embedded/*
+%endif
