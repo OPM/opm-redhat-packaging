@@ -11,7 +11,7 @@
 
 Name:           opm-common
 Version:        2026.04
-Release:        0
+Release:        1
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++

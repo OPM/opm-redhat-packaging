@@ -12,7 +12,7 @@ Version:        2026.04
 %endif
 
 Name:           opm-simulators%{?postfix}
-Release:        0
+Release:        1
 Summary:        Open Porous Media - core library
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
