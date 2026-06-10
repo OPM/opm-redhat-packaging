@@ -62,10 +62,6 @@ methods.
 %package -n libopm-grid%{?postfix}
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
-Requires:       libdune-common
-Requires:       libdune-grid
-Requires:       libdune-uggrid
-Requires:       libdune-geometry
 
 %description -n libopm-grid%{?postfix}
 This module enables working with corner-point or, more
@@ -109,10 +105,6 @@ This package contains the applications for opm-grid
 %package -n libopm-grid%{?postfix}-openmpi
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
-Requires:       libdune-common-openmpi
-Requires:       libdune-grid-openmpi
-Requires:       libdune-uggrid-openmpi
-Requires:       libdune-geometry-openmpi
 
 %description -n libopm-grid%{?postfix}-openmpi
 This module enables working with corner-point or, more
@@ -149,10 +141,6 @@ This package contains the applications for opm-grid
 %package -n libopm-grid%{?postfix}-mpich
 Summary:        Cornerpoint grid management module for OPM
 Group:          System/Libraries
-Requires:       libdune-common-mpich
-Requires:       libdune-grid-mpich
-Requires:       libdune-uggrid-mpich
-Requires:       libdune-geometry-mpich
 
 %description -n libopm-grid%{?postfix}-mpich
 This module enables working with corner-point or, more
