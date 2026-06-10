@@ -22,6 +22,9 @@ RUN echo "Cloning opm-upscaling"
 RUN git clone --depth 1 https://github.com/OPM/opm-upscaling
 USER root
 RUN /bin/bash /tmp/opm/scripts/setup_simulators_env.sh ${test_openmpi} ${test_mpich}
+RUN echo "Running pyaction checks"
+USER builder
+RUN /bin/bash /tmp/opm/scripts/run_pyaction.sh ${test_openmpi} ${test_mpich}
 RUN echo "Running Norne checks"
 USER builder
 RUN /bin/bash /tmp/opm/scripts/run_norne.sh ${test_openmpi} ${test_mpich}
