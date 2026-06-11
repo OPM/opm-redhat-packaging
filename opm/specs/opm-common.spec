@@ -20,6 +20,7 @@ Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}
 Patch0:         0001-opm-common_remove_tbb.patch
 Patch1:         0002-opm-common_remove_ml_tools.patch
 Patch2:         0003-opm-common_python_version_dir.patch
+Patch3:         0004-opm-common_zoltan.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -78,6 +79,7 @@ This package contains the documentation files for opm-common
 %if 0%{?_build_versioned} == 1
 %patch2 -p1
 %endif
+%patch3 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build
@@ -85,7 +87,7 @@ rm -f python/pybind11/tools/mkdoc.py
 mkdir serial
 pushd serial
 echo $RPM_OPT_FLAGS
-scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
+scl enable %{_toolset} 'CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" cmake3 -DUSE_MPI=0 -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DOCDIR=share/doc/%{name}-%{version} -DUSE_RUNPATH=OFF -DWITH_NATIVE=OFF -DWITH_NDEBUG=ON -DOPM_ENABLE_PYTHON=1 -DOPM_ENABLE_EMBEDDED_PYTHON=1 -DOPM_INSTALL_PYTHON=1 ..'
 scl enable %{_toolset} 'make %{?_smp_mflags}'
 scl enable %{_toolset} 'ctest3 --output-on-failure %{?_smp_mflags}'
 popd
