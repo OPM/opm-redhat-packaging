@@ -4,7 +4,15 @@ ROOT=$1
 
 pushd $ROOT/SOURCES
 
-MODULE_LIST="fmt zoltan dune-common dune-istl dune-geometry dune-uggrid dune-grid dune-localfunctions"
+MODULE_LIST="fmt \
+             zoltan \
+             dune-common \
+             dune-istl \
+             dune-geometry \
+             dune-uggrid \
+             dune-grid \
+             dune-localfunctions\
+             python3.12-decorator"
 
 for module in ${MODULE_LIST}
 do
