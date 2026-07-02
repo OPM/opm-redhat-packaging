@@ -1,0 +1,20 @@
+commit 8de9478366b19434aec7efc6a11e47276caf6980
+Author: Markus Blatt <markus@dr-blatt.de>
+Date:   Tue Jun 2 16:13:30 2026 +0200
+
+    Support finding Zoltan automatically on RH
+    
+    For that we need to search also in path suffix zoltan.
+
+diff --git a/cmake/Modules/FindZOLTAN.cmake b/cmake/Modules/FindZOLTAN.cmake
+index 6df02cd85..2691667ff 100644
+--- a/cmake/Modules/FindZOLTAN.cmake
++++ b/cmake/Modules/FindZOLTAN.cmake
+@@ -33,6 +33,7 @@ find_path (ZOLTAN_INCLUDE_DIR
+   PATH_SUFFIXES
+     include
+     trilinos
++    zoltan
+   ${ZOLTAN_NO_DEFAULT_PATH}
+ )
+ 

@@ -12,7 +12,7 @@ do
   rm repodata -Rf
   createrepo .
   popd
-  yum makecache
+  dnf makecache
 done
 
 rm -Rf /tmp/opm/rpmbuild/BUILD
