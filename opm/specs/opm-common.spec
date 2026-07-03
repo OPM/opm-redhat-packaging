@@ -3,7 +3,7 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
 %global python3_12_sitelib %{_prefix}/lib/python3.12/site-packages
 
 %if 0%{?_build_versioned} == 1
@@ -11,17 +11,14 @@
 %endif
 
 Name:           opm-common
-Version:        2026.04
-Release:        1
+Version:        2026.07
+Release:        0
 Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
 Source0:        https://github.com/OPM/%{name}/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:         0001-opm-common_remove_tbb.patch
-Patch1:         0002-opm-common_remove_ml_tools.patch
-Patch2:         0003-opm-common_python_version_dir.patch
-Patch3:         0004-opm-common_zoltan.patch
+Patch0:         0003-opm-common_python_version_dir.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
@@ -75,12 +72,9 @@ This package contains the documentation files for opm-common
 
 %prep
 %setup -q -n %{name}-%{rtype}-%{version}-%{tag}
-%patch0 -p1
-%patch1 -p1
 %if 0%{?_build_versioned} == 1
-%patch2 -p1
+%patch0 -p1
 %endif
-%patch3 -p1
 
 # consider using -DUSE_VERSIONED_DIR=ON if backporting
 %build

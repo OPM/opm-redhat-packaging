@@ -1,0 +1,42 @@
+commit 45499662730a8e8f55ee65dc1a0a20e3d1009d95
+Author: Kai Bao <kai.bao@sintef.no>
+Date:   Wed Jul 1 15:27:59 2026 +0200
+
+    Init MPIHelper in test_networkpressure (needed for MPI builds)
+
+diff --git a/tests/test_networkpressure.cpp b/tests/test_networkpressure.cpp
+index cc09eedef..5ae807469 100644
+--- a/tests/test_networkpressure.cpp
++++ b/tests/test_networkpressure.cpp
+@@ -28,6 +28,31 @@
+ #include <boost/test/unit_test.hpp>
+ #include <opm/common/utility/platform_dependent/reenable_warnings.h>
+ 
++#include <dune/common/parallel/mpihelper.hh>
++
++// The pressure computation uses a Dune parallel Communication, which requires
++// MPIHelper::instance() to have been called first when built with MPI. Do it
++// once via a global fixture (a no-op in a serial build). Mirrors the fixture in
++// test_parallelwellinfo.cpp.
++struct MPIFixture
++{
++    MPIFixture()
++    {
++#if HAVE_MPI
++        int argc = boost::unit_test::framework::master_test_suite().argc;
++        char** argv = boost::unit_test::framework::master_test_suite().argv;
++        Dune::MPIHelper::instance(argc, argv);
++#endif
++    }
++    ~MPIFixture()
++    {
++#if HAVE_MPI
++        MPI_Finalize();
++#endif
++    }
++};
++BOOST_GLOBAL_FIXTURE(MPIFixture);
++
+ #include <opm/input/eclipse/Deck/Deck.hpp>
+ 
+ #include <opm/input/eclipse/Parser/Parser.hpp>
