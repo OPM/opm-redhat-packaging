@@ -1,0 +1,41 @@
+From 0217e8c079c05bdac25c0e7d985ff24e9ed6c5eb Mon Sep 17 00:00:00 2001
+From: Markus Blatt <markus@dr-blatt.de>
+Date: Fri, 9 Dec 2022 16:01:02 +0100
+Subject: [PATCH 2/2] Always add an soversion to the library.
+
+---
+ cmake/modules/DuneAddLibrary.cmake | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- a/cmake/modules/DuneAddLibrary.cmake
++++ b/cmake/modules/DuneAddLibrary.cmake
+@@ -160,7 +160,7 @@ function(dune_add_library_normal _name)
+   cmake_parse_arguments(ARG
+     "NO_EXPORT;NO_MODULE_LIBRARY;STATIC;SHARED;MODULE"
+     "COMPILE_FLAGS;COMPILE_OPTIONS;OUTPUT_NAME;EXPORT_NAME;NAMESPACE"
+-    "ADD_LIBS;LINK_LIBRARIES;SOURCES" ${ARGN})
++    "ADD_LIBS;LINK_LIBRARIES;SOURCES;SOVERSION" ${ARGN})
+   list(APPEND ARG_SOURCES ${ARG_UNPARSED_ARGUMENTS})
+   dune_expand_object_libraries(ARG_SOURCES ARG_ADD_LIBS ARG_COMPILE_FLAGS)
+   list(APPEND ARG_LINK_LIBRARIES ${ARG_ADD_LIBS})
+@@ -175,6 +175,12 @@ function(dune_add_library_normal _name)
+     set(_type "MODULE")
+   endif()
+ 
++  if(NOT ARG_SOVERSION)
++    # If no explicit version is given, we assume the ABI is not stable and
++    # changes with every release.
++    set(ARG_SOVERSION ${ProjectVersion})
++  endif()
++
+   # Create the library target
+   add_library(${_name} ${_type} ${ARG_SOURCES})
+ 
+@@ -189,6 +195,7 @@ function(dune_add_library_normal _name)
+ 
+   # Build library in ${CMAKE_BINARY_DIR}/lib
+   set_target_properties(${_name} PROPERTIES
++    SOVERSION "${ARG_SOVERSION}"
+     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+ 
