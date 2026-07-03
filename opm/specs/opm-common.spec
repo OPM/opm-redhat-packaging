@@ -17,7 +17,7 @@ Summary:        Open Porous Media - common helpers and buildsystem
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
-Source0:        https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://github.com/OPM/%{name}/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         0001-opm-common_remove_tbb.patch
 Patch1:         0002-opm-common_remove_ml_tools.patch
 Patch2:         0003-opm-common_python_version_dir.patch

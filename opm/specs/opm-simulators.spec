@@ -18,7 +18,7 @@ Summary:        Open Porous Media - core library
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
-Source0:        https://github.com/OPM/opm-simulators/archive/release/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
+Source0:        https://github.com/OPM/opm-simulators/archive/%{rtype}/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
 Patch0:         0001-opm-simulators_skip_test_boost_return_code.patch
 Patch1:         0002-opm-simulators_avoid_negative_rs_rv_max.patch
 BuildRequires:  lapack-devel openblas-devel

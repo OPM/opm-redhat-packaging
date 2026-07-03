@@ -16,7 +16,7 @@ Summary:       Cornerpoint grid management module for OPM
 License:       GPL-3.0
 Group:         Development/Libraries/C and C++
 Url:           http://www.opm-project.org/
-Source0:       https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:       https://github.com/OPM/%{name}/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires: blas-devel lapack-devel dune-common-devel
 BuildRequires: git suitesparse-devel doxygen bc
 BuildRequires: tinyxml-devel zlib-devel fmt-devel

@@ -16,7 +16,7 @@ Summary:       Open Porous Media - upscaling library
 License:       GPL-3.0
 Group:         Development/Libraries/C and C++
 Url:           http://www.opm-project.org/
-Source0:       https://github.com/OPM/opm-upscaling/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:       https://github.com/OPM/opm-upscaling/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires: blas-devel lapack-devel
 BuildRequires: git suitesparse-devel doxygen bc tinyxml-devel
 BuildRequires: cmake3 zlib-devel graphviz
