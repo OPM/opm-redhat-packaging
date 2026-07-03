@@ -4,6 +4,7 @@
 
 %define tag final
 %define rtype release
+%global python3_12_sitelib %{_prefix}/lib/python3.12/site-packages
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
@@ -24,8 +25,8 @@ Patch3:         0004-opm-common_zoltan.patch
 BuildRequires:  git doxygen bc latexmk texlive-cm texlive-dvips-bin
 BuildRequires:  %{_toolset}
 BuildRequires:  boost-devel graphviz dune-common-devel tbb-devel
-BuildRequires:  cmake3 python3-devel fmt-devel
-BuildRequires:  python3-numpy python3-setuptools_scm python3-pytest-runner python3-decorator
+BuildRequires:  cmake3 python3.12-devel fmt-devel
+BuildRequires:  python3.12-numpy python3.12-setuptools python3.12-pytest python3.12-decorator
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -48,12 +49,12 @@ Requires:       %{name}-bin = %{version}
 %description devel
 This package contains the development and header files for opm-common
 
-%package -n python3-opm-common%{?postfix}
+%package -n python3.12-opm-common%{?postfix}
 Summary:        opm-common - python library
 Group:          Python/Libraries
 Requires:       libopm-common%{?postfix} = %{version}
 
-%description -n python3-opm-common%{?postfix}
+%description -n python3.12-opm-common%{?postfix}
 This package contains the python library for opm-common
 
 %package bin
@@ -103,8 +104,8 @@ rm -rf %{buildroot}
 
 %post -n libopm-common%{?postfix} -p /sbin/ldconfig
 %postun -n libopm-common%{?postfix} -p /sbin/ldconfig
-%post -n python3-opm-common%{?postfix} -p /sbin/ldconfig
-%postun -n python3-opm-common%{?postfix} -p /sbin/ldconfig
+%post -n python3.12-opm-common%{?postfix} -p /sbin/ldconfig
+%postun -n python3.12-opm-common%{?postfix} -p /sbin/ldconfig
 
 %files
 %doc README.md
@@ -128,10 +129,10 @@ rm -rf %{buildroot}
 %{_datadir}/opm/*
 %{_libdir}/*.so
 
-%files -n python3-opm-common%{?postfix}
+%files -n python3.12-opm-common%{?postfix}
 %if 0%{?_build_versioned} == 1
-%{python3_sitelib}/opm-%{?postfix}/*
+%{python3_12_sitelib}/opm-%{?postfix}/*
 %else
-%{python3_sitelib}/opm/*
-%{python3_sitelib}/opm_embedded/*
+%{python3_12_sitelib}/opm/*
+%{python3_12_sitelib}/opm_embedded/*
 %endif

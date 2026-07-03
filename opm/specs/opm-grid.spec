@@ -27,7 +27,7 @@ BuildRequires: dune-grid-devel
 BuildRequires: dune-uggrid-devel
 BuildRequires: cmake3 tbb-devel
 BuildRequires: %{_toolset}
-BuildRequires: boost-devel python3-devel
+BuildRequires: boost-devel python3.12-devel
 
 %if 0%{?_build_openmpi}
 BuildRequires: openmpi-devel

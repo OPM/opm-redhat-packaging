@@ -21,7 +21,7 @@ BuildRequires: blas-devel lapack-devel
 BuildRequires: git suitesparse-devel doxygen bc tinyxml-devel
 BuildRequires: cmake3 zlib-devel graphviz
 BuildRequires: %{_toolset}
-BuildRequires: boost-devel python3-devel tbb-devel
+BuildRequires: boost-devel python3.12-devel tbb-devel
 BuildRequires: dune-common-devel
 BuildRequires: dune-geometry-devel
 BuildRequires: dune-istl-devel
