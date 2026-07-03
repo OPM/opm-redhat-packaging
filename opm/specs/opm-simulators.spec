@@ -3,30 +3,32 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
+%global python3_12_sitelib %{_prefix}/lib/python3.12/site-packages
 
-Version:        2026.04
+Version:        2026.07
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
 
 Name:           opm-simulators%{?postfix}
-Release:        1
+Release:        0
 Summary:        Open Porous Media - core library
 License:        GPL-3.0
 Group:          Development/Libraries/C and C++
 Url:            http://www.opm-project.org/
-Source0:        https://github.com/OPM/opm-simulators/archive/release/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
+Source0:        https://github.com/OPM/opm-simulators/archive/%{rtype}/%{version}/%{tag}.tar.gz#/opm-simulators-%{version}.tar.gz
 Patch0:         0001-opm-simulators_skip_test_boost_return_code.patch
 Patch1:         0002-opm-simulators_avoid_negative_rs_rv_max.patch
+patch2:         0003-opm-simulators_init_mpi_networkpressure.patch
 BuildRequires:  lapack-devel openblas-devel
 BuildRequires:  git suitesparse-devel doxygen bc graphviz texlive-dvips-bin
 BuildRequires:  tinyxml-devel zlib-devel fmt-devel opm-common-bin
 BuildRequires: zoltan-devel
 BuildRequires: cmake3
 BuildRequires: %{_toolset}
-BuildRequires: boost-devel python3-devel tbb-devel
+BuildRequires: boost-devel python3.12-devel tbb-devel
 BuildRequires: hdf5-devel
 BuildRequires: dune-common-devel
 BuildRequires: dune-geometry-devel
@@ -39,6 +41,7 @@ BuildRequires: opm-grid-devel
 
 %if 0%{?_build_openmpi}
 BuildRequires: openmpi-devel
+BuildRequires: ptscotch-openmpi-devel
 BuildRequires: zoltan-openmpi-devel
 BuildRequires: hdf5-openmpi-devel
 BuildRequires: dune-common-openmpi-devel
@@ -52,6 +55,7 @@ BuildRequires: opm-grid-openmpi-devel
 
 %if 0%{?_build_mpich}
 BuildRequires: mpich-devel
+BuildRequires: ptscotch-mpich-devel
 BuildRequires: zoltan-mpich-devel
 BuildRequires: hdf5-mpich-devel
 BuildRequires: dune-common-mpich-devel
@@ -97,7 +101,7 @@ Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       libopm-simulators%{?postfix} = %{version}
 %if 0%{?_build_versioned} == 0
-Requires:       python3-opm-common = %{version}
+Requires:       python3.12-opm-common = %{version}
 %endif
 
 %description bin
@@ -108,7 +112,8 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-bin = %{version}
-Requires:       python3-opm-common%{postfix} = %{version}
+Requires:       python3.12-opm-common%{postfix} = %{version}
+Requires:       opm-simulators2026.04-bin
 
 %description -n opm-simulators-bin
 This package contains the applications for opm-simulators
@@ -135,8 +140,9 @@ This package contains the development and header files for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       libopm-simulators%{?postfix}-openmpi = %{version}
+Requires:       opm-simulators2026.04-openmpi-bin
 %if 0%{?_build_versioned} == 0
-Requires:       python3-opm-common = %{version}
+Requires:       python3.12-opm-common = %{version}
 %endif
 
 %description openmpi-bin
@@ -147,7 +153,7 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-openmpi-bin = %{version}
-Requires:       python3-opm-common%{postfix} = %{version}
+Requires:       python3.12-opm-common%{postfix} = %{version}
 
 %description -n opm-simulators-openmpi-bin
 This package contains the applications for opm-simulators
@@ -177,7 +183,7 @@ Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       libopm-simulators%{?postfix}-mpich = %{version}
 %if 0%{?_build_versioned} == 0
-Requires:       python3-opm-common = %{version}
+Requires:       python3.12-opm-common = %{version}
 %endif
 
 %description mpich-bin
@@ -188,7 +194,8 @@ This package contains the applications for opm-simulators
 Summary:        Applications in opm-simulators
 Group:          Scientific
 Requires:       opm-simulators%{postfix}-mpich-bin = %{version}
-Requires:       python3-opm-common%{postfix} = %{version}
+Requires:       python3.12-opm-common%{postfix} = %{version}
+Requires:       opm-simulators2026.04-mpich-bin
 
 %description -n opm-simulators-mpich-bin
 This package contains the applications for opm-simulators
@@ -200,6 +207,7 @@ This package contains the applications for opm-simulators
 %setup -q -n opm-simulators-%{rtype}-%{version}-%{tag}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 mkdir serial
@@ -238,7 +246,7 @@ scl enable %{_toolset} 'make install-html DESTDIR=${RPM_BUILD_ROOT} -C serial'
 mv ${RPM_BUILD_ROOT}/usr/bin/flow ${RPM_BUILD_ROOT}/usr/bin/flow-%{version}.bin
 cat >> ${RPM_BUILD_ROOT}/usr/bin/flow-%{version} <<'EOF'
 #!/bin/bash
-PYTHONPATH=%{python3_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/bin/flow-%{version}.bin $@
+PYTHONPATH=%{python3_12_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/bin/flow-%{version}.bin $@
 EOF
 chmod 755 ${RPM_BUILD_ROOT}/usr/bin/flow-%{version}
 ln -sfr ${RPM_BUILD_ROOT}/usr/bin/flow-%{version} ${RPM_BUILD_ROOT}/usr/bin/flow
@@ -250,7 +258,7 @@ scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C openmpi'
 mv ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version}.bin
 cat >> ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version} <<'EOF'
 #!/bin/bash
-PYTHONPATH=%{python3_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/lib64/openmpi/bin/flow-%{version}.bin $@
+PYTHONPATH=%{python3_12_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/lib64/openmpi/bin/flow-%{version}.bin $@
 EOF
 chmod 755 ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version}
 ln -sfr ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow-%{version} ${RPM_BUILD_ROOT}/usr/lib64/openmpi/bin/flow
@@ -263,7 +271,7 @@ scl enable %{_toolset} 'make install DESTDIR=${RPM_BUILD_ROOT} -C mpich'
 mv ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow-%{version}.bin
 cat >> ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow-%{version} <<'EOF'
 #!/bin/bash
-PYTHONPATH=%{python3_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/lib64/mpich/bin/flow-%{version}.bin $@
+PYTHONPATH=%{python3_12_sitelib}/opm-%{?postfix}:$PYTHONPATH /usr/lib64/mpich/bin/flow-%{version}.bin $@
 EOF
 chmod 755 ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow-%{version}
 ln -sfr ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow-%{version} ${RPM_BUILD_ROOT}/usr/lib64/mpich/bin/flow

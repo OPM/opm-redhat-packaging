@@ -3,25 +3,25 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
 
 Name:          opm-upscaling
-Version:       2026.04
-Release:       1
+Version:       2026.07
+Release:       0
 Summary:       Open Porous Media - upscaling library
 License:       GPL-3.0
 Group:         Development/Libraries/C and C++
 Url:           http://www.opm-project.org/
-Source0:       https://github.com/OPM/opm-upscaling/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:       https://github.com/OPM/opm-upscaling/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires: blas-devel lapack-devel
 BuildRequires: git suitesparse-devel doxygen bc tinyxml-devel
 BuildRequires: cmake3 zlib-devel graphviz
 BuildRequires: %{_toolset}
-BuildRequires: boost-devel python3-devel tbb-devel
+BuildRequires: boost-devel python3.12-devel tbb-devel
 BuildRequires: dune-common-devel
 BuildRequires: dune-geometry-devel
 BuildRequires: dune-istl-devel

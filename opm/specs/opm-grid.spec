@@ -3,20 +3,20 @@
 #
 
 %define tag final
-%define rtype release
+%define rtype interim_release
 
 %if 0%{?_build_versioned} == 1
 %define postfix %{version}
 %endif
 
 Name:          opm-grid
-Version:       2026.04
-Release:       1
+Version:       2026.07
+Release:       0
 Summary:       Cornerpoint grid management module for OPM
 License:       GPL-3.0
 Group:         Development/Libraries/C and C++
 Url:           http://www.opm-project.org/
-Source0:       https://github.com/OPM/%{name}/archive/release/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:       https://github.com/OPM/%{name}/archive/%{rtype}/%{version}/%{tag}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRequires: blas-devel lapack-devel dune-common-devel
 BuildRequires: git suitesparse-devel doxygen bc
 BuildRequires: tinyxml-devel zlib-devel fmt-devel
@@ -27,7 +27,7 @@ BuildRequires: dune-grid-devel
 BuildRequires: dune-uggrid-devel
 BuildRequires: cmake3 tbb-devel
 BuildRequires: %{_toolset}
-BuildRequires: boost-devel python3-devel
+BuildRequires: boost-devel python3.12-devel
 
 %if 0%{?_build_openmpi}
 BuildRequires: openmpi-devel

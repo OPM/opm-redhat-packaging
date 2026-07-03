@@ -2,7 +2,15 @@
 
 source /etc/profile.d/modules.sh
 
-MODULE_LIST="fmt zoltan dune-common dune-istl dune-geometry dune-uggrid dune-grid dune-localfunctions"
+MODULE_LIST="python3.12-decorator\
+             fmt \
+             zoltan \
+             dune-common \
+             dune-istl \
+             dune-geometry \
+             dune-uggrid \
+             dune-grid \
+             dune-localfunctions"
 
 for module in $MODULE_LIST
 do
